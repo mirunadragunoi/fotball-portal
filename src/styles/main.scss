@@ -4,9 +4,6 @@
 // Brand override files — all pre-loaded, scoped by [data-brand] attribute
 @use '../brands/football1/styles/overrides' as f1;
 @use '../brands/football2/styles/overrides' as f2;
-@use '../brands/wellness/styles/overrides' as w1;
-@use '../brands/wellness2/styles/overrides' as w2;
-@use '../brands/wellness3/styles/overrides' as w3;
 
 // Utility classes
 .visually-hidden {

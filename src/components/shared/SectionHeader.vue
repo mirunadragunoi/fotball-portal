@@ -1,5 +1,6 @@
 <script setup>
 import AppIcon from './AppIcon.vue'
+import AuthLink from './AuthLink.vue'
 
 defineProps({
   eyebrow: { type: String, default: '' },
@@ -18,14 +19,14 @@ defineProps({
       </div>
       <h2 class="section-header__title">{{ title }}</h2>
     </div>
-    <RouterLink
+    <AuthLink
       v-if="link && linkTo"
       :to="linkTo"
       class="section-header__link"
     >
       {{ link }}
       <AppIcon name="chev-r" :size="12" />
-    </RouterLink>
+    </AuthLink>
   </div>
 </template>
 

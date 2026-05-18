@@ -4,11 +4,13 @@ import { i18n } from './i18n/index.js'
 import router from './router/index.js'
 import App from './App.vue'
 import './styles/main.scss'
+import { getBrandKey, getBrandConfig } from './config/brand.js'
 
 // Apply default brand to <html> before app mounts (prevents FOUC)
-const defaultBrand = typeof __DEFAULT_BRAND__ !== 'undefined' ? __DEFAULT_BRAND__ : 'football1'
-document.documentElement.setAttribute('data-brand', defaultBrand)
-document.title = defaultBrand === 'football2' ? 'Kickoff' : 'Pitchside'
+const brandKey = getBrandKey()
+const brandConfig = getBrandConfig()
+document.documentElement.setAttribute('data-brand', brandKey)
+document.title = brandConfig.displayName || 'Football Portal'
 
 const app = createApp(App)
 const pinia = createPinia()

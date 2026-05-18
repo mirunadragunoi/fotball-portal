@@ -5,7 +5,7 @@ import GameGrid from '@/components/games/GameGrid.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import { useGamesStore } from '@/stores/games'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useBrandStore } from '@/stores/brand'
 
 const { t } = useI18n()
@@ -14,6 +14,10 @@ const brandStore = useBrandStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 const totalGames = computed(() => store.all.length)
 const filteredCount = computed(() => store.filtered.length)
+
+onMounted(() => {
+  store.loadGames()
+})
 </script>
 
 <template>
@@ -44,6 +48,7 @@ const filteredCount = computed(() => store.filtered.length)
       <div class="games-grid-section__inner">
         <GameGrid
           :games="store.filtered"
+          :loading="store.loading"
           @reset="store.resetFilters"
         />
 

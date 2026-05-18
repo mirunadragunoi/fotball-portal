@@ -25,9 +25,6 @@ src/
 │   │   ├── styles/
 │   │   ├── config.js
 │   │   └── components/
-│   ├── wellness/           ← existing brand (do NOT modify)
-│   ├── wellness2/          ← existing brand (do NOT modify)
-│   └── wellness3/          ← existing brand (do NOT modify)
 ├── components/             ← shared base components
 ├── composables/            ← shared composables (useGames, useVideos, etc.)
 ├── config/                 ← base config

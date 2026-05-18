@@ -15,15 +15,16 @@ const router = useRouter()
 const store = useGamesStore()
 const brandStore = useBrandStore()
 
-const game = computed(() => store.getBySlug(route.params.slug))
+const game = computed(() => store.getById(route.params.id))
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
 const related = computed(() =>
   store.all.filter(g => g.id !== game.value?.id && g.category === game.value?.category).slice(0, 4)
 )
 
-onMounted(() => {
-  if (!game.value) router.replace('/games')
+onMounted(async () => {
+  await store.ensureGame(route.params.id)
+  if (!store.getById(route.params.id)) router.replace('/games')
 })
 
 const leaderboard = [
@@ -61,7 +62,7 @@ const leaderboard = [
 
             <!-- Play button -->
             <RouterLink
-              :to="`/games/${game.slug}/play`"
+              :to="`/games/${game.id}/play`"
               class="gd-hero__play-btn"
               :aria-label="`Play ${game.title}`"
             >
@@ -116,7 +117,7 @@ const leaderboard = [
 
             <div class="gd-hero__actions">
               <RouterLink
-                :to="`/games/${game.slug}/play`"
+                :to="`/games/${game.id}/play`"
                 class="gd-hero__cta-play"
               >
                 <AppIcon name="play" :size="18" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />

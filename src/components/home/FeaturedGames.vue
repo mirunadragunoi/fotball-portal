@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import GameCard from '@/components/games/GameCard.vue'
@@ -8,6 +8,10 @@ import { useGamesStore } from '@/stores/games'
 const { t } = useI18n()
 const store = useGamesStore()
 const featured = computed(() => store.featured)
+
+onMounted(() => {
+  store.loadGames()
+})
 </script>
 
 <template>

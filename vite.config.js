@@ -1,10 +1,16 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
+const BRAND_KEYS = ['football1', 'football2']
+
+function getBrandKeyFromMode(mode) {
+  const key = (mode || '').toLowerCase()
+  return BRAND_KEYS.includes(key) ? key : 'football1'
+}
+
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  const brand = env.VITE_BRAND || 'football1'
+  const brand = getBrandKeyFromMode(mode)
 
   return {
     plugins: [vue()],
@@ -14,13 +20,18 @@ export default defineConfig(({ mode }) => {
         '@brand': resolve(__dirname, `src/brands/${brand}`),
       },
     },
-    define: {
-      __DEFAULT_BRAND__: JSON.stringify(brand),
-    },
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: `@use "@/styles/abstracts" as *;`,
+        },
+      },
+    },
+    server: {
+      proxy: {
+        '/football': {
+          target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000',
+          changeOrigin: true,
         },
       },
     },

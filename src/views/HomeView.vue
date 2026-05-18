@@ -4,9 +4,13 @@ import { useBrandStore } from '@/stores/brand'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import FeaturedGames from '@/components/home/FeaturedGames.vue'
 import FeaturedVideos from '@/components/home/FeaturedVideos.vue'
+import HomeShowcase from '@/components/home/HomeShowcase.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
+import AuthLink from '@/components/shared/AuthLink.vue'
+import { useLandingImages } from '@/composables/useLandingImages'
 
 const brandStore = useBrandStore()
+const { images: landing } = useLandingImages()
 const activeBrand = computed(() => brandStore.activeBrand)
 
 const HeroComponent = shallowRef(null)
@@ -32,10 +36,8 @@ watch(activeBrand, loadHero)
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
 const f2Tiles = [
-  { label: 'Play games',   sub: '124 to choose from', color: '#00C853', icon: 'play-o', path: '/games' },
-  { label: 'Watch videos', sub: 'Updated daily',      color: '#2979FF', icon: 'play',   path: '/videos' },
-  { label: 'Daily trivia', sub: '5 mins · win XP',    color: '#FF1744', icon: 'trophy', path: '/trivia' },
-  { label: 'Live scores',  sub: '12 matches today',   color: '#FFC400', icon: 'live',   path: '/live' },
+  { label: 'Play games', sub: '124 to choose from', color: '#00C853', icon: 'play-o', path: '/games' },
+  { label: 'Watch videos', sub: 'Updated daily', color: '#2979FF', icon: 'play', path: '/videos' },
 ]
 
 const leaderboard = [
@@ -57,7 +59,7 @@ const leaderboard = [
       <div class="home-tiles__inner">
         <h2 id="home-tiles-heading" class="visually-hidden">Quick links</h2>
         <div class="home-tiles__grid">
-          <RouterLink
+          <AuthLink
             v-for="tile in f2Tiles"
             :key="tile.label"
             :to="tile.path"
@@ -71,12 +73,14 @@ const leaderboard = [
               <div class="home-tile__label">{{ tile.label }}</div>
               <div class="home-tile__sub">{{ tile.sub }}</div>
             </div>
-          </RouterLink>
+          </AuthLink>
         </div>
       </div>
     </section>
 
     <FeaturedGames />
+
+    <HomeShowcase />
 
     <!-- F1 editorial strip -->
     <section v-if="!isF2" class="home-editorial" aria-label="Editorial feature">
@@ -95,11 +99,36 @@ const leaderboard = [
           </div>
           <div class="home-editorial__image" aria-hidden="true">
             <img
-              src="https://placehold.co/640x400/0d2218/1B5E20?text=Editorial"
-              alt=""
+              :src="landing.editorial"
+              :alt="landing.editorialAlt"
               class="home-editorial__img"
+              loading="lazy"
             />
             <div class="home-editorial__img-fade"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- F2 editorial strip -->
+    <section v-if="isF2" class="home-editorial home-editorial--f2" aria-label="Editorial feature">
+      <div class="home-editorial__inner">
+        <div class="home-editorial__card home-editorial__card--f2">
+          <div class="home-editorial__image home-editorial__image--f2">
+            <img
+              :src="landing.editorial"
+              :alt="landing.editorialAlt"
+              class="home-editorial__img"
+              loading="lazy"
+            />
+          </div>
+          <div class="home-editorial__text">
+            <div class="home-editorial__eyebrow home-editorial__eyebrow--f2">Featured · Stadium tour</div>
+            <h2 class="home-editorial__headline home-editorial__headline--f2">Your seat to<br />every match.</h2>
+            <p class="home-editorial__body">
+              Clips, games and live fixtures in one feed — built for fans who never switch tabs at halftime.
+            </p>
+            <AuthLink to="/videos" class="home-editorial__cta home-editorial__cta--f2">Watch now →</AuthLink>
           </div>
         </div>
       </div>
@@ -109,6 +138,10 @@ const leaderboard = [
     <section v-if="isF2" class="home-trophy" aria-label="Leaderboard feature">
       <div class="home-trophy__inner">
         <div class="home-trophy__card">
+          <div v-if="landing.trophyBg" class="home-trophy__bg" aria-hidden="true">
+            <img :src="landing.trophyBg" :alt="landing.trophyAlt" class="home-trophy__bg-img" loading="lazy" />
+            <div class="home-trophy__bg-overlay"></div>
+          </div>
           <div class="home-trophy__blob" aria-hidden="true"></div>
           <div class="home-trophy__left">
             <div class="home-trophy__eyebrow">Friends leaderboard</div>
@@ -150,8 +183,9 @@ const leaderboard = [
 
 .home-tiles__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  max-width: 560px;
 }
 
 .home-tile {
@@ -297,6 +331,45 @@ const leaderboard = [
   background: linear-gradient(270deg, transparent 0%, var(--color-surface) 100%);
 }
 
+.home-editorial--f2 {
+  padding-top: 0;
+}
+
+.home-editorial__card--f2 {
+  grid-template-columns: 1fr 1.1fr;
+}
+
+.home-editorial__image--f2 {
+  min-height: 320px;
+}
+
+.home-editorial__eyebrow--f2 {
+  color: var(--color-primary);
+}
+
+.home-editorial__eyebrow--f2::before {
+  content: none;
+}
+
+.home-editorial__headline--f2 {
+  text-transform: none;
+  font-size: clamp(36px, 5vw, 52px);
+}
+
+.home-editorial__cta--f2 {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+}
+
+.home-editorial__cta--f2:hover {
+  filter: brightness(1.06);
+  background: var(--color-primary);
+}
+
 /* F2 trophy strip */
 .home-trophy {
   padding: 64px var(--content-padding) 0;
@@ -318,6 +391,31 @@ const leaderboard = [
   align-items: center;
   position: relative;
   overflow: hidden;
+}
+
+.home-trophy__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.home-trophy__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.home-trophy__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(16, 17, 42, 0.94) 0%, rgba(16, 17, 42, 0.82) 45%, rgba(16, 17, 42, 0.7) 100%);
+}
+
+.home-trophy__left,
+.home-trophy__board {
+  position: relative;
+  z-index: 1;
 }
 
 .home-trophy__blob {
@@ -440,7 +538,7 @@ const leaderboard = [
 }
 
 @media (max-width: 1023px) {
-  .home-tiles__grid { grid-template-columns: repeat(2, 1fr); }
+  .home-tiles__grid { max-width: none; }
   .home-editorial__card { grid-template-columns: 1fr; }
   .home-editorial__image { display: none; }
   .home-trophy__card { grid-template-columns: 1fr; }

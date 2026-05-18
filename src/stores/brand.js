@@ -1,37 +1,42 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-
-const brandModules = import.meta.glob('../brands/*/config.js', { eager: false })
+import {
+  BRAND_MAP,
+  getBrandKey,
+  getBrandConfig,
+  getBrandConfigByKey,
+  getCountryKey,
+  getCountry,
+} from '@/config/brand'
 
 export const useBrandStore = defineStore('brand', () => {
-  const activeBrand = ref(
-    typeof __DEFAULT_BRAND__ !== 'undefined' ? __DEFAULT_BRAND__ : 'football1'
-  )
-  const config = ref(null)
-  const loading = ref(false)
+  const activeBrand = ref(getBrandKey())
+  const config = ref(getBrandConfig())
 
-  async function loadBrand(brandName) {
-    loading.value = true
-    try {
-      const key = `../brands/${brandName}/config.js`
-      if (!brandModules[key]) {
-        console.warn(`Brand "${brandName}" not found, falling back to football1`)
-        brandName = 'football1'
-      }
-      const mod = await brandModules[`../brands/${brandName}/config.js`]()
-      config.value = mod.default
-      activeBrand.value = brandName
-      document.documentElement.setAttribute('data-brand', brandName)
-    } finally {
-      loading.value = false
-    }
+  function loadBrand(brandName) {
+    const key = BRAND_MAP[brandName] ? brandName : getBrandKey()
+    config.value = getBrandConfigByKey(key)
+    activeBrand.value = key
+    document.documentElement.setAttribute('data-brand', key)
+    document.title = config.value.portalName || config.value.displayName || 'Football Portal'
   }
 
-  const isFootball = computed(() =>
-    activeBrand.value === 'football1' || activeBrand.value === 'football2'
+  const countryKey = computed(() => getCountryKey())
+  const country = computed(() => getCountry())
+
+  const isFootball = computed(
+    () => activeBrand.value === 'football1' || activeBrand.value === 'football2'
   )
 
   const isDark = computed(() => activeBrand.value === 'football1')
 
-  return { activeBrand, config, loading, loadBrand, isFootball, isDark }
+  return {
+    activeBrand,
+    config,
+    countryKey,
+    country,
+    loadBrand,
+    isFootball,
+    isDark,
+  }
 })

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useBrandStore } from '@/stores/brand'
 import AppIcon from '@/components/shared/AppIcon.vue'
+import AuthLink from '@/components/shared/AuthLink.vue'
 
 defineProps({
   video:   { type: Object, required: true },
@@ -47,8 +48,8 @@ function formatDate(iso) {
 
 <template>
   <article class="video-card" :class="{ 'video-card--f2': isF2, 'video-card--compact': compact }">
-    <RouterLink
-      :to="`/videos/${video.slug}`"
+    <AuthLink
+      :to="`/videos/${video.id}`"
       class="video-card__thumb-link"
       :aria-label="`Watch: ${video.title}`"
     >
@@ -80,12 +81,12 @@ function formatDate(iso) {
           </div>
         </div>
       </div>
-    </RouterLink>
+    </AuthLink>
 
     <div class="video-card__body">
-      <RouterLink :to="`/videos/${video.slug}`" class="video-card__title-link">
+      <AuthLink :to="`/videos/${video.id}`" class="video-card__title-link">
         <p class="video-card__title">{{ video.title }}</p>
-      </RouterLink>
+      </AuthLink>
       <div class="video-card__meta">
         <span>{{ video.views }} views</span>
         <span class="video-card__sep" aria-hidden="true">·</span>

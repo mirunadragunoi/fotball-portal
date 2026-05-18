@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import VideoCard from '@/components/videos/VideoCard.vue'
@@ -8,6 +8,10 @@ import { useVideosStore } from '@/stores/videos'
 const { t } = useI18n()
 const store = useVideosStore()
 const featured = computed(() => store.featured)
+
+onMounted(() => {
+  store.loadVideos()
+})
 </script>
 
 <template>

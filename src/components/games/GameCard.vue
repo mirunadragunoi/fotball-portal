@@ -1,6 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useBrandStore } from '@/stores/brand'
+import { useFavoritesStore } from '@/stores/favorites'
+import AuthLink from '@/components/shared/AuthLink.vue'
 import PlatformBadge from '@/components/shared/PlatformBadge.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 
@@ -9,13 +11,25 @@ const props = defineProps({
 })
 
 const brandStore = useBrandStore()
+const favoritesStore = useFavoritesStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
+const isFavorite = computed(() => favoritesStore.isFavorite(props.game.id))
+
+onMounted(() => {
+  if (!favoritesStore.loaded) favoritesStore.loadFavorites()
+})
+
+async function onToggleFavorite(event) {
+  event.preventDefault()
+  event.stopPropagation()
+  await favoritesStore.toggle(props.game.id)
+}
 </script>
 
 <template>
   <article class="game-card" :class="{ 'game-card--f2': isF2 }">
-    <RouterLink
-      :to="`/games/${game.slug}`"
+    <AuthLink
+      :to="`/games/${game.id}`"
       class="game-card__thumb-link"
       :aria-label="`View ${game.title}`"
       tabindex="-1"
@@ -43,14 +57,17 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
         <!-- F2: heart button -->
         <button
           v-if="isF2"
+          type="button"
           class="game-card__fav"
-          :aria-label="`Save ${game.title} to favourites`"
-          @click.prevent
+          :class="{ 'game-card__fav--active': isFavorite }"
+          :aria-label="isFavorite ? `Remove ${game.title} from favourites` : `Save ${game.title} to favourites`"
+          :aria-pressed="isFavorite"
+          @click="onToggleFavorite"
         >
-          <AppIcon name="heart" :size="14" stroke="var(--color-red)" />
+          <AppIcon name="heart" :size="14" :stroke="isFavorite ? '#fff' : 'var(--color-red)'" />
         </button>
       </div>
-    </RouterLink>
+    </AuthLink>
 
     <div class="game-card__body">
       <!-- F2: category tag -->
@@ -65,9 +82,9 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
         </span>
       </div>
 
-      <RouterLink :to="`/games/${game.slug}`" class="game-card__title-link">
+      <AuthLink :to="`/games/${game.id}`" class="game-card__title-link">
         <h3 class="game-card__title">{{ game.title }}</h3>
-      </RouterLink>
+      </AuthLink>
 
       <!-- F1: category + plays row -->
       <div v-if="!isF2" class="game-card__meta">
@@ -78,13 +95,13 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
       <!-- F2: plays + play button -->
       <div v-if="isF2" class="game-card__f2-footer">
         <span class="game-card__plays-f2">{{ game.plays }} plays</span>
-        <RouterLink
-          :to="`/games/${game.slug}`"
+        <AuthLink
+          :to="`/games/${game.id}`"
           class="game-card__play-btn"
           :aria-label="`Play ${game.title}`"
         >
           Play <AppIcon name="play" :size="11" stroke="currentColor" />
-        </RouterLink>
+        </AuthLink>
       </div>
     </div>
   </article>
@@ -187,6 +204,11 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
 .game-card__fav:hover {
   transform: scale(1.1);
+}
+
+.game-card__fav--active {
+  background: var(--color-red);
+  border-color: var(--color-red);
 }
 
 /* Body */

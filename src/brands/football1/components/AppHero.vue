@@ -1,11 +1,14 @@
 <script setup>
 import { computed } from 'vue'
 import { useBrandStore } from '@/stores/brand'
+import { useLandingImages } from '@/composables/useLandingImages'
 import AppIcon from '@/components/shared/AppIcon.vue'
-import BaseButton from '@/components/shared/BaseButton.vue'
+import AuthLink from '@/components/shared/AuthLink.vue'
+import { PHASE2_NAV_ENABLED } from '@/config/navigation'
 
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
+const { images: landing } = useLandingImages()
 
 const liveMatches = [
   { home: 'Vermillion FC',  away: 'Ironside United', h: 2, a: 1, min: "78'", stage: 'Group A' },
@@ -16,18 +19,21 @@ const liveMatches = [
 
 <template>
   <section class="f1-hero" aria-label="Hero banner">
-    <!-- Background placeholder -->
     <div class="f1-hero__bg" aria-hidden="true">
       <img
-        src="https://placehold.co/1920x720/0a1f12/1B5E20?text=Stadium+Night"
-        alt=""
+        :src="landing.hero"
+        :alt="landing.heroAlt"
         class="f1-hero__bg-img"
         loading="eager"
+        fetchpriority="high"
       />
       <div class="f1-hero__bg-overlay"></div>
     </div>
 
-    <div class="f1-hero__content">
+    <div
+      class="f1-hero__content"
+      :class="{ 'f1-hero__content--solo': !PHASE2_NAV_ENABLED }"
+    >
       <!-- Left: headline + CTA -->
       <div class="f1-hero__left">
         <div class="f1-hero__eyebrow" aria-label="Tournament countdown">
@@ -45,19 +51,19 @@ const liveMatches = [
         </p>
 
         <div class="f1-hero__ctas">
-          <RouterLink to="/games" class="f1-hero__cta-primary">
+          <AuthLink to="/games" class="f1-hero__cta-primary">
             <AppIcon name="play" :size="16" stroke="#1a1500" />
             Play now
-          </RouterLink>
-          <RouterLink to="/videos" class="f1-hero__cta-secondary">
+          </AuthLink>
+          <AuthLink to="/videos" class="f1-hero__cta-secondary">
             <AppIcon name="play-o" :size="16" />
             Watch highlights
-          </RouterLink>
+          </AuthLink>
         </div>
       </div>
 
-      <!-- Right: live scores widget -->
-      <aside class="f1-hero__scores" aria-label="Live match scores">
+      <!-- Right: live scores widget (phase 2) -->
+      <aside v-if="PHASE2_NAV_ENABLED" class="f1-hero__scores" aria-label="Live match scores">
         <div class="f1-hero__scores-header">
           <span class="f1-hero__live-dot" aria-hidden="true"></span>
           <span>Live now · Group stage</span>
@@ -80,10 +86,10 @@ const liveMatches = [
           <div class="f1-hero__match-away">{{ match.away }}</div>
         </div>
 
-        <a href="/live" class="f1-hero__scores-link">
+        <AuthLink to="/live" class="f1-hero__scores-link">
           See all fixtures
           <AppIcon name="chev-r" :size="12" />
-        </a>
+        </AuthLink>
       </aside>
     </div>
 
@@ -138,6 +144,11 @@ const liveMatches = [
   grid-template-columns: 1.2fr 1fr;
   gap: 56px;
   align-items: end;
+}
+
+.f1-hero__content--solo {
+  grid-template-columns: 1fr;
+  max-width: 720px;
 }
 
 .f1-hero__eyebrow {

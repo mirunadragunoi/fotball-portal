@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import FilterBar from '@/components/shared/FilterBar.vue'
 import { useGamesStore } from '@/stores/games'
+import { PRODUCT_TYPES } from '@/config/api'
 
 const { t } = useI18n()
 const store = useGamesStore()
@@ -17,8 +18,8 @@ const categoryColors = {
 
 const platformOptions = computed(() => [
   { value: 'all',     label: t('games.filterAll'),    count: store.all.length },
-  { value: 'html5',   label: t('games.filterHtml5'),  count: store.all.filter(g => g.platform.includes('html5')).length },
-  { value: 'android', label: t('games.filterAndroid'), count: store.all.filter(g => g.platform.includes('android')).length },
+  { value: 'html5',   label: t('games.filterHtml5'),  count: store.all.filter(g => g.productType === PRODUCT_TYPES.html).length },
+  { value: 'android', label: t('games.filterAndroid'), count: store.all.filter(g => g.productType === PRODUCT_TYPES.android).length },
 ])
 
 const categoryOptions = computed(() =>

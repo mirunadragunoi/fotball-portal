@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:f1": "VITE_BRAND=football1 vite",
-    "dev:f2": "VITE_BRAND=football2 vite",
-    "build": "vite build",
-    "build:f1": "VITE_BRAND=football1 vite build",
-    "build:f2": "VITE_BRAND=football2 vite build",
+    "dev": "vite --mode football1",
+    "dev:football1": "vite --mode football1",
+    "dev:football2": "vite --mode football2",
+    "build": "vite build --mode football1",
+    "build:football1": "vite build --mode football1",
+    "build:football2": "vite build --mode football2",
     "preview": "vite preview"
   },
   "dependencies": {

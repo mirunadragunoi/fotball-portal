@@ -1,18 +1,35 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useBrandStore } from '@/stores/brand'
+import { useLandingImages } from '@/composables/useLandingImages'
 import AppIcon from '@/components/shared/AppIcon.vue'
-import gamesData from '@/data/games.json'
+import AuthLink from '@/components/shared/AuthLink.vue'
+import { useGamesStore } from '@/stores/games'
 
 const brandStore = useBrandStore()
+const gamesStore = useGamesStore()
 const config = computed(() => brandStore.config)
-const previewGames = gamesData.slice(0, 4)
+const { images: landing } = useLandingImages()
+const previewGames = computed(() => gamesStore.featured.slice(0, 4))
+
+onMounted(() => {
+  gamesStore.loadGames()
+})
 </script>
 
 <template>
   <section class="f2-hero" aria-label="Hero banner">
     <div class="f2-hero__card">
-      <!-- Decorative blobs -->
+      <div class="f2-hero__photo" aria-hidden="true">
+        <img
+          :src="landing.hero"
+          :alt="landing.heroAlt"
+          class="f2-hero__photo-img"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="f2-hero__photo-overlay"></div>
+      </div>
       <div class="f2-hero__blob f2-hero__blob--1" aria-hidden="true"></div>
       <div class="f2-hero__blob f2-hero__blob--2" aria-hidden="true"></div>
 
@@ -34,13 +51,13 @@ const previewGames = gamesData.slice(0, 4)
           </p>
 
           <div class="f2-hero__ctas">
-            <RouterLink to="/games" class="f2-hero__cta-primary">
+            <AuthLink to="/games" class="f2-hero__cta-primary">
               <AppIcon name="play" :size="14" stroke="var(--color-text)" />
               Start playing
-            </RouterLink>
-            <RouterLink to="/videos" class="f2-hero__cta-secondary">
+            </AuthLink>
+            <AuthLink to="/videos" class="f2-hero__cta-secondary">
               How it works
-            </RouterLink>
+            </AuthLink>
           </div>
 
           <!-- Trust strip -->
@@ -105,11 +122,33 @@ const previewGames = gamesData.slice(0, 4)
   color: #fff;
 }
 
+.f2-hero__photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.f2-hero__photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.f2-hero__photo-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, rgba(0, 80, 40, 0.92) 0%, rgba(41, 121, 255, 0.78) 45%, rgba(94, 53, 177, 0.55) 100%),
+    linear-gradient(0deg, rgba(16, 17, 42, 0.35), transparent 50%);
+}
+
 /* Decorative blobs */
 .f2-hero__blob {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
+  z-index: 1;
 }
 
 .f2-hero__blob--1 {
@@ -130,6 +169,7 @@ const previewGames = gamesData.slice(0, 4)
 
 .f2-hero__inner {
   position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 48px;

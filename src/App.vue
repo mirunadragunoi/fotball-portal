@@ -1,26 +1,37 @@
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { getBrandKey } from '@/config/brand'
 import { useBrandStore } from '@/stores/brand'
+import { useAuthStore } from '@/stores/auth'
+import { prefetchCatalog } from '@/composables/useCatalog'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 
+const route = useRoute()
 const brandStore = useBrandStore()
+const authStore = useAuthStore()
 
-onMounted(async () => {
-  const brand = typeof __DEFAULT_BRAND__ !== 'undefined' ? __DEFAULT_BRAND__ : 'football1'
-  await brandStore.loadBrand(brand)
+const isAuthPage = computed(() => Boolean(route.meta?.authPage))
+
+onMounted(() => {
+  brandStore.loadBrand(getBrandKey())
+  authStore.hydrate()
+  if (authStore.isAuthenticated) {
+    prefetchCatalog().catch(() => {})
+  }
 })
 </script>
 
 <template>
   <div id="app-root">
-    <AppHeader />
+    <AppHeader v-if="!isAuthPage" />
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" :key="$route.path" />
       </Transition>
     </RouterView>
-    <AppFooter />
+    <AppFooter v-if="!isAuthPage" />
   </div>
 </template>
 

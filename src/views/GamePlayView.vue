@@ -10,17 +10,18 @@ const router = useRouter()
 const store = useGamesStore()
 const brandStore = useBrandStore()
 
-const game = computed(() => store.getBySlug(route.params.slug))
+const game = computed(() => store.getById(route.params.id))
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 const isFullscreen = ref(false)
 const isMuted = ref(false)
 
-onMounted(() => {
-  if (!game.value) router.replace('/games')
+onMounted(async () => {
+  await store.ensureGame(route.params.id)
+  if (!store.getById(route.params.id)) router.replace('/games')
 })
 
 function goBack() {
-  router.push(`/games/${route.params.slug}`)
+  router.push(`/games/${route.params.id}`)
 }
 </script>
 
@@ -104,7 +105,7 @@ function goBack() {
         <button class="game-play__hud-btn" aria-label="Save to favourites">
           <AppIcon name="heart" :size="16" />
         </button>
-        <RouterLink :to="`/games/${game.slug}`" class="game-play__hud-btn" aria-label="View game details">
+        <RouterLink :to="`/games/${game.id}`" class="game-play__hud-btn" aria-label="View game details">
           <AppIcon name="settings" :size="16" />
         </RouterLink>
       </div>

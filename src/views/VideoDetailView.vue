@@ -14,7 +14,7 @@ const router = useRouter()
 const store = useVideosStore()
 const brandStore = useBrandStore()
 
-const video = computed(() => store.getBySlug(route.params.slug))
+const video = computed(() => store.getById(route.params.id))
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
 const related = computed(() =>
@@ -23,8 +23,9 @@ const related = computed(() =>
     .slice(0, 4)
 )
 
-onMounted(() => {
-  if (!video.value) router.replace('/videos')
+onMounted(async () => {
+  await store.ensureVideo(route.params.id)
+  if (!store.getById(route.params.id)) router.replace('/videos')
 })
 
 function formatDate(iso) {

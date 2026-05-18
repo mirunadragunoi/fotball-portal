@@ -1,13 +1,23 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
+import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/composables/useAuth'
 import AppIcon from '@/components/shared/AppIcon.vue'
+import AuthLink from '@/components/shared/AuthLink.vue'
+import { filterVisibleNav, PHASE2_NAV_ENABLED } from '@/config/navigation'
+import { useGamesStore } from '@/stores/games'
+import { useVideosStore } from '@/stores/videos'
+import { useFavoritesStore } from '@/stores/favorites'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const brandStore = useBrandStore()
+const authStore = useAuthStore()
+const { goToLogin, goToSignup } = useAuth()
 
 const mobileOpen = ref(false)
 const config = computed(() => brandStore.config)
@@ -22,19 +32,36 @@ function closeMobile() {
 }
 
 const navItems = computed(() =>
-  config.value?.nav || [
-    { key: 'home',    label: t('nav.home'),    path: '/' },
-    { key: 'games',   label: t('nav.games'),   path: '/games' },
-    { key: 'videos',  label: t('nav.videos'),  path: '/videos' },
-    { key: 'trivia',  label: t('nav.trivia'),  path: '/trivia' },
-    { key: 'history', label: t('nav.history'), path: '/history' },
-    { key: 'live',    label: t('nav.live'),    path: '/live' },
-  ]
+  filterVisibleNav(
+    config.value?.nav || [
+      { key: 'home', label: t('nav.home'), path: '/' },
+      { key: 'games', label: t('nav.games'), path: '/games' },
+      { key: 'videos', label: t('nav.videos'), path: '/videos' },
+      { key: 'trivia', label: t('nav.trivia'), path: '/trivia' },
+      { key: 'history', label: t('nav.history'), path: '/history' },
+      { key: 'live', label: t('nav.live'), path: '/live' },
+    ]
+  )
 )
 
 function isActive(item) {
   if (item.path === '/') return route.path === '/'
   return route.path.startsWith(item.path)
+}
+
+const isLoggedIn = computed(() => authStore.isAuthenticated)
+
+function onAuthCtaClick() {
+  if (isLoggedIn.value) {
+    authStore.logout()
+    useGamesStore().clear()
+    useVideosStore().clear()
+    useFavoritesStore().clear()
+    router.push('/')
+    return
+  }
+  if (isF2.value) goToSignup()
+  else goToLogin()
 }
 </script>
 
@@ -54,17 +81,18 @@ function isActive(item) {
 
       <!-- Desktop nav -->
       <nav class="app-header__nav" aria-label="Main navigation">
-        <RouterLink
+        <AuthLink
           v-for="item in navItems"
           :key="item.key"
           :to="item.path"
+          :public="item.path === '/'"
           class="app-header__nav-link"
           :class="{ 'app-header__nav-link--active': isActive(item) }"
           :aria-current="isActive(item) ? 'page' : undefined"
         >
           {{ item.label }}
           <span v-if="!isF2 && isActive(item)" class="app-header__nav-indicator" aria-hidden="true"></span>
-        </RouterLink>
+        </AuthLink>
       </nav>
 
       <div class="app-header__spacer"></div>
@@ -77,15 +105,15 @@ function isActive(item) {
           <kbd class="app-header__kbd" aria-hidden="true">⌘K</kbd>
         </button>
         <button
-          v-if="!isF2"
+          v-if="!isF2 && PHASE2_NAV_ENABLED"
           class="app-header__live-btn"
           aria-label="Live matches"
         >
           <AppIcon name="live" :size="16" style="stroke: var(--color-red)" />
         </button>
-        <button class="app-header__cta">
-          <AppIcon v-if="isF2" name="user" :size="16" stroke="currentColor" />
-          {{ isF2 ? 'Sign up' : 'Sign in' }}
+        <button type="button" class="app-header__cta" @click="onAuthCtaClick">
+          <AppIcon v-if="isF2 && !isLoggedIn" name="user" :size="16" stroke="currentColor" />
+          {{ isLoggedIn ? t('auth.logout') : isF2 ? t('auth.signupLink') : t('auth.loginLink') }}
         </button>
       </div>
 
@@ -104,17 +132,18 @@ function isActive(item) {
     <Transition name="mobile-menu">
       <div v-if="mobileOpen" class="app-header__mobile-menu" role="dialog" aria-modal="true" :aria-label="t('a11y.openMenu')">
         <nav aria-label="Mobile navigation">
-          <RouterLink
+          <AuthLink
             v-for="item in navItems"
             :key="item.key"
             :to="item.path"
+            :public="item.path === '/'"
             class="app-header__mobile-link"
             :class="{ 'app-header__mobile-link--active': isActive(item) }"
             :aria-current="isActive(item) ? 'page' : undefined"
             @click="closeMobile"
           >
             {{ item.label }}
-          </RouterLink>
+          </AuthLink>
         </nav>
       </div>
     </Transition>

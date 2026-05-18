@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useVideosStore } from '@/stores/videos'
@@ -12,6 +12,10 @@ const store = useVideosStore()
 const brandStore = useBrandStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 const totalVideos = computed(() => store.all.length)
+
+onMounted(() => {
+  store.loadVideos()
+})
 </script>
 
 <template>
@@ -41,7 +45,7 @@ const totalVideos = computed(() => store.all.length)
         <div class="videos-hero-grid__layout">
           <!-- Big featured card -->
           <RouterLink
-            :to="`/videos/${store.featured[0].slug}`"
+            :to="`/videos/${store.featured[0].id}`"
             class="videos-hero-card videos-hero-card--big"
             :aria-label="`Watch: ${store.featured[0].title}`"
           >
@@ -68,7 +72,7 @@ const totalVideos = computed(() => store.all.length)
           <RouterLink
             v-for="video in store.featured.slice(1, 5)"
             :key="video.id"
-            :to="`/videos/${video.slug}`"
+            :to="`/videos/${video.id}`"
             class="videos-hero-card"
             :aria-label="`Watch: ${video.title}`"
           >
@@ -91,6 +95,7 @@ const totalVideos = computed(() => store.all.length)
       <div class="videos-grid-section__inner">
         <VideoGrid
           :videos="store.filtered"
+          :loading="store.loading"
           @reset="store.resetFilters"
         />
       </div>
