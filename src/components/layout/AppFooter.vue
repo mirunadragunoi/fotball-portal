@@ -16,7 +16,7 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
           <RouterLink to="/" class="app-footer__logo" aria-label="Homepage">
             <div class="app-footer__logo-mark" aria-hidden="true"></div>
             <span class="app-footer__logo-text">
-              {{ config?.displayName || 'Pitchside' }}<span class="app-footer__logo-dot" aria-hidden="true" v-if="!isF2">.</span>
+              {{ config?.displayName || 'Nation Foot' }}<span class="app-footer__logo-dot" aria-hidden="true" v-if="!isF2">.</span>
             </span>
           </RouterLink>
           <p class="app-footer__tagline">{{ config?.footer?.tagline }}</p>

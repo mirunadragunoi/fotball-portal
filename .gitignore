@@ -40,6 +40,12 @@ Desktop.ini
 .vscode/*
 !.vscode/extensions.json
 
+# Claude Code local settings
+.claude/settings.local.json
+
+# Asset source archives (extracted versions are committed)
+*.zip
+
 # Test / coverage
 coverage/
 *.lcov

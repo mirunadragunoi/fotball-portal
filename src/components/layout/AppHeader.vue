@@ -75,7 +75,7 @@ function onAuthCtaClick() {
           <div v-else class="app-header__logo-dot"></div>
         </div>
         <span class="app-header__logo-text">
-          {{ config?.displayName || 'Pitchside' }}<span class="app-header__logo-dot-text" aria-hidden="true">.</span>
+          {{ config?.displayName || 'Nation Foot' }}<span class="app-header__logo-dot-text" aria-hidden="true">.</span>
         </span>
       </RouterLink>
 

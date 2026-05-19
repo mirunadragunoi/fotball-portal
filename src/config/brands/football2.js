@@ -1,7 +1,7 @@
 export default {
   key: 'football2',
-  name: 'Football2',
-  displayName: 'Kickoff',
+  name: 'Goal Plaza',
+  displayName: 'Goal Plaza',
   tagline: 'Football, but make it fun.',
   countries: ['UK', 'SK'],
   storagePrefix: 'football2',
@@ -63,6 +63,6 @@ export default {
       { heading: 'About', links: ["Tournament '26", 'History', 'Records', 'Players'] },
       { heading: 'Company', links: ['Press', 'Careers', 'Contact', 'Legal'] },
     ],
-    copyright: '© 2026 Kickoff — generic football, no official affiliations.',
+    copyright: '© 2026 Goal Plaza — generic football, no official affiliations.',
   },
 }

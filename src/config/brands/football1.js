@@ -1,7 +1,7 @@
 export default {
   key: 'football1',
-  name: 'Football1',
-  displayName: 'Pitchside',
+  name: 'Nation Foot',
+  displayName: 'Nation Foot',
   tagline: 'The home of football games, highlights and the matchday rituals.',
   countries: ['UK', 'CZ'],
   storagePrefix: 'football1',
@@ -57,6 +57,6 @@ export default {
       { heading: 'About', links: ['Press', 'Careers', 'Contact', 'Legal'] },
     ],
     copyright:
-      '© 2026 Pitchside. Generic football content — not affiliated with any official competition.',
+      '© 2026 Nation Foot. Generic football content — not affiliated with any official competition.',
   },
 }
