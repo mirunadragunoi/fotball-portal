@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="80" viewBox="0 30 720 80">
+  <rect x="32" y="38" width="64" height="64" rx="14" fill="#65A30D"></rect>
+  <circle cx="64" cy="70" r="10" fill="#FACC15"></circle>
+  <text x="120" y="98" font-family="Anton, &#39;Bebas Neue&#39;, &#39;Oswald&#39;, &#39;Impact&#39;, sans-serif" font-size="68" font-weight="400" fill="#F5F5F5" letter-spacing="1">NATION FOOT<tspan fill="#FACC15">.</tspan></text>
+</svg>

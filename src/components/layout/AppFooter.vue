@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useBrandStore } from '@/stores/brand'
+import brandFooterLogo from '@brand/assets/logo-footer.svg'
 
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
@@ -14,10 +15,11 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
         <!-- Brand column -->
         <div class="app-footer__brand-col">
           <RouterLink to="/" class="app-footer__logo" aria-label="Homepage">
-            <div class="app-footer__logo-mark" aria-hidden="true"></div>
-            <span class="app-footer__logo-text">
-              {{ config?.displayName || 'Nation Foot' }}<span class="app-footer__logo-dot" aria-hidden="true" v-if="!isF2">.</span>
-            </span>
+            <img
+              :src="brandFooterLogo"
+              :alt="config?.displayName || 'Football Portal'"
+              class="app-footer__logo-img"
+            />
           </RouterLink>
           <p class="app-footer__tagline">{{ config?.footer?.tagline }}</p>
           <div v-if="isF2" class="app-footer__color-dots" aria-hidden="true">
@@ -89,43 +91,18 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
 .app-footer__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   margin-bottom: 18px;
 }
 
-.app-footer__logo-mark {
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  background: linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, #000));
-  flex-shrink: 0;
+.app-footer__logo-img {
+  display: block;
+  height: 44px;
+  width: auto;
 }
 
-.app-footer--f2 .app-footer__logo-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--color-primary), #2979FF);
-}
-
-.app-footer__logo-text {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text);
-}
-
-.app-footer--f2 .app-footer__logo-text {
-  color: #fff;
-  text-transform: none;
-  letter-spacing: -0.01em;
-}
-
-.app-footer__logo-dot {
-  color: var(--color-accent);
+.app-footer--f2 .app-footer__logo-img {
+  height: 46px;
 }
 
 .app-footer__tagline {

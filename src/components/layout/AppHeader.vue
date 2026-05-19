@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useAuth } from '@/composables/useAuth'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
+import brandLogo from '@brand/assets/logo.svg'
 import { filterVisibleNav, PHASE2_NAV_ENABLED } from '@/config/navigation'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
@@ -70,13 +71,11 @@ function onAuthCtaClick() {
     <div class="app-header__inner">
       <!-- Logo -->
       <RouterLink to="/" class="app-header__logo" aria-label="Go to homepage" @click="closeMobile">
-        <div class="app-header__logo-mark" aria-hidden="true">
-          <AppIcon v-if="isF2" name="bolt" :size="20" stroke="#fff" />
-          <div v-else class="app-header__logo-dot"></div>
-        </div>
-        <span class="app-header__logo-text">
-          {{ config?.displayName || 'Nation Foot' }}<span class="app-header__logo-dot-text" aria-hidden="true">.</span>
-        </span>
+        <img
+          :src="brandLogo"
+          :alt="config?.displayName || 'Football Portal'"
+          class="app-header__logo-img"
+        />
       </RouterLink>
 
       <!-- Desktop nav -->
@@ -176,59 +175,18 @@ function onAuthCtaClick() {
 .app-header__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
-.app-header__logo-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 60%, #000) 100%);
-  display: grid;
-  place-items: center;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent), 0 6px 18px rgba(0,0,0,0.5);
-}
-
-.app-header--f2 .app-header__logo-mark {
-  width: 40px;
+.app-header__logo-img {
+  display: block;
   height: 40px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #2979FF 100%);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  width: auto;
 }
 
-.app-header__logo-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 12px var(--color-accent);
-}
-
-.app-header__logo-text {
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text);
-}
-
-.app-header--f2 .app-header__logo-text {
-  letter-spacing: -0.01em;
-  text-transform: none;
-}
-
-.app-header__logo-dot-text {
-  color: var(--color-accent);
-  margin-left: 2px;
-}
-
-.app-header--f2 .app-header__logo-dot-text {
-  display: none;
+.app-header--f2 .app-header__logo-img {
+  height: 42px;
 }
 
 /* Nav */
