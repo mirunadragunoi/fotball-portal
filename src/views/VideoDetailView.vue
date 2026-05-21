@@ -76,14 +76,6 @@ function formatDate(iso) {
               <span class="vd-meta__sep" aria-hidden="true">·</span>
               <span class="vd-meta__cat">{{ video.category }}</span>
             </div>
-            <div class="vd-actions">
-              <button class="vd-action-btn">
-                <AppIcon name="heart" :size="16" /> Save
-              </button>
-              <button class="vd-action-btn">
-                <AppIcon name="share" :size="16" /> Share
-              </button>
-            </div>
             <p class="vd-description">{{ video.description }}</p>
           </div>
 
@@ -281,32 +273,6 @@ function formatDate(iso) {
   font-weight: 700;
 }
 
-.vd-actions {
-  margin-top: 16px;
-  display: flex;
-  gap: 8px;
-}
-
-.vd-action-btn {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: var(--radius-button);
-  background: color-mix(in srgb, var(--color-text) 6%, transparent);
-  border: 1px solid var(--color-line);
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: var(--transition-default);
-}
-
-.vd-action-btn:hover {
-  color: var(--color-text);
-}
 
 .vd-description {
   margin-top: 20px;

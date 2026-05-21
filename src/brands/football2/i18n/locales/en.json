@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Goal Plaza",
+    "tagline": "Football, but make it fun."
+  },
+  "games": {
+    "title": "Play.",
+    "subtitle": "Score goals in the lobby. Mini-games, daily challenges and tournaments — all in one place."
+  },
+  "videos": {
+    "title": "Watch.",
+    "subtitle": "The matchday's wildest moments, skills that defy physics and clips you'll send to your group chat."
+  },
+  "footer": {
+    "copy": "© 2026 Goal Plaza — generic football, no official affiliations."
+  }
+}

@@ -18,7 +18,7 @@ onMounted(() => {
   <section class="featured-games" aria-labelledby="featured-games-heading">
     <div class="featured-games__inner">
       <SectionHeader
-        eyebrow="Play"
+        :eyebrow="t('nav.games')"
         :title="t('home.featuredGames')"
         :link="t('home.allGames')"
         link-to="/games"

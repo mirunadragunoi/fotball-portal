@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Nation Foot",
+    "tagline": "Dom gier piłkarskich, skrótów i tradycji dnia meczowego."
+  },
+  "games": {
+    "title": "Gry.",
+    "subtitle": "Rzuty karne, symulatory rzutów wolnych i wyzwania taktyczne — pełny katalog gotowy do gry w przeglądarce lub na Androida."
+  },
+  "videos": {
+    "title": "Oglądaj.",
+    "subtitle": "Skróty, klasyczne powroty, analizy taktyczne i sporo zabawy — codziennie aktualizowane."
+  },
+  "footer": {
+    "copy": "© 2026 Nation Foot. Ogólna treść piłkarska — bez oficjalnych powiązań z żadnymi rozgrywkami."
+  }
+}

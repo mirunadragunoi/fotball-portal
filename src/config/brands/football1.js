@@ -3,7 +3,7 @@ export default {
   name: 'Nation Foot',
   displayName: 'Nation Foot',
   tagline: 'The home of football games, highlights and the matchday rituals.',
-  countries: ['UK', 'CZ'],
+  countries: ['UK', 'SK', 'PL'],
   storagePrefix: 'football1',
   featureFlags: {
     brandedOverrides: true,

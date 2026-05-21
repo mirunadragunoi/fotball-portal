@@ -1,28 +1,47 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
+import { setLocale, availableLocales } from '@/i18n/index.js'
 import brandFooterLogo from '@brand/assets/logo-footer.svg'
 
+const { t, locale } = useI18n()
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
+const showLangSwitcher = computed(() => availableLocales.length > 1)
+
+function onLangChange(e) {
+  setLocale(e.target.value)
+}
+
+const legalLinks = [
+  { key: 'about',       to: '/about' },
+  { key: 'contact',     to: '/contact' },
+  { key: 'faq',         to: '/faq' },
+  { key: 'terms',       to: '/terms' },
+  { key: 'privacy',     to: '/privacy' },
+  { key: 'cookies',     to: '/cookies' },
+  { key: 'unsubscribe', to: '/unsubscribe' },
+]
 </script>
 
 <template>
   <footer class="app-footer" :class="{ 'app-footer--f2': isF2 }">
     <div class="app-footer__inner">
-      <div class="app-footer__grid">
+      <div class="app-footer__main">
+
         <!-- Brand column -->
-        <div class="app-footer__brand-col">
-          <RouterLink to="/" class="app-footer__logo" aria-label="Homepage">
+        <div class="app-footer__brand">
+          <RouterLink to="/" class="app-footer__logo-link" aria-label="Homepage">
             <img
               :src="brandFooterLogo"
               :alt="config?.displayName || 'Football Portal'"
               class="app-footer__logo-img"
             />
           </RouterLink>
-          <p class="app-footer__tagline">{{ config?.footer?.tagline }}</p>
-          <div v-if="isF2" class="app-footer__color-dots" aria-hidden="true">
+          <p class="app-footer__tagline">{{ t('brand.tagline') }}</p>
+          <div v-if="isF2" class="app-footer__dots" aria-hidden="true">
             <span style="background: var(--color-primary)"></span>
             <span style="background: var(--color-secondary)"></span>
             <span style="background: var(--color-red)"></span>
@@ -30,28 +49,43 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
           </div>
         </div>
 
-        <!-- Link columns -->
-        <div
-          v-for="col in (config?.footer?.columns || [])"
-          :key="col.heading"
-          class="app-footer__link-col"
-        >
-          <div class="app-footer__col-heading">{{ col.heading }}</div>
-          <ul>
-            <li v-for="link in col.links" :key="link">
-              <a href="#" class="app-footer__link">{{ link }}</a>
-            </li>
-          </ul>
-        </div>
+        <!-- Legal links column -->
+        <nav class="app-footer__legal-nav" aria-label="Legal pages">
+          <RouterLink
+            v-for="link in legalLinks"
+            :key="link.key"
+            :to="link.to"
+            class="app-footer__legal-link"
+          >
+            {{ t(`legal.pages.${link.key}.title`) }}
+          </RouterLink>
+        </nav>
+
       </div>
 
+      <!-- Bottom bar -->
       <div class="app-footer__bottom">
-        <p class="app-footer__copyright">{{ config?.footer?.copyright }}</p>
-        <div class="app-footer__legal-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Cookies</a>
-          <span>EN ▾</span>
+        <p class="app-footer__copy">{{ t('footer.copy') }}</p>
+
+        <div class="app-footer__bottom-right">
+          <label v-if="showLangSwitcher" class="app-footer__lang-wrap" aria-label="Language">
+            <select
+              class="app-footer__lang-select"
+              :value="locale"
+              @change="onLangChange"
+            >
+              <option
+                v-for="loc in availableLocales"
+                :key="loc.code"
+                :value="loc.code"
+              >
+                {{ loc.label }}
+              </option>
+            </select>
+          </label>
+          <span v-else class="app-footer__lang-static">
+            {{ availableLocales[0]?.label }}
+          </span>
         </div>
       </div>
     </div>
@@ -82,95 +116,78 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
   padding: 56px var(--content-padding) 32px;
 }
 
-.app-footer__grid {
+/* Main section: brand col + legal nav */
+.app-footer__main {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
 }
 
-.app-footer__logo {
-  display: flex;
+/* Brand column */
+.app-footer__logo-link {
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .app-footer__logo-img {
   display: block;
   height: 44px;
   width: auto;
+  max-width: 160px;
 }
 
-.app-footer--f2 .app-footer__logo-img {
-  height: 46px;
-}
+.app-footer--f2 .app-footer__logo-img { height: 46px; }
 
 .app-footer__tagline {
-  max-width: 260px;
+  max-width: 300px;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
 }
 
-.app-footer--f2 .app-footer__tagline {
-  max-width: 280px;
-}
+.app-footer--f2 .app-footer__tagline { color: rgba(255,255,255,0.55); }
 
-.app-footer__color-dots {
+.app-footer__dots {
   display: flex;
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 20px;
 }
 
-.app-footer__color-dots span {
-  width: 36px;
-  height: 36px;
+.app-footer__dots span {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: block;
   opacity: 0.9;
 }
 
-.app-footer__col-heading {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text);
-  margin-bottom: 14px;
+/* Legal nav */
+.app-footer__legal-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
 }
 
-.app-footer--f2 .app-footer__col-heading {
-  color: #fff;
-  letter-spacing: 0.1em;
-  font-size: 12px;
-  margin-bottom: 16px;
-}
-
-ul {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.app-footer__link {
+.app-footer__legal-link {
   font-size: 13px;
   color: var(--color-text-secondary);
   text-decoration: none;
   transition: var(--transition-default);
+  white-space: nowrap;
 }
 
-.app-footer--f2 .app-footer__link {
-  color: rgba(255,255,255,0.65);
-  font-size: 14px;
-}
+.app-footer--f2 .app-footer__legal-link { color: rgba(255,255,255,0.6); }
 
-.app-footer__link:hover {
+.app-footer__legal-link:hover {
   color: var(--color-text);
 }
 
-.app-footer--f2 .app-footer__link:hover {
-  color: #fff;
-}
+.app-footer--f2 .app-footer__legal-link:hover { color: #fff; }
 
+/* Bottom bar */
 .app-footer__bottom {
   margin-top: 48px;
   padding-top: 20px;
@@ -179,54 +196,74 @@ ul {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  font-size: 12px;
   flex-wrap: wrap;
+  font-size: 12px;
 }
 
 .app-footer--f2 .app-footer__bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.5);
-  margin-top: 56px;
-  padding-top: 24px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 40px;
 }
 
-.app-footer__legal-links {
+.app-footer__copy { margin: 0; }
+
+.app-footer__bottom-right {
   display: flex;
-  gap: 18px;
+  align-items: center;
+  gap: 12px;
 }
 
-.app-footer__legal-links a,
-.app-footer__legal-links span {
+.app-footer__lang-static {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Language switcher */
+.app-footer__lang-wrap { display: flex; align-items: center; }
+
+.app-footer__lang-select {
+  background: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 3px 8px;
   cursor: pointer;
-  transition: var(--transition-default);
+  outline: none;
 }
 
-.app-footer__legal-links a:hover {
-  color: var(--color-text);
+.app-footer--f2 .app-footer__lang-select {
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
 }
 
-.app-footer--f2 .app-footer__legal-links a:hover {
-  color: #fff;
-}
+.app-footer__lang-select:focus { border-color: var(--color-primary); }
 
-@media (max-width: 1023px) {
-  .app-footer__grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-  .app-footer__brand-col {
-    grid-column: 1 / -1;
-  }
-}
-
+/* Responsive */
 @media (max-width: 767px) {
-  .app-footer__grid {
+  .app-footer__inner {
+    padding: 40px 1.25rem 24px;
+  }
+  .app-footer__main {
     grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .app-footer__legal-nav {
+    grid-template-columns: 1fr 1fr;
   }
   .app-footer__bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-footer__legal-nav {
+    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Nation Foot",
+    "tagline": "Domov futbalových hier, zostřihov a tradícií dňa zápasu."
+  },
+  "games": {
+    "title": "Hry.",
+    "subtitle": "Penalty, simulátory priamych kopov a taktické výzvy — kompletný katalóg v prehliadači alebo na Androide."
+  },
+  "videos": {
+    "title": "Sledovať.",
+    "subtitle": "Zostrihy, klasické drámy, taktické rozbory a veľa zábavy — každý deň."
+  },
+  "footer": {
+    "copy": "© 2026 Nation Foot. Všeobecný futbalový obsah — bez oficálnej afiliácie s akoukoľvek súťažou."
+  }
+}

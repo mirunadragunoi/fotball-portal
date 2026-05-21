@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Goal Plaza",
+    "tagline": "Futbal, ale so zábavou."
+  },
+  "games": {
+    "title": "Hrať.",
+    "subtitle": "Dávajte góly, vyhrajte denné turnaje — všetko na jednom mieste."
+  },
+  "videos": {
+    "title": "Sledovať.",
+    "subtitle": "Najdivokejšie momenty zápasového dňa a klipy, ktoré pošlete kamarátom."
+  },
+  "footer": {
+    "copy": "© 2026 Goal Plaza — všeobecný futbal, bez officiálnych afilácií."
+  }
+}

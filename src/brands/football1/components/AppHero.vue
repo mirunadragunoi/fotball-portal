@@ -1,11 +1,13 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { PHASE2_NAV_ENABLED } from '@/config/navigation'
 
+const { t } = useI18n()
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
@@ -38,26 +40,24 @@ const liveMatches = [
       <div class="f1-hero__left">
         <div class="f1-hero__eyebrow" aria-label="Tournament countdown">
           <span class="f1-hero__eyebrow-bar" aria-hidden="true"></span>
-          {{ config?.hero?.eyebrow || "Tournament 2026 · 28 days to kickoff" }}
+          {{ t('hero.f1.eyebrow') }}
         </div>
 
         <h1 class="f1-hero__headline">
-          Matchday<br />
-          <span class="f1-hero__headline-accent">starts</span> here.
+          {{ t('hero.f1.headline1') }}<br />
+          <span class="f1-hero__headline-accent">{{ t('hero.f1.headlineAccent') }}</span> {{ t('hero.f1.headline2') }}
         </h1>
 
-        <p class="f1-hero__body">
-          {{ config?.hero?.body || "Play the world's best football mini-games, watch the goals that broke the internet, and live every fixture from kickoff to final whistle." }}
-        </p>
+        <p class="f1-hero__body">{{ t('hero.f1.body') }}</p>
 
         <div class="f1-hero__ctas">
           <AuthLink to="/games" class="f1-hero__cta-primary">
             <AppIcon name="play" :size="16" stroke="#1a1500" />
-            Play now
+            {{ t('hero.f1.ctaPrimary') }}
           </AuthLink>
           <AuthLink to="/videos" class="f1-hero__cta-secondary">
             <AppIcon name="play-o" :size="16" />
-            Watch highlights
+            {{ t('hero.f1.ctaSecondary') }}
           </AuthLink>
         </div>
       </div>
@@ -66,7 +66,7 @@ const liveMatches = [
       <aside v-if="PHASE2_NAV_ENABLED" class="f1-hero__scores" aria-label="Live match scores">
         <div class="f1-hero__scores-header">
           <span class="f1-hero__live-dot" aria-hidden="true"></span>
-          <span>Live now · Group stage</span>
+          <span>{{ t('hero.f1.liveLabel') }}</span>
         </div>
 
         <div
@@ -87,7 +87,7 @@ const liveMatches = [
         </div>
 
         <AuthLink to="/live" class="f1-hero__scores-link">
-          See all fixtures
+          {{ t('hero.f1.seeFixtures') }}
           <AppIcon name="chev-r" :size="12" />
         </AuthLink>
       </aside>
@@ -95,12 +95,12 @@ const liveMatches = [
 
     <!-- Breaking news ticker -->
     <div class="f1-hero__ticker" aria-label="Breaking news ticker">
-      <span class="f1-hero__ticker-label">● BREAKING</span>
-      <span class="f1-hero__ticker-item">Vermillion announces 25-man squad for the tournament</span>
+      <span class="f1-hero__ticker-label">{{ t('hero.f1.tickerLabel') }}</span>
+      <span class="f1-hero__ticker-item">{{ t('hero.f1.tickerItem1') }}</span>
       <span class="f1-hero__ticker-sep" aria-hidden="true">·</span>
-      <span class="f1-hero__ticker-item">Northport hands debut to 17-year-old striker</span>
+      <span class="f1-hero__ticker-item">{{ t('hero.f1.tickerItem2') }}</span>
       <span class="f1-hero__ticker-sep" aria-hidden="true">·</span>
-      <span class="f1-hero__ticker-item">Ticket allocation closes Friday 18:00</span>
+      <span class="f1-hero__ticker-item">{{ t('hero.f1.tickerItem3') }}</span>
     </div>
   </section>
 </template>

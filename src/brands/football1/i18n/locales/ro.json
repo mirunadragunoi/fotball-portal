@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Nation Foot",
+    "tagline": "Acasă la jocuri de fotbal, rezumate și ritualuri de zi de meci."
+  },
+  "games": {
+    "title": "Jocuri.",
+    "subtitle": "Lovituri de pedeapsă, simulatoare de lovituri libere — catalogul complet, gata de jucat în browser sau pe Android."
+  },
+  "videos": {
+    "title": "Urmărește.",
+    "subtitle": "Rezumate, reveniri clasice și momente de neratat — actualizate zilnic."
+  },
+  "footer": {
+    "copy": "© 2026 Nation Foot. Conținut generic de fotbal — fără afiliere cu vreo competiție oficială."
+  }
+}

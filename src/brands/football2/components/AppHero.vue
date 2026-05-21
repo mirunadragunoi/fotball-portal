@@ -1,11 +1,13 @@
 <script setup>
 import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useGamesStore } from '@/stores/games'
 
+const { t } = useI18n()
 const brandStore = useBrandStore()
 const gamesStore = useGamesStore()
 const config = computed(() => brandStore.config)
@@ -38,25 +40,23 @@ onMounted(() => {
         <div class="f2-hero__left">
           <span class="f2-hero__eyebrow" aria-label="Tournament countdown">
             <span class="f2-hero__eyebrow-dot" aria-hidden="true"></span>
-            {{ config?.hero?.eyebrow || "Tournament '26 · 28 days" }}
+            {{ t('hero.f2.eyebrow') }}
           </span>
 
           <h1 class="f2-hero__headline">
-            Game on,<br />
-            <span class="f2-hero__headline-accent">every day.</span>
+            {{ t('hero.f2.headline1') }}<br />
+            <span class="f2-hero__headline-accent">{{ t('hero.f2.headlineAccent') }}</span>
           </h1>
 
-          <p class="f2-hero__body">
-            {{ config?.hero?.body || "Score goals in the lobby. Watch the matchday's wildest moments. Settle the debates in trivia. All in one app." }}
-          </p>
+          <p class="f2-hero__body">{{ t('hero.f2.body') }}</p>
 
           <div class="f2-hero__ctas">
             <AuthLink to="/games" class="f2-hero__cta-primary">
               <AppIcon name="play" :size="14" stroke="var(--color-text)" />
-              Start playing
+              {{ t('hero.f2.ctaPrimary') }}
             </AuthLink>
             <AuthLink to="/videos" class="f2-hero__cta-secondary">
-              How it works
+              {{ t('hero.f2.ctaSecondary') }}
             </AuthLink>
           </div>
 

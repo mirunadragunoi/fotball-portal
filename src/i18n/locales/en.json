@@ -1,0 +1,179 @@
+{
+  "brand": {
+    "name": "Sports Portal",
+    "tagline": "Football games, highlights and more."
+  },
+  "nav": {
+    "home":    "Home",
+    "games":   "Games",
+    "videos":  "Videos",
+    "trivia":  "Trivia",
+    "history": "History",
+    "live":    "Live"
+  },
+  "hero": {
+    "f1": {
+      "eyebrow":       "Tournament 2026 · 28 days to kickoff",
+      "headline1":     "Matchday",
+      "headlineAccent":"starts",
+      "headline2":     "here.",
+      "body":          "Play the world's best football mini-games, watch the goals that broke the internet, and live every fixture from kickoff to final whistle.",
+      "ctaPrimary":    "Play now",
+      "ctaSecondary":  "Watch highlights",
+      "liveLabel":     "Live now · Group stage",
+      "seeFixtures":   "See all fixtures",
+      "tickerLabel":   "● BREAKING",
+      "tickerItem1":   "Vermillion announces 25-man squad for the tournament",
+      "tickerItem2":   "Northport hands debut to 17-year-old striker",
+      "tickerItem3":   "Ticket allocation closes Friday 18:00"
+    },
+    "f2": {
+      "eyebrow":       "Tournament '26 · 28 days",
+      "headline1":     "Game on,",
+      "headlineAccent":"every day.",
+      "body":          "Score goals in the lobby. Watch the matchday's wildest moments. Settle the debates in trivia. All in one app.",
+      "ctaPrimary":    "Start playing",
+      "ctaSecondary":  "How it works"
+    }
+  },
+  "home": {
+    "featuredGames":       "Featured games",
+    "latestVideos":        "Latest videos",
+    "allGames":            "All games",
+    "allVideos":           "All videos",
+    "playGames":           "Play games",
+    "watchVideos":         "Watch videos",
+    "updatedDaily":        "Updated daily",
+    "eyebrowGames":        "{count} games · updated daily",
+    "eyebrowVideos":       "{count} videos · 8 categories",
+    "eyebrowGamesF2":      "{count} games · 6 categories",
+    "eyebrowVideosF2":     "{count} videos · updated daily",
+    "quickLinks":          "Quick links",
+    "tilesChooseFrom":     "{count} to choose from",
+    "editorialF1Eyebrow":  "Special · Tournament countdown",
+    "editorialF1Headline1":"Every goal,",
+    "editorialF1Headline2":"every minute.",
+    "editorialF1Body":     "Our daily editorial covers every group, every match, every controversial VAR call — without the rights to say which one.",
+    "editorialF1Cta":      "Read the daily →",
+    "editorialF2Eyebrow":  "Featured · Stadium tour",
+    "editorialF2Headline1":"Your seat to",
+    "editorialF2Headline2":"every match.",
+    "editorialF2Body":     "Clips, games and live fixtures in one feed — built for fans who never switch tabs at halftime.",
+    "editorialF2Cta":      "Watch now →",
+    "trophyEyebrow":       "Friends leaderboard",
+    "trophyHeadline1":     "Beat your",
+    "trophyHeadline2":     "squad this week.",
+    "trophyBody":          "Add up to 50 friends, race for the top spot every week, and brag for 7 days.",
+    "trophyCta":           "Invite friends",
+    "showcaseTitle":       "Matchday moments",
+    "showcaseLead":        "Real stadium energy — highlights, crowds and the pitch up close."
+  },
+  "games": {
+    "title":        "Games",
+    "subtitle":     "Play the best football games in your browser or on Android.",
+    "filterAll":    "All",
+    "filterHtml5":  "HTML5",
+    "filterAndroid":"Android",
+    "sortPlays":    "Most played",
+    "sortRating":   "Top rated",
+    "sortAlpha":    "A–Z",
+    "sortNewest":   "Newest",
+    "playNow":      "Play now",
+    "noResults":    "No games match your filters.",
+    "resetFilters": "Reset filters",
+    "plays":        "plays",
+    "rating":       "Rating",
+    "avgSession":   "Avg. session",
+    "released":     "Released",
+    "platform":     "Platform",
+    "playInBrowser":"Play in browser",
+    "relatedGames": "Related games",
+    "about":        "About",
+    "howToPlay":    "How to play"
+  },
+  "videos": {
+    "title":        "Videos",
+    "subtitle":     "Highlights, goals and the best moments in football.",
+    "filterAll":    "All",
+    "sortNewest":   "Newest",
+    "sortPopular":  "Most viewed",
+    "noResults":    "No videos match your filters.",
+    "resetFilters": "Reset filters",
+    "views":        "views",
+    "watchNow":     "Watch now",
+    "relatedVideos":"Related videos"
+  },
+  "auth": {
+    "loginTitle":           "Sign in",
+    "loginSubtitle":        "Enter the 6-digit code we sent to your phone.",
+    "signupTitle":          "Create account",
+    "signupSubtitle":       "Enter your phone number and we will send you a 6-digit access code.",
+    "phone":                "Phone number",
+    "phonePlaceholder":     "+44 7700 900123",
+    "accessCode":           "Access code",
+    "accessCodePlaceholder":"6-digit code",
+    "sendCodeButton":       "Send access code",
+    "sendingCode":          "Sending code…",
+    "codeSentTitle":        "Check your phone",
+    "codeSentSubtitle":     "We sent a 6-digit access code to {phone}.",
+    "yourAccessCode":       "Your access code",
+    "codeSentDevNote":      "Use this code on the sign-in page.",
+    "codeSentSmsNote":      "We sent a 6-digit code to your phone. Enter it on the sign-in page.",
+    "goToLogin":            "Continue to sign in",
+    "demoHint":             "Demo access code: {code}",
+    "loginButton":          "Sign in",
+    "signingIn":            "Signing in…",
+    "noAccount":            "Don't have an account?",
+    "haveAccount":          "Already registered?",
+    "signupLink":           "Sign up",
+    "loginLink":            "Sign in",
+    "logout":               "Sign out",
+    "errors": {
+      "invalidPhone":       "Enter a valid phone number (at least 8 digits).",
+      "invalidCode":        "Access code must be exactly 6 digits.",
+      "phoneExists":        "This phone number is already registered. Sign in instead.",
+      "invalidCredentials": "Access code not recognized. Try again or sign up.",
+      "network":            "Could not reach the server. Check your connection and API URL."
+    }
+  },
+  "comingSoon": {
+    "title":    "Coming soon",
+    "subtitle": "This section is under construction. Check back for updates.",
+    "backHome": "Back to home"
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "terms":   "Terms",
+    "cookies": "Cookies",
+    "copy":    "© 2026 All rights reserved."
+  },
+  "a11y": {
+    "openMenu":   "Open navigation menu",
+    "closeMenu":  "Close navigation menu",
+    "playGame":   "Play {title}",
+    "watchVideo": "Watch {title}",
+    "gameThumb":  "{title} game thumbnail",
+    "videoThumb": "{title} video thumbnail"
+  },
+  "legal": {
+    "loading": "Loading…",
+    "error":   "Something went wrong. Please try again.",
+    "pages": {
+      "about":       { "title": "About Us",             "summary": "Learn more about our football platform." },
+      "contact":     { "title": "Contact",              "summary": "Get in touch with our team." },
+      "faq":         { "title": "FAQ",                  "summary": "Answers to the most common questions." },
+      "terms":       { "title": "Terms & Conditions",   "summary": "Please read these terms carefully before using the service." },
+      "privacy":     { "title": "Privacy Policy",       "summary": "How we collect, use and protect your personal information." },
+      "cookies":     { "title": "Cookie Policy",        "summary": "How we use cookies and similar technologies on this site." },
+      "unsubscribe": { "title": "Unsubscribe",          "summary": "Remove your phone number from our service." }
+    },
+    "unsubscribe_form": {
+      "phone_label":    "Your phone number",
+      "submit":         "Unsubscribe",
+      "submitting":     "Processing…",
+      "success":        "You have been successfully unsubscribed.",
+      "error":          "Something went wrong. Please try again.",
+      "recaptcha_error":"reCAPTCHA verification failed. Please try again."
+    }
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "brand": {
+    "name": "Portal Sportowy",
+    "tagline": "Gry piłkarskie, skróty i to, co kochasz w sporcie."
+  },
+  "nav": {
+    "home":    "Strona główna",
+    "games":   "Gry",
+    "videos":  "Filmy",
+    "trivia":  "Quiz",
+    "history": "Historia",
+    "live":    "Na żywo"
+  },
+  "hero": {
+    "f1": {
+      "eyebrow":       "Turniej 2026 · 28 dni do rozpoczęcia",
+      "headline1":     "Dzień meczowy",
+      "headlineAccent":"zaczyna się",
+      "headline2":     "tutaj.",
+      "body":          "Graj w najlepsze piłkarskie gry, oglądaj gole, które podbiły internet, i przeżyj każdy mecz od pierwszego gwizdka do końca.",
+      "ctaPrimary":    "Graj teraz",
+      "ctaSecondary":  "Obejrzyj skróty",
+      "liveLabel":     "Na żywo · Faza grupowa",
+      "seeFixtures":   "Zobacz wszystkie mecze",
+      "tickerLabel":   "● BREAKING",
+      "tickerItem1":   "Vermillion ogłasza skład 25 zawodników na turniej",
+      "tickerItem2":   "Northport debiutuje z 17-letnim napastnikiem",
+      "tickerItem3":   "Sprzedaż biletów kończy się w piątek o 18:00"
+    },
+    "f2": {
+      "eyebrow":       "Turniej '26 · 28 dni",
+      "headline1":     "Gra trwa,",
+      "headlineAccent":"każdego dnia.",
+      "body":          "Strzelaj gole w lobby. Oglądaj najszaleńsze momenty dnia meczowego. Rozstrzygnij debaty w trivia. Wszystko w jednej aplikacji.",
+      "ctaPrimary":    "Zacznij grać",
+      "ctaSecondary":  "Jak to działa"
+    }
+  },
+  "home": {
+    "featuredGames":       "Polecane gry",
+    "latestVideos":        "Najnowsze filmy",
+    "allGames":            "Wszystkie gry",
+    "allVideos":           "Wszystkie filmy",
+    "playGames":           "Graj w gry",
+    "watchVideos":         "Oglądaj filmy",
+    "updatedDaily":        "Aktualizowane codziennie",
+    "eyebrowGames":        "{count} gier · aktualizowane codziennie",
+    "eyebrowVideos":       "{count} filmów · 8 kategorii",
+    "eyebrowGamesF2":      "{count} gier · 6 kategorii",
+    "eyebrowVideosF2":     "{count} filmów · aktualizowane codziennie",
+    "quickLinks":          "Szybkie linki",
+    "tilesChooseFrom":     "{count} do wyboru",
+    "editorialF1Eyebrow":  "Specjał · Odliczanie",
+    "editorialF1Headline1":"Każdy gol,",
+    "editorialF1Headline2":"każda minuta.",
+    "editorialF1Body":     "Nasz codzienny editorial obejmuje każdą grupę, każdy mecz, każdą kontrowersyjną decyzję VAR — bez praw do wymieniania której.",
+    "editorialF1Cta":      "Czytaj editorial →",
+    "editorialF2Eyebrow":  "Polecane · Wycieczka po stadionie",
+    "editorialF2Headline1":"Twoje miejsce na",
+    "editorialF2Headline2":"każdy mecz.",
+    "editorialF2Body":     "Klipy, gry i mecze na żywo w jednym feedzie — dla fanów, którzy nigdy nie zmieniają zakładki w przerwie.",
+    "editorialF2Cta":      "Oglądaj teraz →",
+    "trophyEyebrow":       "Ranking znajomych",
+    "trophyHeadline1":     "Pokonaj",
+    "trophyHeadline2":     "swój zespół w tym tygodniu.",
+    "trophyBody":          "Dodaj do 50 znajomych, rywalizuj o pierwsze miejsce co tydzień i chwal się przez 7 dni.",
+    "trophyCta":           "Zaproś znajomych",
+    "showcaseTitle":       "Momenty meczowe",
+    "showcaseLead":        "Prawdziwa energia stadionu — skróty, trybuny i boisko z bliska."
+  },
+  "games": {
+    "title":        "Gry",
+    "subtitle":     "Graj w najlepsze gry piłkarskie w przeglądarce lub na Androida.",
+    "filterAll":    "Wszystkie",
+    "filterHtml5":  "HTML5",
+    "filterAndroid":"Android",
+    "sortPlays":    "Najczęściej grane",
+    "sortRating":   "Najlepiej oceniane",
+    "sortAlpha":    "A–Z",
+    "sortNewest":   "Najnowsze",
+    "playNow":      "Graj",
+    "noResults":    "Żadne gry nie pasują do filtrów.",
+    "resetFilters": "Resetuj filtry",
+    "plays":        "uruchomień",
+    "rating":       "Ocena",
+    "avgSession":   "Śr. sesja",
+    "released":     "Wydano",
+    "platform":     "Platforma",
+    "playInBrowser":"Graj w przeglądarce",
+    "relatedGames": "Podobne gry",
+    "about":        "O grze",
+    "howToPlay":    "Jak grać"
+  },
+  "videos": {
+    "title":        "Filmy",
+    "subtitle":     "Skróty, gole i najlepsze momenty piłkarskie.",
+    "filterAll":    "Wszystkie",
+    "sortNewest":   "Najnowsze",
+    "sortPopular":  "Najczęściej oglądane",
+    "noResults":    "Żadne filmy nie pasują do filtrów.",
+    "resetFilters": "Resetuj filtry",
+    "views":        "wyświetleń",
+    "watchNow":     "Oglądaj",
+    "relatedVideos":"Podobne filmy"
+  },
+  "auth": {
+    "loginTitle":           "Logowanie",
+    "loginSubtitle":        "Wprowadź 6-cyfrowy kod wysłany na telefon.",
+    "signupTitle":          "Utwórz konto",
+    "signupSubtitle":       "Podaj numer telefonu, a wyślemy Ci kod dostępu.",
+    "phone":                "Numer telefonu",
+    "phonePlaceholder":     "+48 5xx xxx xxx",
+    "accessCode":           "Kod dostępu",
+    "accessCodePlaceholder":"6 cyfr",
+    "sendCodeButton":       "Wyślij kod",
+    "sendingCode":          "Wysyłanie kodu…",
+    "codeSentTitle":        "Sprawdź telefon",
+    "codeSentSubtitle":     "Wysłaliśmy 6-cyfrowy kod na numer {phone}.",
+    "yourAccessCode":       "Twój kod dostępu",
+    "codeSentDevNote":      "Użyj tego kodu na stronie logowania.",
+    "codeSentSmsNote":      "Wysłaliśmy 6-cyfrowy kod na Twój telefon.",
+    "goToLogin":            "Przejdź do logowania",
+    "demoHint":             "Kod demo: {code}",
+    "loginButton":          "Zaloguj się",
+    "signingIn":            "Logowanie…",
+    "noAccount":            "Nie masz konta?",
+    "haveAccount":          "Masz już konto?",
+    "signupLink":           "Zarejestruj się",
+    "loginLink":            "Zaloguj się",
+    "logout":               "Wyloguj się",
+    "errors": {
+      "invalidPhone":       "Podaj prawidłowy numer telefonu (co najmniej 8 cyfr).",
+      "invalidCode":        "Kod dostępu musi mieć dokładnie 6 cyfr.",
+      "phoneExists":        "Ten numer telefonu jest już zarejestrowany. Zaloguj się.",
+      "invalidCredentials": "Kod nie został rozpoznany. Spróbuj ponownie.",
+      "network":            "Nie można połączyć z serwerem. Sprawdź połączenie."
+    }
+  },
+  "comingSoon": {
+    "title":    "Wkrótce",
+    "subtitle": "Ta sekcja jest w budowie. Wróć wkrótce.",
+    "backHome": "Wróć do strony głównej"
+  },
+  "footer": {
+    "privacy": "Prywatność",
+    "terms":   "Warunki",
+    "cookies": "Cookies",
+    "copy":    "© 2026 Wszelkie prawa zastrzeżone."
+  },
+  "a11y": {
+    "openMenu":   "Otwórz menu nawigacji",
+    "closeMenu":  "Zamknij menu nawigacji",
+    "playGame":   "Graj w {title}",
+    "watchVideo": "Oglądaj {title}",
+    "gameThumb":  "Miniatura gry {title}",
+    "videoThumb": "Miniatura filmu {title}"
+  },
+  "legal": {
+    "loading": "Ładowanie…",
+    "error":   "Coś poszło nie tak. Spróbuj ponownie.",
+    "pages": {
+      "about":       { "title": "O nas",                     "summary": "Dowiedz się więcej o naszej platformie piłkarskiej." },
+      "contact":     { "title": "Kontakt",                   "summary": "Skontaktuj się z naszym zespołem." },
+      "faq":         { "title": "FAQ",                       "summary": "Odpowiedzi na najczęściej zadawane pytania." },
+      "terms":       { "title": "Warunki korzystania",       "summary": "Przed skorzystaniem z usługi przeczytaj uważnie te warunki." },
+      "privacy":     { "title": "Polityka prywatności",      "summary": "Jak zbieramy, używamy i chronimy Twoje dane osobowe." },
+      "cookies":     { "title": "Polityka cookies",          "summary": "Jak używamy plików cookie na tej stronie." },
+      "unsubscribe": { "title": "Wypisz się",                "summary": "Usuń swój numer telefonu z naszej usługi." }
+    },
+    "unsubscribe_form": {
+      "phone_label":    "Twój numer telefonu",
+      "submit":         "Wypisz się",
+      "submitting":     "Przetwarzanie…",
+      "success":        "Zostałeś pomyślnie wypisany.",
+      "error":          "Coś poszło nie tak. Spróbuj ponownie.",
+      "recaptcha_error":"Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie."
+    }
+  }
+}

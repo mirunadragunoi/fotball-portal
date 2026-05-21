@@ -1,0 +1,179 @@
+{
+  "brand": {
+    "name": "Športový portál",
+    "tagline": "Futbalové hry, zostrihy a to najlepšie zo športu."
+  },
+  "nav": {
+    "home":    "Domov",
+    "games":   "Hry",
+    "videos":  "Videá",
+    "trivia":  "Kvíz",
+    "history": "História",
+    "live":    "Naživo"
+  },
+  "hero": {
+    "f1": {
+      "eyebrow":       "Turnaj 2026 · 28 dní do začiatku",
+      "headline1":     "Deň zápasu",
+      "headlineAccent":"začína",
+      "headline2":     "tu.",
+      "body":          "Hraj najlepšie futbalové hry, sleduj góly, ktoré zlomili internet, a prežij každý zápas od výkopu po záverečný hvizd.",
+      "ctaPrimary":    "Hrať teraz",
+      "ctaSecondary":  "Sledovať zostrihy",
+      "liveLabel":     "Naživo · Skupinová fáza",
+      "seeFixtures":   "Zobraziť všetky zápasy",
+      "tickerLabel":   "● BREAKING",
+      "tickerItem1":   "Vermillion oznámil 25-členný káder na turnaj",
+      "tickerItem2":   "Northport debutuje so 17-ročným útočníkom",
+      "tickerItem3":   "Predaj lístkov sa uzatvára v piatok o 18:00"
+    },
+    "f2": {
+      "eyebrow":       "Turnaj '26 · 28 dní",
+      "headline1":     "Hra je v chode,",
+      "headlineAccent":"každý deň.",
+      "body":          "Strelaj góly v lobby. Sleduj najdivokejšie momenty zápasového dňa. Riešte trivia debaty. Všetko v jednej aplikácii.",
+      "ctaPrimary":    "Začať hrať",
+      "ctaSecondary":  "Ako to funguje"
+    }
+  },
+  "home": {
+    "featuredGames":       "Odporúčané hry",
+    "latestVideos":        "Najnovšie videá",
+    "allGames":            "Všetky hry",
+    "allVideos":           "Všetky videá",
+    "playGames":           "Hrať hry",
+    "watchVideos":         "Sledovať videá",
+    "updatedDaily":        "Aktualizované denne",
+    "eyebrowGames":        "{count} hier · aktualizované denne",
+    "eyebrowVideos":       "{count} videí · 8 kategórií",
+    "eyebrowGamesF2":      "{count} hier · 6 kategórií",
+    "eyebrowVideosF2":     "{count} videí · aktualizované denne",
+    "quickLinks":          "Rýchle odkazy",
+    "tilesChooseFrom":     "{count} na výber",
+    "editorialF1Eyebrow":  "Špeciál · Odpočítavanie",
+    "editorialF1Headline1":"Každý gól,",
+    "editorialF1Headline2":"každá minúta.",
+    "editorialF1Body":     "Náš každodenný editorial pokrýva každú skupinu, každý zápas, každé kontroverzné rozhodnutie VAR — bez práv pomenovať ktorý.",
+    "editorialF1Cta":      "Čítať editorial →",
+    "editorialF2Eyebrow":  "Odporúčané · Prehliadka štadióna",
+    "editorialF2Headline1":"Tvoje miesto na",
+    "editorialF2Headline2":"každý zápas.",
+    "editorialF2Body":     "Klipy, hry a živé zápasy v jednom feede — pre fanúšikov, ktorí nikdy nemenia záložku v polčase.",
+    "editorialF2Cta":      "Sledovať teraz →",
+    "trophyEyebrow":       "Rebríček priateľov",
+    "trophyHeadline1":     "Prekonej",
+    "trophyHeadline2":     "svoj tím tento týždeň.",
+    "trophyBody":          "Pridaj až 50 priateľov, súťažte o prvé miesto každý týždeň a chvaľte sa 7 dní.",
+    "trophyCta":           "Pozvať priateľov",
+    "showcaseTitle":       "Momenty zápasového dňa",
+    "showcaseLead":        "Skutočná stadionová energia — zostrihy, tribúny a ihrisko zblízka."
+  },
+  "games": {
+    "title":        "Hry",
+    "subtitle":     "Hrajte najlepšie futbalové hry v prehliadači alebo na Androide.",
+    "filterAll":    "Všetko",
+    "filterHtml5":  "HTML5",
+    "filterAndroid":"Android",
+    "sortPlays":    "Najhrateľnejšie",
+    "sortRating":   "Najlepšie hodnotené",
+    "sortAlpha":    "A–Z",
+    "sortNewest":   "Najnovšie",
+    "playNow":      "Hrať",
+    "noResults":    "Žiadne hry nezodpovedajú filtrom.",
+    "resetFilters": "Resetovať filtre",
+    "plays":        "spustení",
+    "rating":       "Hodnotenie",
+    "avgSession":   "Priem. relácia",
+    "released":     "Vydané",
+    "platform":     "Platforma",
+    "playInBrowser":"Hrať v prehliadači",
+    "relatedGames": "Podobné hry",
+    "about":        "O hre",
+    "howToPlay":    "Ako hrať"
+  },
+  "videos": {
+    "title":        "Videá",
+    "subtitle":     "Zostrihy, góly a najlepšie momenty futbalu.",
+    "filterAll":    "Všetko",
+    "sortNewest":   "Najnovšie",
+    "sortPopular":  "Najsledovanejšie",
+    "noResults":    "Žiadne videá nezodpovedajú filtrom.",
+    "resetFilters": "Resetovať filtre",
+    "views":        "zhliadnutí",
+    "watchNow":     "Sledovať",
+    "relatedVideos":"Podobné videá"
+  },
+  "auth": {
+    "loginTitle":           "Prihlásenie",
+    "loginSubtitle":        "Zadajte 6-miestny kód zaslaný na váš telefón.",
+    "signupTitle":          "Vytvorenie účtu",
+    "signupSubtitle":       "Zadajte svoje telefónne číslo a zašleme vám prístupový kód.",
+    "phone":                "Telefónne číslo",
+    "phonePlaceholder":     "+421 9xx xxx xxx",
+    "accessCode":           "Prístupový kód",
+    "accessCodePlaceholder":"6 číslic",
+    "sendCodeButton":       "Odoslať kód",
+    "sendingCode":          "Odosielanie kódu…",
+    "codeSentTitle":        "Skontrolujte telefón",
+    "codeSentSubtitle":     "Zaslali sme 6-miestny kód na {phone}.",
+    "yourAccessCode":       "Váš prístupový kód",
+    "codeSentDevNote":      "Použite tento kód na prihlasovacej stránke.",
+    "codeSentSmsNote":      "Zaslali sme 6-miestny kód na váš telefón.",
+    "goToLogin":            "Pokračovať k prihláseniu",
+    "demoHint":             "Demo kód: {code}",
+    "loginButton":          "Prihlásiť sa",
+    "signingIn":            "Prihlasovanie…",
+    "noAccount":            "Nemáte účet?",
+    "haveAccount":          "Máte už účet?",
+    "signupLink":           "Registrácia",
+    "loginLink":            "Prihlásiť sa",
+    "logout":               "Odhlásiť sa",
+    "errors": {
+      "invalidPhone":       "Zadajte platné telefónne číslo (aspoň 8 číslic).",
+      "invalidCode":        "Prístupový kód musí mať presne 6 číslic.",
+      "phoneExists":        "Toto telefónne číslo je už zaregistrované. Prihláste sa.",
+      "invalidCredentials": "Kód nebol rozpoznaný. Skúste to znovu.",
+      "network":            "Server nie je dostupný. Skontrolujte pripojenie."
+    }
+  },
+  "comingSoon": {
+    "title":    "Čoskoro",
+    "subtitle": "Táto sekcia je vo výstavbe. Čoskoro sa vrátime.",
+    "backHome": "Späť domov"
+  },
+  "footer": {
+    "privacy": "Súkromie",
+    "terms":   "Podmienky",
+    "cookies": "Cookies",
+    "copy":    "© 2026 Všetky práva vyhradené."
+  },
+  "a11y": {
+    "openMenu":   "Otvoriť navigáciu",
+    "closeMenu":  "Zatvoriť navigáciu",
+    "playGame":   "Hrať {title}",
+    "watchVideo": "Sledovať {title}",
+    "gameThumb":  "Náhľad hry {title}",
+    "videoThumb": "Náhľad videa {title}"
+  },
+  "legal": {
+    "loading": "Načítavanie…",
+    "error":   "Niečo sa pokazilo. Skúste to prosím znovu.",
+    "pages": {
+      "about":       { "title": "O nás",                              "summary": "Zistite viac o našej futbalovej platforme." },
+      "contact":     { "title": "Kontakt",                            "summary": "Spojte sa s naším tímom." },
+      "faq":         { "title": "Časté otázky",                       "summary": "Odpovede na najčastejšie otázky." },
+      "terms":       { "title": "Podmienky používania",               "summary": "Pred použitím služby si prosím prečítajte tieto podmienky." },
+      "privacy":     { "title": "Zásady ochrany osobných údajov",     "summary": "Ako zhromažďujeme, používame a chránime vaše osobné údaje." },
+      "cookies":     { "title": "Zásady cookies",                     "summary": "Ako používame cookies na tejto stránke." },
+      "unsubscribe": { "title": "Odhlásenie",                         "summary": "Odstráňte svoje telefónne číslo z našej služby." }
+    },
+    "unsubscribe_form": {
+      "phone_label":    "Vaše telefónne číslo",
+      "submit":         "Odhlásiť sa",
+      "submitting":     "Spracovanie…",
+      "success":        "Boli ste úspešne odhlásení.",
+      "error":          "Niečo sa pokazilo. Skúste to prosím znovu.",
+      "recaptcha_error":"Overenie reCAPTCHA zlyhalo. Skúste to prosím znovu."
+    }
+  }
+}

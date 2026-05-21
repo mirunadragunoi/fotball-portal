@@ -99,14 +99,6 @@ const leaderboard = [
                 <div class="gd-hero__stat-label">{{ t('games.plays') }}</div>
                 <div class="gd-hero__stat-value">{{ game.plays }}</div>
               </div>
-              <div class="gd-hero__stat">
-                <div class="gd-hero__stat-label">{{ t('games.avgSession') }}</div>
-                <div class="gd-hero__stat-value">{{ game.duration }}</div>
-              </div>
-              <div class="gd-hero__stat">
-                <div class="gd-hero__stat-label">{{ t('games.released') }}</div>
-                <div class="gd-hero__stat-value">{{ new Date(game.releaseDate).toLocaleDateString('en', { month: 'short', year: 'numeric' }) }}</div>
-              </div>
             </div>
 
             <div class="gd-hero__platforms" :aria-label="t('games.platform')">
@@ -123,12 +115,6 @@ const leaderboard = [
                 <AppIcon name="play" :size="18" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
                 {{ t('games.playInBrowser') }}
               </RouterLink>
-              <button class="gd-hero__action-icon" :aria-label="`Save ${game.title} to favourites`">
-                <AppIcon name="heart" :size="20" />
-              </button>
-              <button class="gd-hero__action-icon" :aria-label="`Share ${game.title}`">
-                <AppIcon name="share" :size="18" />
-              </button>
             </div>
           </div>
         </div>

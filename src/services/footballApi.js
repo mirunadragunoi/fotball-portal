@@ -1,5 +1,5 @@
 import { getApiBaseUrl, getPortalName } from '@/config/api'
-import { getCountry } from '@/config/brand'
+import { getCountry, getCountryKey } from '@/config/brand'
 
 export class ApiError extends Error {
   constructor(message, data = null, status = 0) {
@@ -156,6 +156,65 @@ export async function fetchAbout({ accessCode, portalName, language } = {}) {
     query: {
       ...authParams(accessCode, portalName),
       language: language || getLanguage(),
+    },
+  })
+  return unwrapData(data)
+}
+
+// ─── Legal / public endpoints (no access_code required) ───────────────────────
+
+function legalContext(language) {
+  return {
+    portal_name: getPortalName(),
+    country:     getCountryKey(),
+    language:    language || getLanguage(),
+  }
+}
+
+export async function getAbout({ language } = {}) {
+  const data = await request('/football/about', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+export async function getLegalContact({ language } = {}) {
+  const data = await request('/football/legal/contact', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+export async function getLegalFaq({ language } = {}) {
+  const data = await request('/football/legal/faq', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+export async function getLegalTerms({ language } = {}) {
+  const data = await request('/football/legal/terms', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+export async function getLegalPrivacy({ language } = {}) {
+  const data = await request('/football/legal/privacy', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+export async function getLegalCookies({ language } = {}) {
+  const data = await request('/football/legal/cookies', { query: legalContext(language) })
+  return unwrapData(data)
+}
+
+/** Unsubscribe page has no pre-fetched content — returns null so the form renders immediately. */
+export async function getLegalUnsubscribe() {
+  return null
+}
+
+export async function unsubscribePhoneNumber({ country, language, phoneNumber, recaptchaToken } = {}) {
+  const data = await request('/football/legal/unsubscribe', {
+    method: 'POST',
+    body: {
+      portal_name:    getPortalName(),
+      country:        country || getCountryKey(),
+      language,
+      phone_number:   phoneNumber,
+      recaptcha_token: recaptchaToken,
     },
   })
   return unwrapData(data)

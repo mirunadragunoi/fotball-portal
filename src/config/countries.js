@@ -7,18 +7,22 @@
  */
 export const COUNTRIES = {
   UK: { code: 'UK', defaultLanguage: 'en', languages: ['en', 'ro'] },
+  RO: { code: 'RO', defaultLanguage: 'ro', languages: ['ro'] },
   CZ: { code: 'CZ', defaultLanguage: 'cz', languages: ['cz'] },
   SK: { code: 'SK', defaultLanguage: 'sk', languages: ['sk'] },
+  PL: { code: 'PL', defaultLanguage: 'pl', languages: ['pl'] },
 }
 
 /**
  * Subdomain prefix → country code. 'www' and empty (apex) both map to UK.
  */
 const SUBDOMAIN_COUNTRY = {
-  '': 'UK',
-  www: 'UK',
-  cz: 'CZ',
-  sk: 'SK',
+  '':    'UK',
+  www:   'UK',
+  ro:    'RO',
+  cz:    'CZ',
+  sk:    'SK',
+  pl:    'PL',
 }
 
 export function subdomainToCountry(subdomain) {

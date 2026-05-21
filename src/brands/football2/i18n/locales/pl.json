@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Goal Plaza",
+    "tagline": "Piłka nożna, ale z zabawą."
+  },
+  "games": {
+    "title": "Graj.",
+    "subtitle": "Strzelaj gole, wygrywaj codzienne turnieje — wszystko w jednym miejscu."
+  },
+  "videos": {
+    "title": "Oglądaj.",
+    "subtitle": "Najdziksze momenty dnia meczowego i klipy, które wyślesz znajomym."
+  },
+  "footer": {
+    "copy": "© 2026 Goal Plaza — ogólna piłka nożna, bez oficjalnych powiązań."
+  }
+}

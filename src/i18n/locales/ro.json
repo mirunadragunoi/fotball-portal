@@ -1,0 +1,179 @@
+{
+  "brand": {
+    "name": "Portal Sportiv",
+    "tagline": "Jocuri de fotbal, rezumate și tot ce iubești despre sport."
+  },
+  "nav": {
+    "home":    "Acasă",
+    "games":   "Jocuri",
+    "videos":  "Videoclipuri",
+    "trivia":  "Trivial",
+    "history": "Istorie",
+    "live":    "Live"
+  },
+  "hero": {
+    "f1": {
+      "eyebrow":       "Turneul 2026 · 28 de zile până la start",
+      "headline1":     "Ziua meciului",
+      "headlineAccent":"începe",
+      "headline2":     "aici.",
+      "body":          "Joacă cele mai bune mini-jocuri de fotbal, urmărește golurile care au cucerit internetul și trăiește fiecare meci de la fluier la fluier.",
+      "ctaPrimary":    "Joacă acum",
+      "ctaSecondary":  "Urmărește rezumate",
+      "liveLabel":     "Live acum · Faza grupelor",
+      "seeFixtures":   "Vezi toate meciurile",
+      "tickerLabel":   "● BREAKING",
+      "tickerItem1":   "Vermillion anunță lotul de 25 de jucători pentru turneu",
+      "tickerItem2":   "Northport debutează cu un atacant de 17 ani",
+      "tickerItem3":   "Vânzarea biletelor se încheie vineri la 18:00"
+    },
+    "f2": {
+      "eyebrow":       "Turneul '26 · 28 de zile",
+      "headline1":     "Mingea e în joc,",
+      "headlineAccent":"în fiecare zi.",
+      "body":          "Marchează goluri în lobby. Urmărește cele mai spectaculoase momente. Rezolvă dezbaterile la trivia. Totul într-o singură aplicație.",
+      "ctaPrimary":    "Începe să joci",
+      "ctaSecondary":  "Cum funcționează"
+    }
+  },
+  "home": {
+    "featuredGames":       "Jocuri recomandate",
+    "latestVideos":        "Ultimele videoclipuri",
+    "allGames":            "Toate jocurile",
+    "allVideos":           "Toate videoclipurile",
+    "playGames":           "Joacă jocuri",
+    "watchVideos":         "Urmărește videoclipuri",
+    "updatedDaily":        "Actualizate zilnic",
+    "eyebrowGames":        "{count} jocuri · actualizate zilnic",
+    "eyebrowVideos":       "{count} videoclipuri · 8 categorii",
+    "eyebrowGamesF2":      "{count} jocuri · 6 categorii",
+    "eyebrowVideosF2":     "{count} videoclipuri · actualizate zilnic",
+    "quickLinks":          "Linkuri rapide",
+    "tilesChooseFrom":     "{count} de ales",
+    "editorialF1Eyebrow":  "Special · Numărătoare inversă",
+    "editorialF1Headline1":"Fiecare gol,",
+    "editorialF1Headline2":"fiecare minut.",
+    "editorialF1Body":     "Editorialul nostru zilnic acoperă fiecare grupă, fiecare meci, fiecare decizie VAR controversată — fără drepturile de a numi care.",
+    "editorialF1Cta":      "Citește editorialul →",
+    "editorialF2Eyebrow":  "Recomandat · Tur de stadion",
+    "editorialF2Headline1":"Locul tău la",
+    "editorialF2Headline2":"fiecare meci.",
+    "editorialF2Body":     "Clipuri, jocuri și meciuri live într-un singur feed — creat pentru fanii care nu schimbă niciodată tabul la pauză.",
+    "editorialF2Cta":      "Urmărește acum →",
+    "trophyEyebrow":       "Clasament prieteni",
+    "trophyHeadline1":     "Întrece-ți",
+    "trophyHeadline2":     "echipa săptămâna asta.",
+    "trophyBody":          "Adaugă până la 50 de prieteni, concurați pentru locul 1 în fiecare săptămână și bucurați-vă de 7 zile de glorie.",
+    "trophyCta":           "Invită prieteni",
+    "showcaseTitle":       "Momente de zi de meci",
+    "showcaseLead":        "Energie reală de stadion — rezumate, tribune și gazonul de aproape."
+  },
+  "games": {
+    "title":        "Jocuri",
+    "subtitle":     "Joacă cele mai bune jocuri de fotbal în browser sau pe Android.",
+    "filterAll":    "Toate",
+    "filterHtml5":  "HTML5",
+    "filterAndroid":"Android",
+    "sortPlays":    "Cele mai jucate",
+    "sortRating":   "Top rating",
+    "sortAlpha":    "A–Z",
+    "sortNewest":   "Cele mai noi",
+    "playNow":      "Joacă acum",
+    "noResults":    "Niciun joc nu corespunde filtrelor.",
+    "resetFilters": "Resetează filtrele",
+    "plays":        "jucări",
+    "rating":       "Rating",
+    "avgSession":   "Sesiune medie",
+    "released":     "Lansat",
+    "platform":     "Platformă",
+    "playInBrowser":"Joacă în browser",
+    "relatedGames": "Jocuri similare",
+    "about":        "Despre",
+    "howToPlay":    "Cum se joacă"
+  },
+  "videos": {
+    "title":        "Videoclipuri",
+    "subtitle":     "Rezumate, goluri și cele mai bune momente din fotbal.",
+    "filterAll":    "Toate",
+    "sortNewest":   "Cele mai noi",
+    "sortPopular":  "Cele mai vizionate",
+    "noResults":    "Niciun videoclip nu corespunde filtrelor.",
+    "resetFilters": "Resetează filtrele",
+    "views":        "vizualizări",
+    "watchNow":     "Urmărește acum",
+    "relatedVideos":"Videoclipuri similare"
+  },
+  "auth": {
+    "loginTitle":           "Autentificare",
+    "loginSubtitle":        "Introduceți codul de 6 cifre trimis pe telefon.",
+    "signupTitle":          "Creare cont",
+    "signupSubtitle":       "Introduceți numărul de telefon și vă vom trimite un cod de acces.",
+    "phone":                "Număr de telefon",
+    "phonePlaceholder":     "+40 7xx xxx xxx",
+    "accessCode":           "Cod de acces",
+    "accessCodePlaceholder":"6 cifre",
+    "sendCodeButton":       "Trimite codul",
+    "sendingCode":          "Se trimite codul…",
+    "codeSentTitle":        "Verificați telefonul",
+    "codeSentSubtitle":     "Am trimis un cod de 6 cifre la {phone}.",
+    "yourAccessCode":       "Codul dvs. de acces",
+    "codeSentDevNote":      "Folosiți acest cod pe pagina de autentificare.",
+    "codeSentSmsNote":      "Am trimis un cod de 6 cifre pe telefon. Introduceți-l pe pagina de autentificare.",
+    "goToLogin":            "Continuați la autentificare",
+    "demoHint":             "Cod demo: {code}",
+    "loginButton":          "Autentificare",
+    "signingIn":            "Se autentifică…",
+    "noAccount":            "Nu aveți cont?",
+    "haveAccount":          "Aveți deja cont?",
+    "signupLink":           "Înregistrare",
+    "loginLink":            "Autentificare",
+    "logout":               "Deconectare",
+    "errors": {
+      "invalidPhone":       "Introduceți un număr de telefon valid (cel puțin 8 cifre).",
+      "invalidCode":        "Codul de acces trebuie să aibă exact 6 cifre.",
+      "phoneExists":        "Acest număr este deja înregistrat. Autentificați-vă.",
+      "invalidCredentials": "Cod de acces nerecunoscut. Încercați din nou.",
+      "network":            "Serverul nu răspunde. Verificați conexiunea."
+    }
+  },
+  "comingSoon": {
+    "title":    "În curând",
+    "subtitle": "Această secțiune este în construcție. Reveniți pentru actualizări.",
+    "backHome": "Înapoi acasă"
+  },
+  "footer": {
+    "privacy": "Confidențialitate",
+    "terms":   "Termeni",
+    "cookies": "Cookies",
+    "copy":    "© 2026 Toate drepturile rezervate."
+  },
+  "a11y": {
+    "openMenu":   "Deschide meniu navigare",
+    "closeMenu":  "Închide meniu navigare",
+    "playGame":   "Joacă {title}",
+    "watchVideo": "Urmărește {title}",
+    "gameThumb":  "Miniatură joc {title}",
+    "videoThumb": "Miniatură video {title}"
+  },
+  "legal": {
+    "loading": "Se încarcă…",
+    "error":   "A apărut o eroare. Vă rugăm încercați din nou.",
+    "pages": {
+      "about":       { "title": "Despre noi",                         "summary": "Aflați mai multe despre platforma noastră de fotbal." },
+      "contact":     { "title": "Contact",                            "summary": "Luați legătura cu echipa noastră." },
+      "faq":         { "title": "Întrebări frecvente",                "summary": "Răspunsuri la cele mai comune întrebări." },
+      "terms":       { "title": "Termeni și condiții",                "summary": "Vă rugăm să citiți cu atenție acești termeni înainte de a utiliza serviciul." },
+      "privacy":     { "title": "Politica de confidențialitate",      "summary": "Cum colectăm, folosim și protejăm informațiile dvs. personale." },
+      "cookies":     { "title": "Politica de cookies",                "summary": "Cum utilizăm cookie-urile pe acest site." },
+      "unsubscribe": { "title": "Dezabonare",                         "summary": "Eliminați numărul dvs. de telefon din serviciul nostru." }
+    },
+    "unsubscribe_form": {
+      "phone_label":    "Numărul dvs. de telefon",
+      "submit":         "Dezabonare",
+      "submitting":     "Se procesează…",
+      "success":        "Ați fost dezabonat cu succes.",
+      "error":          "A apărut o eroare. Vă rugăm încercați din nou.",
+      "recaptcha_error":"Verificarea reCAPTCHA a eșuat. Vă rugăm încercați din nou."
+    }
+  }
+}

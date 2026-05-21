@@ -66,6 +66,49 @@ const routes = [
     name: 'Live',
     component: () => import('@/views/ComingSoonView.vue'),
   },
+  // Legal pages — all served by a single shared view, legalKey drives content
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'about' },
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'contact' },
+  },
+  {
+    path: '/faq',
+    name: 'Faq',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'faq' },
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'terms' },
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'privacy' },
+  },
+  {
+    path: '/cookies',
+    name: 'Cookies',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'cookies' },
+  },
+  {
+    path: '/unsubscribe',
+    name: 'Unsubscribe',
+    component: () => import('@/legal/LegalPageView.vue'),
+    meta: { public: true, legalKey: 'unsubscribe' },
+  },
   // Catch-all 404
   {
     path: '/:pathMatch(.*)*',

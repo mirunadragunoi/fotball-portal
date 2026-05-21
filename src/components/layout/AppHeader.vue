@@ -32,16 +32,17 @@ function closeMobile() {
   mobileOpen.value = false
 }
 
+// Always derive label from i18n — brand config labels are English-only fallbacks
 const navItems = computed(() =>
   filterVisibleNav(
-    config.value?.nav || [
-      { key: 'home', label: t('nav.home'), path: '/' },
-      { key: 'games', label: t('nav.games'), path: '/games' },
-      { key: 'videos', label: t('nav.videos'), path: '/videos' },
-      { key: 'trivia', label: t('nav.trivia'), path: '/trivia' },
-      { key: 'history', label: t('nav.history'), path: '/history' },
-      { key: 'live', label: t('nav.live'), path: '/live' },
-    ]
+    (config.value?.nav || [
+      { key: 'home',    path: '/' },
+      { key: 'games',   path: '/games' },
+      { key: 'videos',  path: '/videos' },
+      { key: 'trivia',  path: '/trivia' },
+      { key: 'history', path: '/history' },
+      { key: 'live',    path: '/live' },
+    ]).map(item => ({ ...item, label: t(`nav.${item.key}`) }))
   )
 )
 
@@ -98,11 +99,6 @@ function onAuthCtaClick() {
 
       <!-- Right side actions -->
       <div class="app-header__actions">
-        <button class="app-header__search-btn" aria-label="Search games and videos">
-          <AppIcon name="search" :size="15" />
-          <span class="app-header__search-text">Search…</span>
-          <kbd class="app-header__kbd" aria-hidden="true">⌘K</kbd>
-        </button>
         <button
           v-if="!isF2 && PHASE2_NAV_ENABLED"
           class="app-header__live-btn"
@@ -255,49 +251,6 @@ function onAuthCtaClick() {
   gap: 8px;
 }
 
-.app-header__search-btn {
-  height: 38px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: color-mix(in srgb, var(--color-text) 5%, transparent);
-  border: 1px solid var(--color-line);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-default);
-}
-
-.app-header__search-btn:hover {
-  border-color: var(--color-line-strong);
-}
-
-.app-header--f2 .app-header__search-btn {
-  height: 44px;
-  padding: 0 18px;
-  background: var(--color-surface-2);
-  border: none;
-  border-radius: 22px;
-  min-width: 200px;
-}
-
-.app-header__kbd {
-  margin-left: 8px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--color-text) 6%, transparent);
-  font-size: 11px;
-}
-
-.app-header--f2 .app-header__kbd { display: none; }
-
-.app-header__search-text {
-  flex: 1;
-}
 
 .app-header__live-btn {
   width: 38px;
@@ -348,12 +301,15 @@ function onAuthCtaClick() {
   display: none;
   width: 44px;
   height: 44px;
-  place-items: center;
+  min-width: 44px; /* never shrink below touch target */
+  justify-content: center;
+  align-items: center;
   background: none;
   border: 1px solid var(--color-line);
   border-radius: 8px;
   color: var(--color-text);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* Mobile menu */
@@ -413,23 +369,24 @@ function onAuthCtaClick() {
     display: none;
   }
   .app-header__hamburger {
-    display: grid;
+    display: flex; /* flex: better cross-browser than grid for buttons */
   }
   .app-header__inner {
-    gap: 16px;
+    padding-inline: 1rem; /* reduce from 40px so hamburger always fits */
+    gap: 12px;
+  }
+  .app-header__logo-img {
+    max-width: 130px; /* cap logo width so it can't push hamburger off-screen */
+    height: 36px;
+  }
+  .app-header__spacer {
+    min-width: 0; /* allow spacer to collapse completely on very narrow screens */
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-  .app-header__search-text,
-  .app-header__kbd,
   .app-header__live-btn {
     display: none;
-  }
-  .app-header__search-btn {
-    min-width: unset;
-    width: 44px;
-    justify-content: center;
   }
 }
 </style>

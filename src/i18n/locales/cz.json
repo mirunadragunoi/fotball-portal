@@ -1,0 +1,179 @@
+{
+  "brand": {
+    "name": "Sportovní portál",
+    "tagline": "Fotbalové hry, sestřihy a to nejlepší ze sportu."
+  },
+  "nav": {
+    "home":    "Domů",
+    "games":   "Hry",
+    "videos":  "Videa",
+    "trivia":  "Kvíz",
+    "history": "Historie",
+    "live":    "Živě"
+  },
+  "hero": {
+    "f1": {
+      "eyebrow":       "Turnaj 2026 · 28 dní do zahájení",
+      "headline1":     "Zápasový den",
+      "headlineAccent":"začíná",
+      "headline2":     "tady.",
+      "body":          "Hraj nejlepší fotbalové hry, sleduj góly, které rozbily internet, a prožij každý zápas od výkopu po závěrečný hvizd.",
+      "ctaPrimary":    "Hrát nyní",
+      "ctaSecondary":  "Sledovat sestřihy",
+      "liveLabel":     "Živě · Skupinová fáze",
+      "seeFixtures":   "Zobrazit všechny zápasy",
+      "tickerLabel":   "● BREAKING",
+      "tickerItem1":   "Vermillion oznámil 25členný kádr na turnaj",
+      "tickerItem2":   "Northport debutuje s 17letým útočníkem",
+      "tickerItem3":   "Prodej vstupenek končí v pátek v 18:00"
+    },
+    "f2": {
+      "eyebrow":       "Turnaj '26 · 28 dní",
+      "headline1":     "Hra začíná,",
+      "headlineAccent":"každý den.",
+      "body":          "Střílej góly v lobby. Sleduj nejdivoceji momenty zápasového dne. Řeš trivia debaty. Vše v jedné aplikaci.",
+      "ctaPrimary":    "Začít hrát",
+      "ctaSecondary":  "Jak to funguje"
+    }
+  },
+  "home": {
+    "featuredGames":       "Doporučené hry",
+    "latestVideos":        "Nejnovější videa",
+    "allGames":            "Všechny hry",
+    "allVideos":           "Všechna videa",
+    "playGames":           "Hrát hry",
+    "watchVideos":         "Sledovat videa",
+    "updatedDaily":        "Aktualizováno denně",
+    "eyebrowGames":        "{count} her · aktualizováno denně",
+    "eyebrowVideos":       "{count} videí · 8 kategorií",
+    "eyebrowGamesF2":      "{count} her · 6 kategorií",
+    "eyebrowVideosF2":     "{count} videí · aktualizováno denně",
+    "quickLinks":          "Rychlé odkazy",
+    "tilesChooseFrom":     "{count} na výběr",
+    "editorialF1Eyebrow":  "Speciální · Odpočítávání",
+    "editorialF1Headline1":"Každý gól,",
+    "editorialF1Headline2":"každá minuta.",
+    "editorialF1Body":     "Náš každodenní editorial pokrývá každou skupinu, každý zápas, každé kontroverzní rozhodnutí VAR — bez práv jmenovat který.",
+    "editorialF1Cta":      "Číst editorial →",
+    "editorialF2Eyebrow":  "Doporučené · Prohlídka stadionu",
+    "editorialF2Headline1":"Tvoje místo na",
+    "editorialF2Headline2":"každý zápas.",
+    "editorialF2Body":     "Klipy, hry a živé zápasy v jednom feedu — pro fanoušky, kteří nikdy nemění záložku o poločase.",
+    "editorialF2Cta":      "Sledovat nyní →",
+    "trophyEyebrow":       "Žebříček přátel",
+    "trophyHeadline1":     "Překonej",
+    "trophyHeadline2":     "svůj tým tento týden.",
+    "trophyBody":          "Přidej až 50 přátel, závoďte o první místo každý týden a chlub se 7 dní.",
+    "trophyCta":           "Pozvat přátele",
+    "showcaseTitle":       "Zápasové momenty",
+    "showcaseLead":        "Skutečná stadionová atmosféra — sestřihy, tribuny a trávník zblízka."
+  },
+  "games": {
+    "title":        "Hry",
+    "subtitle":     "Hrajte nejlepší fotbalové hry v prohlížeči nebo na Androidu.",
+    "filterAll":    "Vše",
+    "filterHtml5":  "HTML5",
+    "filterAndroid":"Android",
+    "sortPlays":    "Nejhranější",
+    "sortRating":   "Nejlépe hodnocené",
+    "sortAlpha":    "A–Z",
+    "sortNewest":   "Nejnovější",
+    "playNow":      "Hrát",
+    "noResults":    "Žádné hry neodpovídají filtrům.",
+    "resetFilters": "Resetovat filtry",
+    "plays":        "spuštění",
+    "rating":       "Hodnocení",
+    "avgSession":   "Prům. relace",
+    "released":     "Vydáno",
+    "platform":     "Platforma",
+    "playInBrowser":"Hrát v prohlížeči",
+    "relatedGames": "Podobné hry",
+    "about":        "O hře",
+    "howToPlay":    "Jak hrát"
+  },
+  "videos": {
+    "title":        "Videa",
+    "subtitle":     "Sestřihy, góly a nejlepší momenty fotbalu.",
+    "filterAll":    "Vše",
+    "sortNewest":   "Nejnovější",
+    "sortPopular":  "Nejsledovanější",
+    "noResults":    "Žádná videa neodpovídají filtrům.",
+    "resetFilters": "Resetovat filtry",
+    "views":        "zhlédnutí",
+    "watchNow":     "Sledovat",
+    "relatedVideos":"Podobná videa"
+  },
+  "auth": {
+    "loginTitle":           "Přihlášení",
+    "loginSubtitle":        "Zadejte 6místný kód zaslaný na váš telefon.",
+    "signupTitle":          "Vytvoření účtu",
+    "signupSubtitle":       "Zadejte své telefonní číslo a zašleme vám přístupový kód.",
+    "phone":                "Telefonní číslo",
+    "phonePlaceholder":     "+420 7xx xxx xxx",
+    "accessCode":           "Přístupový kód",
+    "accessCodePlaceholder":"6 číslic",
+    "sendCodeButton":       "Odeslat kód",
+    "sendingCode":          "Odesílání kódu…",
+    "codeSentTitle":        "Zkontrolujte telefon",
+    "codeSentSubtitle":     "Zaslali jsme 6místný kód na {phone}.",
+    "yourAccessCode":       "Váš přístupový kód",
+    "codeSentDevNote":      "Použijte tento kód na přihlašovací stránce.",
+    "codeSentSmsNote":      "Zaslali jsme 6místný kód na váš telefon.",
+    "goToLogin":            "Pokračovat k přihlášení",
+    "demoHint":             "Demo kód: {code}",
+    "loginButton":          "Přihlásit se",
+    "signingIn":            "Přihlašování…",
+    "noAccount":            "Nemáte účet?",
+    "haveAccount":          "Máte již účet?",
+    "signupLink":           "Registrace",
+    "loginLink":            "Přihlásit se",
+    "logout":               "Odhlásit se",
+    "errors": {
+      "invalidPhone":       "Zadejte platné telefonní číslo (alespoň 8 číslic).",
+      "invalidCode":        "Přístupový kód musí mít přesně 6 číslic.",
+      "phoneExists":        "Toto telefonní číslo je již registrováno. Přihlaste se.",
+      "invalidCredentials": "Kód nebyl rozpoznán. Zkuste to znovu.",
+      "network":            "Server není dostupný. Zkontrolujte připojení."
+    }
+  },
+  "comingSoon": {
+    "title":    "Brzy k dispozici",
+    "subtitle": "Tato sekce je ve výstavbě. Brzy se vrátíme.",
+    "backHome": "Zpět domů"
+  },
+  "footer": {
+    "privacy": "Soukromí",
+    "terms":   "Podmínky",
+    "cookies": "Cookies",
+    "copy":    "© 2026 Všechna práva vyhrazena."
+  },
+  "a11y": {
+    "openMenu":   "Otevřít navigaci",
+    "closeMenu":  "Zavřít navigaci",
+    "playGame":   "Hrát {title}",
+    "watchVideo": "Sledovat {title}",
+    "gameThumb":  "Náhled hry {title}",
+    "videoThumb": "Náhled videa {title}"
+  },
+  "legal": {
+    "loading": "Načítání…",
+    "error":   "Něco se pokazilo. Zkuste to prosím znovu.",
+    "pages": {
+      "about":       { "title": "O nás",                              "summary": "Zjistěte více o naší fotbalové platformě." },
+      "contact":     { "title": "Kontakt",                            "summary": "Spojte se s naším týmem." },
+      "faq":         { "title": "Časté dotazy",                       "summary": "Odpovědi na nejčastější otázky." },
+      "terms":       { "title": "Podmínky použití",                   "summary": "Před použitím služby si prosím přečtěte tyto podmínky." },
+      "privacy":     { "title": "Zásady ochrany osobních údajů",      "summary": "Jak shromažďujeme, používáme a chráníme vaše osobní údaje." },
+      "cookies":     { "title": "Zásady cookies",                     "summary": "Jak používáme cookies na tomto webu." },
+      "unsubscribe": { "title": "Odhlášení",                          "summary": "Odeberte své telefonní číslo z naší služby." }
+    },
+    "unsubscribe_form": {
+      "phone_label":    "Vaše telefonní číslo",
+      "submit":         "Odhlásit se",
+      "submitting":     "Zpracování…",
+      "success":        "Byli jste úspěšně odhlášeni.",
+      "error":          "Něco se pokazilo. Zkuste to prosím znovu.",
+      "recaptcha_error":"Ověření reCAPTCHA selhalo. Zkuste to prosím znovu."
+    }
+  }
+}

@@ -12,14 +12,14 @@ const brandStore = useBrandStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
 const pageInfo = {
-  trivia:  { icon: 'trophy', label: 'Trivia',  colour: '#FF1744' },
-  history: { icon: 'calendar', label: 'History', colour: '#2979FF' },
-  live:    { icon: 'live',     label: 'Live',    colour: '#00C853' },
+  trivia:  { icon: 'trophy',   key: 'trivia',   colour: '#FF1744' },
+  history: { icon: 'calendar', key: 'history',  colour: '#2979FF' },
+  live:    { icon: 'live',     key: 'live',     colour: '#00C853' },
 }
 
 const page = computed(() => {
   const key = route.path.replace('/', '')
-  return pageInfo[key] || { icon: 'ball', label: 'Coming Soon', colour: 'var(--color-primary)' }
+  return pageInfo[key] || { icon: 'ball', key: null, colour: 'var(--color-primary)' }
 })
 </script>
 
@@ -35,7 +35,9 @@ const page = computed(() => {
       </div>
 
       <div class="coming-soon__eyebrow">
-        <span class="coming-soon__eyebrow-inner">{{ page.label }}</span>
+        <span class="coming-soon__eyebrow-inner">
+          {{ page.key ? t(`nav.${page.key}`) : t('comingSoon.title') }}
+        </span>
       </div>
 
       <h1 class="coming-soon__title">{{ t('comingSoon.title') }}</h1>

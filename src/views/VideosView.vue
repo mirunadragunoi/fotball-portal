@@ -25,15 +25,15 @@ onMounted(() => {
       <div class="videos-header__inner">
         <div v-if="!isF2" class="videos-header__eyebrow">
           <span class="videos-header__eyebrow-bar" aria-hidden="true"></span>
-          {{ totalVideos }} videos · 8 categories
+          {{ t('home.eyebrowVideos', { count: totalVideos }) }}
         </div>
         <div v-else class="videos-header__eyebrow-f2">
           <span class="videos-header__eyebrow-dot" aria-hidden="true"></span>
-          {{ totalVideos }} videos · updated daily
+          {{ t('home.eyebrowVideosF2', { count: totalVideos }) }}
         </div>
 
         <h1 id="videos-heading" class="videos-header__title">
-          {{ isF2 ? 'Watch it all.' : t('videos.title') }}
+          {{ t('videos.title') }}
         </h1>
         <p class="videos-header__subtitle">{{ t('videos.subtitle') }}</p>
       </div>

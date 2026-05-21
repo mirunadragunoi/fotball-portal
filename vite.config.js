@@ -28,6 +28,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      host: true,
+      port: 5173,
+      strictPort: false,
       proxy: {
         '/football': {
           target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000',

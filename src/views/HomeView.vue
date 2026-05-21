@@ -1,5 +1,6 @@
 <script setup>
 import { shallowRef, onMounted, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import FeaturedGames from '@/components/home/FeaturedGames.vue'
@@ -9,6 +10,7 @@ import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useLandingImages } from '@/composables/useLandingImages'
 
+const { t } = useI18n()
 const brandStore = useBrandStore()
 const { images: landing } = useLandingImages()
 const activeBrand = computed(() => brandStore.activeBrand)
@@ -35,10 +37,10 @@ watch(activeBrand, loadHero)
 // F2 editorial strip content
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
-const f2Tiles = [
-  { label: 'Play games', sub: '124 to choose from', color: '#00C853', icon: 'play-o', path: '/games' },
-  { label: 'Watch videos', sub: 'Updated daily', color: '#2979FF', icon: 'play', path: '/videos' },
-]
+const f2Tiles = computed(() => [
+  { label: t('home.playGames'),   sub: t('home.tilesChooseFrom', { count: 124 }), color: '#00C853', icon: 'play-o', path: '/games' },
+  { label: t('home.watchVideos'), sub: t('home.updatedDaily'), color: '#2979FF', icon: 'play', path: '/videos' },
+])
 
 const leaderboard = [
   { r: 1, n: 'mariella_b',  xp: 4820, you: false },
@@ -57,7 +59,7 @@ const leaderboard = [
     <!-- F2: Quick category tiles -->
     <section v-if="isF2" class="home-tiles" aria-labelledby="home-tiles-heading">
       <div class="home-tiles__inner">
-        <h2 id="home-tiles-heading" class="visually-hidden">Quick links</h2>
+        <h2 id="home-tiles-heading" class="visually-hidden">{{ t('home.quickLinks') }}</h2>
         <div class="home-tiles__grid">
           <AuthLink
             v-for="tile in f2Tiles"
@@ -89,13 +91,11 @@ const leaderboard = [
           <div class="home-editorial__text">
             <div class="home-editorial__eyebrow">
               <span class="home-editorial__eyebrow-bar" aria-hidden="true"></span>
-              Special · Tournament countdown
+              {{ t('home.editorialF1Eyebrow') }}
             </div>
-            <h2 class="home-editorial__headline">Every goal,<br />every minute.</h2>
-            <p class="home-editorial__body">
-              Our daily editorial covers every group, every match, every controversial VAR call — without the rights to say which one.
-            </p>
-            <button class="home-editorial__cta">Read the daily →</button>
+            <h2 class="home-editorial__headline">{{ t('home.editorialF1Headline1') }}<br />{{ t('home.editorialF1Headline2') }}</h2>
+            <p class="home-editorial__body">{{ t('home.editorialF1Body') }}</p>
+            <button class="home-editorial__cta">{{ t('home.editorialF1Cta') }}</button>
           </div>
           <div class="home-editorial__image" aria-hidden="true">
             <img
@@ -123,12 +123,10 @@ const leaderboard = [
             />
           </div>
           <div class="home-editorial__text">
-            <div class="home-editorial__eyebrow home-editorial__eyebrow--f2">Featured · Stadium tour</div>
-            <h2 class="home-editorial__headline home-editorial__headline--f2">Your seat to<br />every match.</h2>
-            <p class="home-editorial__body">
-              Clips, games and live fixtures in one feed — built for fans who never switch tabs at halftime.
-            </p>
-            <AuthLink to="/videos" class="home-editorial__cta home-editorial__cta--f2">Watch now →</AuthLink>
+            <div class="home-editorial__eyebrow home-editorial__eyebrow--f2">{{ t('home.editorialF2Eyebrow') }}</div>
+            <h2 class="home-editorial__headline home-editorial__headline--f2">{{ t('home.editorialF2Headline1') }}<br />{{ t('home.editorialF2Headline2') }}</h2>
+            <p class="home-editorial__body">{{ t('home.editorialF2Body') }}</p>
+            <AuthLink to="/videos" class="home-editorial__cta home-editorial__cta--f2">{{ t('home.editorialF2Cta') }}</AuthLink>
           </div>
         </div>
       </div>
@@ -144,10 +142,10 @@ const leaderboard = [
           </div>
           <div class="home-trophy__blob" aria-hidden="true"></div>
           <div class="home-trophy__left">
-            <div class="home-trophy__eyebrow">Friends leaderboard</div>
-            <h2 class="home-trophy__headline">Beat your<br />squad this week.</h2>
-            <p class="home-trophy__body">Add up to 50 friends, race for the top spot every week, and brag for 7 days.</p>
-            <button class="home-trophy__cta">Invite friends</button>
+            <div class="home-trophy__eyebrow">{{ t('home.trophyEyebrow') }}</div>
+            <h2 class="home-trophy__headline">{{ t('home.trophyHeadline1') }}<br />{{ t('home.trophyHeadline2') }}</h2>
+            <p class="home-trophy__body">{{ t('home.trophyBody') }}</p>
+            <button class="home-trophy__cta">{{ t('home.trophyCta') }}</button>
           </div>
           <div class="home-trophy__board" role="list" aria-label="Leaderboard">
             <div

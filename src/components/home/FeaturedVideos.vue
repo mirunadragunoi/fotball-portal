@@ -18,7 +18,7 @@ onMounted(() => {
   <section class="featured-videos" aria-labelledby="featured-videos-heading">
     <div class="featured-videos__inner">
       <SectionHeader
-        eyebrow="Watch"
+        :eyebrow="t('nav.videos')"
         :title="t('home.latestVideos')"
         :link="t('home.allVideos')"
         link-to="/videos"

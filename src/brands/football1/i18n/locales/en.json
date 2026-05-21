@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Nation Foot",
+    "tagline": "The home of football games, highlights and the matchday rituals."
+  },
+  "games": {
+    "title": "Games.",
+    "subtitle": "Penalty shootouts, tactical chess, free-kick simulators — the full catalogue, ready to play in the browser or on Android."
+  },
+  "videos": {
+    "title": "Watch.",
+    "subtitle": "Highlights, classic comebacks, tactics breakdowns and a fair amount of nonsense — curated daily."
+  },
+  "footer": {
+    "copy": "© 2026 Nation Foot. Generic football content — not affiliated with any official competition."
+  }
+}

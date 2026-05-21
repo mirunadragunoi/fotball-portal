@@ -13,7 +13,6 @@ const store = useGamesStore()
 const brandStore = useBrandStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 const totalGames = computed(() => store.all.length)
-const filteredCount = computed(() => store.filtered.length)
 
 onMounted(() => {
   store.loadGames()
@@ -27,15 +26,15 @@ onMounted(() => {
       <div class="games-page-header__inner">
         <div v-if="!isF2" class="games-page-header__eyebrow">
           <span class="games-page-header__eyebrow-bar" aria-hidden="true"></span>
-          {{ totalGames }} games · updated daily
+          {{ t('home.eyebrowGames', { count: totalGames }) }}
         </div>
         <div v-if="isF2" class="games-page-header__eyebrow-f2">
           <span class="games-page-header__eyebrow-dot" aria-hidden="true"></span>
-          {{ totalGames }} games · 6 categories
+          {{ t('home.eyebrowGamesF2', { count: totalGames }) }}
         </div>
 
         <h1 id="games-heading" class="games-page-header__title">
-          {{ isF2 ? 'Pick your game.' : t('games.title') }}
+          {{ t('games.title') }}
         </h1>
         <p class="games-page-header__subtitle">{{ t('games.subtitle') }}</p>
       </div>
@@ -51,18 +50,6 @@ onMounted(() => {
           :loading="store.loading"
           @reset="store.resetFilters"
         />
-
-        <!-- Pagination placeholder -->
-        <nav v-if="filteredCount > 0" class="games-pagination" aria-label="Pagination">
-          <button
-            v-for="page in [1, 2, 3, '…', 8]"
-            :key="page"
-            class="games-pagination__btn"
-            :class="{ 'games-pagination__btn--active': page === 1 }"
-            :aria-current="page === 1 ? 'page' : undefined"
-            :aria-label="page === '…' ? 'More pages' : `Page ${page}`"
-          >{{ page }}</button>
-        </nav>
       </div>
     </section>
   </main>
@@ -158,46 +145,6 @@ onMounted(() => {
   gap: 40px;
 }
 
-.games-pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.games-pagination__btn {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-button);
-  background: var(--color-surface);
-  color: var(--color-text);
-  border: 1px solid var(--color-line);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition-default);
-  min-width: 44px;
-  min-height: 44px;
-}
-
-.games-pagination__btn:hover:not(.games-pagination__btn--active) {
-  border-color: var(--color-line-strong);
-}
-
-.games-pagination__btn--active {
-  background: var(--color-accent);
-  color: #1a1500;
-  border-color: transparent;
-}
-
-:root[data-brand="football2"] .games-pagination__btn {
-  border-radius: 20px;
-}
-
-:root[data-brand="football2"] .games-pagination__btn--active {
-  background: var(--color-text);
-  color: var(--color-surface);
-}
 
 @media (max-width: 767px) {
   .games-page-header {

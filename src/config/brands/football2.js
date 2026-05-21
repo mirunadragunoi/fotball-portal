@@ -3,7 +3,7 @@ export default {
   name: 'Goal Plaza',
   displayName: 'Goal Plaza',
   tagline: 'Football, but make it fun.',
-  countries: ['UK', 'SK'],
+  countries: ['UK', 'RO', 'CZ'],
   storagePrefix: 'football2',
   featureFlags: {
     brandedOverrides: true,

@@ -1,14 +1,16 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { useLandingImages } from '@/composables/useLandingImages'
 
+const { t } = useI18n()
 const { images } = useLandingImages()
 </script>
 
 <template>
   <section class="home-showcase" aria-labelledby="home-showcase-heading">
     <div class="home-showcase__inner">
-      <h2 id="home-showcase-heading" class="home-showcase__title">Matchday moments</h2>
-      <p class="home-showcase__lead">Real stadium energy — highlights, crowds and the pitch up close.</p>
+      <h2 id="home-showcase-heading" class="home-showcase__title">{{ t('home.showcaseTitle') }}</h2>
+      <p class="home-showcase__lead">{{ t('home.showcaseLead') }}</p>
       <div class="home-showcase__grid">
         <figure
           v-for="(item, index) in images.gallery"

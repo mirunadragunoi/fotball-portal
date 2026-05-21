@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Goal Plaza",
+    "tagline": "Fotbal, dar distractiv."
+  },
+  "games": {
+    "title": "Joacă.",
+    "subtitle": "Marchează goluri, câștigă turnee zilnice — totul într-un singur loc."
+  },
+  "videos": {
+    "title": "Urmărește.",
+    "subtitle": "Cele mai tari momente ale zilei de meci și clipuri pe care le vei trimite prietenilor."
+  },
+  "footer": {
+    "copy": "© 2026 Goal Plaza — fotbal generic, fără afilieri oficiale."
+  }
+}
