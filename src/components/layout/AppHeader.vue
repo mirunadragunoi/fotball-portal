@@ -8,7 +8,7 @@ import { useAuth } from '@/composables/useAuth'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import brandLogo from '@brand/assets/logo.svg'
-import { filterVisibleNav, PHASE2_NAV_ENABLED } from '@/config/navigation'
+import { filterVisibleNav, PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
 import { useFavoritesStore } from '@/stores/favorites'
@@ -100,7 +100,7 @@ function onAuthCtaClick() {
       <!-- Right side actions -->
       <div class="app-header__actions">
         <button
-          v-if="!isF2 && PHASE2_NAV_ENABLED"
+          v-if="!isF2 && PHASE2_LIVE_HERO_ENABLED"
           class="app-header__live-btn"
           aria-label="Live matches"
         >

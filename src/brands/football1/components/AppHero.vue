@@ -5,7 +5,7 @@ import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
-import { PHASE2_NAV_ENABLED } from '@/config/navigation'
+import { PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
 
 const { t } = useI18n()
 const brandStore = useBrandStore()
@@ -34,7 +34,7 @@ const liveMatches = [
 
     <div
       class="f1-hero__content"
-      :class="{ 'f1-hero__content--solo': !PHASE2_NAV_ENABLED }"
+      :class="{ 'f1-hero__content--solo': !PHASE2_LIVE_HERO_ENABLED }"
     >
       <!-- Left: headline + CTA -->
       <div class="f1-hero__left">
@@ -63,7 +63,7 @@ const liveMatches = [
       </div>
 
       <!-- Right: live scores widget (phase 2) -->
-      <aside v-if="PHASE2_NAV_ENABLED" class="f1-hero__scores" aria-label="Live match scores">
+      <aside v-if="PHASE2_LIVE_HERO_ENABLED" class="f1-hero__scores" aria-label="Live match scores">
         <div class="f1-hero__scores-header">
           <span class="f1-hero__live-dot" aria-hidden="true"></span>
           <span>{{ t('hero.f1.liveLabel') }}</span>

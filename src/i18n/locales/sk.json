@@ -136,6 +136,36 @@
       "network":            "Server nie je dostupný. Skontrolujte pripojenie."
     }
   },
+  "trivia": {
+    "title":           "Športový kvíz",
+    "subtitle":        "10 otázok zo sveta športu — koľko ich zvládnete?",
+    "intro":           "Myslíte, že športu rozumiete do detailu? Ukážte to v desiatich otázkach.",
+    "highlight1":      "Desať otázok s výberom odpovedí — legendy, rekordy, pravidlá aj debaty zo šatne.",
+    "highlight2":      "Obtiažnosť strieda ľahké a kruté. Každé kolo je trochu iné.",
+    "highlight3":      "Sledujte skóre a vráťte sa prekonať svoje maximum.",
+    "challenge":       "Ste pripravení? Prvá otázka čaká.",
+    "fallbackNotice":  "Toto kolo používa medzinárodnú sadu otázok pre túto tému.",
+    "difficulty": {
+      "easy":   "Ľahká",
+      "medium": "Stredná",
+      "hard":   "Ťažká"
+    },
+    "start":           "Spustiť kvíz",
+    "loading":         "Načítavanie otázok…",
+    "next":            "Ďalšia otázka",
+    "seeResults":      "Zobraziť výsledky",
+    "correct":         "Správne!",
+    "incorrect":       "Nesprávne — správna odpoveď: {answer}",
+    "finishedTitle":   "Kvíz dokončený",
+    "playAgain":       "Hrať znova",
+    "backHome":        "Späť na úvod",
+    "resultPerfect":   "Skvelé — ste skutočný fanúšik!",
+    "resultGreat":     "Výborne — takmer bez chyby!",
+    "resultGood":      "Dobrý výsledok — skúste to znova!",
+    "resultTryAgain":  "Ešte trochu precvičte — nabudúce to bude lepšie!",
+    "errorEmpty":      "Žiadne otázky nie sú k dispozícii. Skúste to znova.",
+    "errorLoad":       "Kvíz sa nepodarilo načítať. Skontrolujte pripojenie."
+  },
   "comingSoon": {
     "title":    "Čoskoro",
     "subtitle": "Táto sekcia je vo výstavbe. Čoskoro sa vrátime.",

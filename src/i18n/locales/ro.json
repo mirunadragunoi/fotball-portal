@@ -136,6 +136,36 @@
       "network":            "Serverul nu răspunde. Verificați conexiunea."
     }
   },
+  "trivia": {
+    "title":           "Trivia sport",
+    "subtitle":        "10 întrebări din lumea sportului — câte reușești?",
+    "intro":           "Crezi că te pricepi la sport? Demonstrează în zece întrebări.",
+    "highlight1":      "Zece întrebări cu variante multiple — legende, recorduri, reguli și momente de care se discută la pauză.",
+    "highlight2":      "Dificultate variată: de la ușor la infernal. Fiecare rundă e altfel.",
+    "highlight3":      "Ține minte scorul și revino să-ți depășești propriul record.",
+    "challenge":       "Ești gata? Prima întrebare te așteaptă.",
+    "fallbackNotice":  "Această rundă folosește setul internațional de întrebări pentru acest subiect.",
+    "difficulty": {
+      "easy":   "Ușor",
+      "medium": "Mediu",
+      "hard":   "Greu"
+    },
+    "start":           "Începe quiz-ul",
+    "loading":         "Se încarcă întrebările…",
+    "next":            "Următoarea întrebare",
+    "seeResults":      "Vezi rezultatele",
+    "correct":         "Corect!",
+    "incorrect":       "Greșit — răspunsul corect: {answer}",
+    "finishedTitle":   "Quiz terminat",
+    "playAgain":       "Joacă din nou",
+    "backHome":        "Înapoi acasă",
+    "resultPerfect":   "Extraordinar — ești un fan adevărat!",
+    "resultGreat":     "Foarte bine — aproape perfect!",
+    "resultGood":      "Scor bun — încearcă din nou!",
+    "resultTryAgain":  "Mai exersează — data viitoare merge mai bine!",
+    "errorEmpty":      "Nu sunt întrebări disponibile. Încearcă din nou.",
+    "errorLoad":       "Nu s-a putut încărca trivia. Verifică conexiunea."
+  },
   "comingSoon": {
     "title":    "În curând",
     "subtitle": "Această secțiune este în construcție. Reveniți pentru actualizări.",

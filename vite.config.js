@@ -36,6 +36,11 @@ export default defineConfig(({ mode }) => {
           target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000',
           changeOrigin: true,
         },
+        '/opentdb': {
+          target: 'https://opentdb.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/opentdb/, ''),
+        },
       },
     },
   }

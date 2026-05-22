@@ -23,6 +23,7 @@ defineEmits(['click'])
     :class="[`base-btn--${variant}`, `base-btn--${size}`]"
     :disabled="disabled"
     v-bind="$attrs"
+    @click="$emit('click', $event)"
   >
     <slot />
   </component>

@@ -33,7 +33,7 @@ export default {
     { key: 'home', label: 'Home', path: '/' },
     { key: 'games', label: 'Games', path: '/games' },
     { key: 'videos', label: 'Videos', path: '/videos' },
-    { key: 'trivia', label: 'Trivia', path: '/trivia', comingSoon: true },
+    { key: 'trivia', label: 'Trivia', path: '/trivia' },
     { key: 'history', label: 'History', path: '/history', comingSoon: true },
     { key: 'live', label: 'Live', path: '/live', comingSoon: true },
   ],

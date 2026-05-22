@@ -136,6 +136,36 @@
       "network":            "Server není dostupný. Zkontrolujte připojení."
     }
   },
+  "trivia": {
+    "title":           "Sportovní kvíz",
+    "subtitle":        "10 otázek ze světa sportu — kolik jich zvládnete?",
+    "intro":           "Myslíte, že sportu rozumíte do detailu? Ukažte to v deseti otázkách.",
+    "highlight1":      "Deset otázek s výběrem odpovědí — legendy, rekordy, pravidla i debaty z šatny.",
+    "highlight2":      "Obtížnost střídá lehké a kruté. Každé kolo je trochu jiné.",
+    "highlight3":      "Sledujte skóre a vraťte se překonat své maximum.",
+    "challenge":       "Jdeme na to? První otázka čeká.",
+    "fallbackNotice":  "Toto kolo používá mezinárodní sadu otázek pro toto téma.",
+    "difficulty": {
+      "easy":   "Lehká",
+      "medium": "Střední",
+      "hard":   "Těžká"
+    },
+    "start":           "Spustit kvíz",
+    "loading":         "Načítání otázek…",
+    "next":            "Další otázka",
+    "seeResults":      "Zobrazit výsledky",
+    "correct":         "Správně!",
+    "incorrect":       "Špatně — správná odpověď: {answer}",
+    "finishedTitle":   "Kvíz dokončen",
+    "playAgain":       "Hrát znovu",
+    "backHome":        "Zpět na úvod",
+    "resultPerfect":   "Skvělé — jste opravdový fanoušek!",
+    "resultGreat":     "Výborně — téměř bez chyby!",
+    "resultGood":      "Dobrý výsledek — zkuste to znovu!",
+    "resultTryAgain":  "Ještě trochu procvičte — příště to bude lepší!",
+    "errorEmpty":      "Žádné otázky nejsou k dispozici. Zkuste to znovu.",
+    "errorLoad":       "Kvíz se nepodařilo načíst. Zkontrolujte připojení."
+  },
   "comingSoon": {
     "title":    "Brzy k dispozici",
     "subtitle": "Tato sekce je ve výstavbě. Brzy se vrátíme.",

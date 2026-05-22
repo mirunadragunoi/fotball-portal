@@ -136,6 +136,36 @@
       "network":            "Nie można połączyć z serwerem. Sprawdź połączenie."
     }
   },
+  "trivia": {
+    "title":           "Quiz sportowy",
+    "subtitle":        "10 pytań ze świata sportu — ile odpowiesz poprawnie?",
+    "intro":           "Uważasz, że znasz sport od podszewki? Udowodnij to w dziesięciu pytaniach.",
+    "highlight1":      "Dziesięć pytań wielokrotnego wyboru — legendy, rekordy, przepisy i tematy z przerwy meczowej.",
+    "highlight2":      "Trudność od łatwych po bezwzględne. Każda runda jest inna.",
+    "highlight3":      "Zapisuj wynik i wracaj, żeby pobić swój rekord.",
+    "challenge":       "Gotowy? Pierwsze pytanie czeka.",
+    "fallbackNotice":  "Ta runda korzysta z międzynarodowego zestawu pytań dla tego tematu.",
+    "difficulty": {
+      "easy":   "Łatwy",
+      "medium": "Średni",
+      "hard":   "Trudny"
+    },
+    "start":           "Rozpocznij quiz",
+    "loading":         "Ładowanie pytań…",
+    "next":            "Następne pytanie",
+    "seeResults":      "Zobacz wyniki",
+    "correct":         "Poprawnie!",
+    "incorrect":       "Źle — prawidłowa odpowiedź: {answer}",
+    "finishedTitle":   "Quiz zakończony",
+    "playAgain":       "Zagraj ponownie",
+    "backHome":        "Strona główna",
+    "resultPerfect":   "Świetnie — jesteś prawdziwym fanem!",
+    "resultGreat":     "Bardzo dobrze — prawie idealnie!",
+    "resultGood":      "Niezły wynik — spróbuj jeszcze raz!",
+    "resultTryAgain":  "Poćwicz jeszcze — następnym razem będzie lepiej!",
+    "errorEmpty":      "Brak dostępnych pytań. Spróbuj ponownie.",
+    "errorLoad":       "Nie udało się załadować quizu. Sprawdź połączenie."
+  },
   "comingSoon": {
     "title":    "Wkrótce",
     "subtitle": "Ta sekcja jest w budowie. Wróć wkrótce.",

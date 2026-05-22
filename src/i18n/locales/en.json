@@ -136,6 +136,36 @@
       "network":            "Could not reach the server. Check your connection and API URL."
     }
   },
+  "trivia": {
+    "title":           "Sports trivia",
+    "subtitle":        "10 questions from the world of sport — how many can you get right?",
+    "intro":           "Think you know sport inside out? Prove it in ten questions.",
+    "highlight1":      "Ten multiple-choice questions — legends, records, rules and those moments everyone argues about.",
+    "highlight2":      "Difficulty mixes easy and ruthless. No two runs feel exactly the same.",
+    "highlight3":      "Track your score and come back to beat your personal best.",
+    "challenge":       "Ready? First question is waiting.",
+    "fallbackNotice":  "This round uses the international question set for this topic.",
+    "difficulty": {
+      "easy":   "Easy",
+      "medium": "Medium",
+      "hard":   "Hard"
+    },
+    "start":           "Start quiz",
+    "loading":         "Loading questions…",
+    "next":            "Next question",
+    "seeResults":      "See results",
+    "correct":         "Correct!",
+    "incorrect":       "Wrong — the answer was: {answer}",
+    "finishedTitle":   "Quiz complete",
+    "playAgain":       "Play again",
+    "backHome":        "Back to home",
+    "resultPerfect":   "Outstanding — you're a true fan!",
+    "resultGreat":     "Great job — almost perfect!",
+    "resultGood":      "Solid score — play again to improve!",
+    "resultTryAgain":  "Keep practising — you'll do better next time!",
+    "errorEmpty":      "No questions available. Try again in a moment.",
+    "errorLoad":       "Could not load trivia. Check your connection."
+  },
   "comingSoon": {
     "title":    "Coming soon",
     "subtitle": "This section is under construction. Check back for updates.",

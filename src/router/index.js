@@ -54,7 +54,7 @@ const routes = [
   {
     path: '/trivia',
     name: 'Trivia',
-    component: () => import('@/views/ComingSoonView.vue'),
+    component: () => import('@/views/trivia/TriviaView.vue'),
   },
   {
     path: '/history',
