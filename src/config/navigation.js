@@ -3,7 +3,7 @@
  */
 export const PHASE2_FEATURES = {
   trivia: true,
-  history: false,
+  history: true,
   live: false,
 }
 

@@ -34,7 +34,7 @@ export default {
     { key: 'games', label: 'Games', path: '/games' },
     { key: 'videos', label: 'Videos', path: '/videos' },
     { key: 'trivia', label: 'Trivia', path: '/trivia' },
-    { key: 'history', label: 'History', path: '/history', comingSoon: true },
+    { key: 'history', label: 'History', path: '/history' },
     { key: 'live', label: 'Live', path: '/live', comingSoon: true },
   ],
 

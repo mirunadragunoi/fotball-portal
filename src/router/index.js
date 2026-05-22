@@ -59,7 +59,7 @@ const routes = [
   {
     path: '/history',
     name: 'History',
-    component: () => import('@/views/ComingSoonView.vue'),
+    component: () => import('@/views/history/HistoryView.vue'),
   },
   {
     path: '/live',
