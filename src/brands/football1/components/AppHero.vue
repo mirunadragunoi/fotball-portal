@@ -1,8 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
+import { useLiveScores } from '@/composables/useLiveScores'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
@@ -12,11 +13,25 @@ const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
 
-const liveMatches = [
-  { home: 'Vermillion FC',  away: 'Ironside United', h: 2, a: 1, min: "78'", stage: 'Group A' },
-  { home: 'Northport',      away: 'Verdant Athletic', h: 0, a: 0, min: "32'", stage: 'Group B' },
-  { home: 'Coastal SC',     away: 'Highland City',    h: 3, a: 2, min: 'FT',  stage: 'Group A' },
-]
+const showLiveWidget = computed(
+  () => PHASE2_LIVE_HERO_ENABLED && brandStore.config?.featureFlags?.liveScores !== false,
+)
+
+const {
+  heroRows: liveMatches,
+  loading: liveLoading,
+  startPolling,
+  stopPolling,
+} = useLiveScores({ limit: 3, autoStart: false })
+
+watch(
+  showLiveWidget,
+  (enabled) => {
+    if (enabled) startPolling()
+    else stopPolling()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -34,7 +49,7 @@ const liveMatches = [
 
     <div
       class="f1-hero__content"
-      :class="{ 'f1-hero__content--solo': !PHASE2_LIVE_HERO_ENABLED }"
+      :class="{ 'f1-hero__content--solo': !showLiveWidget }"
     >
       <!-- Left: headline + CTA -->
       <div class="f1-hero__left">
@@ -63,15 +78,22 @@ const liveMatches = [
       </div>
 
       <!-- Right: live scores widget (phase 2) -->
-      <aside v-if="PHASE2_LIVE_HERO_ENABLED" class="f1-hero__scores" aria-label="Live match scores">
+      <aside v-if="showLiveWidget" class="f1-hero__scores" aria-label="Live match scores">
         <div class="f1-hero__scores-header">
           <span class="f1-hero__live-dot" aria-hidden="true"></span>
           <span>{{ t('hero.f1.liveLabel') }}</span>
         </div>
 
+        <p v-if="liveLoading && !liveMatches.length" class="f1-hero__scores-empty">
+          {{ t('live.loading') }}
+        </p>
+        <p v-else-if="!liveMatches.length" class="f1-hero__scores-empty">
+          {{ t('live.emptyLiveMessage') }}
+        </p>
+
         <div
           v-for="(match, i) in liveMatches"
-          :key="i"
+          :key="match.id || i"
           class="f1-hero__match"
           :class="{ 'f1-hero__match--bordered': i < liveMatches.length - 1 }"
         >
@@ -259,6 +281,13 @@ const liveMatches = [
   border: 1px solid rgba(230, 237, 243, 0.16);
   border-radius: 16px;
   padding: 24px;
+}
+
+.f1-hero__scores-empty {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
 }
 
 .f1-hero__scores-header {

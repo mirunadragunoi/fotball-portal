@@ -225,6 +225,35 @@
     "emptySquads": "No squad data for this selection.",
     "errorLoad": "Could not load history data. Try again later."
   },
+  "live": {
+    "eyebrow": "Matchday",
+    "title": "Live scores",
+    "subtitle": "Follow matches in play, today's fixtures and league tables — updated every minute.",
+    "tabsLabel": "Live section",
+    "tabs": {
+      "live": "Live now",
+      "fixtures": "Fixtures",
+      "standings": "Standings"
+    },
+    "loading": "Loading scores…",
+    "loadingEvents": "Loading match events…",
+    "errorLoad": "Could not load live data. Try again later.",
+    "updatedAt": "Updated at {time}",
+    "liveCount": "{count} in play",
+    "statusLive": "Live",
+    "statusFinished": "Full time",
+    "statusScheduled": "Scheduled",
+    "fixtureDate": "Date",
+    "selectCompetition": "Competition",
+    "selectCompetitionPlaceholder": "Choose a league…",
+    "eventsTitle": "Match events",
+    "close": "Close",
+    "noEvents": "No events for this match yet.",
+    "eventsNote": "Events are generated from match data (goals, cards, substitutions). Full text commentary requires a premium API plan.",
+    "emptyLiveMessage": "No live matches right now. Check back on matchday.",
+    "emptyFixturesMessage": "No fixtures for this date.",
+    "emptyStandingsMessage": "Select a competition to load standings."
+  },
   "comingSoon": {
     "title":    "Coming soon",
     "subtitle": "This section is under construction. Check back for updates.",

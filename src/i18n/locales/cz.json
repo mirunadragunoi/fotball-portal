@@ -225,6 +225,35 @@
     "emptySquads": "Pro tento výběr nejsou data soupisky.",
     "errorLoad": "Nepodařilo se načíst data historie. Zkuste to později."
   },
+  "live": {
+    "eyebrow": "Zápasy",
+    "title": "Živé skóre",
+    "subtitle": "Sledujte zápasy naživo, dnešní program a tabulky.",
+    "tabsLabel": "Sekce live",
+    "tabs": {
+      "live": "Živě",
+      "fixtures": "Program",
+      "standings": "Tabulka"
+    },
+    "loading": "Načítání skóre…",
+    "loadingEvents": "Načítání událostí…",
+    "errorLoad": "Nepodařilo se načíst live data. Zkuste to znovu.",
+    "updatedAt": "Aktualizováno v {time}",
+    "liveCount": "{count} probíhá",
+    "statusLive": "Live",
+    "statusFinished": "Konec",
+    "statusScheduled": "Naplánováno",
+    "fixtureDate": "Datum",
+    "selectCompetition": "Soutěž",
+    "selectCompetitionPlaceholder": "Vyberte ligu…",
+    "eventsTitle": "Události zápasu",
+    "close": "Zavřít",
+    "noEvents": "Zatím žádné události pro tento zápas.",
+    "eventsNote": "Události pocházejí z dat zápasu (góly, karty, střídání). Plný textový komentář vyžaduje prémiový API plán.",
+    "emptyLiveMessage": "Momentálně žádné live zápasy. Vraťte se v den zápasu.",
+    "emptyFixturesMessage": "Pro toto datum nejsou zápasy.",
+    "emptyStandingsMessage": "Vyberte soutěž pro načtení tabulky."
+  },
   "comingSoon": {
     "title":    "Brzy k dispozici",
     "subtitle": "Tato sekce je ve výstavbě. Brzy se vrátíme.",

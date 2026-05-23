@@ -225,6 +225,35 @@
     "emptySquads": "Nu există date de lot pentru această selecție.",
     "errorLoad": "Nu s-au putut încărca datele. Încearcă din nou."
   },
+  "live": {
+    "eyebrow": "Meciuri",
+    "title": "Scoruri live",
+    "subtitle": "Urmărește meciurile în desfășurare, programul zilei și clasamentele — actualizate periodic.",
+    "tabsLabel": "Secțiune live",
+    "tabs": {
+      "live": "Live acum",
+      "fixtures": "Program",
+      "standings": "Clasament"
+    },
+    "loading": "Se încarcă scorurile…",
+    "loadingEvents": "Se încarcă evenimentele…",
+    "errorLoad": "Nu s-au putut încărca datele live. Încearcă din nou.",
+    "updatedAt": "Actualizat la {time}",
+    "liveCount": "{count} în desfășurare",
+    "statusLive": "Live",
+    "statusFinished": "Final",
+    "statusScheduled": "Programat",
+    "fixtureDate": "Data",
+    "selectCompetition": "Competiție",
+    "selectCompetitionPlaceholder": "Alege o ligă…",
+    "eventsTitle": "Evenimente meci",
+    "close": "Închide",
+    "noEvents": "Încă nu există evenimente pentru acest meci.",
+    "eventsNote": "Evenimentele provin din datele meciului (goluri, cartonașe, schimbări). Comentariul text complet necesită un plan API premium.",
+    "emptyLiveMessage": "Niciun meci live acum. Revino în zilele de meci.",
+    "emptyFixturesMessage": "Niciun meci programat pentru această dată.",
+    "emptyStandingsMessage": "Selectează o competiție pentru clasament."
+  },
   "comingSoon": {
     "title":    "În curând",
     "subtitle": "Această secțiune este în construcție. Reveniți pentru actualizări.",

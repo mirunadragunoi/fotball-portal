@@ -225,6 +225,35 @@
     "emptySquads": "Brak danych kadry dla tego wyboru.",
     "errorLoad": "Nie udało się załadować danych historii. Spróbuj ponownie później."
   },
+  "live": {
+    "eyebrow": "Mecze",
+    "title": "Wyniki na żywo",
+    "subtitle": "Śledź mecze na żywo, dzisiejszy terminarz i tabele ligowe.",
+    "tabsLabel": "Sekcja live",
+    "tabs": {
+      "live": "Na żywo",
+      "fixtures": "Terminarz",
+      "standings": "Tabela"
+    },
+    "loading": "Ładowanie wyników…",
+    "loadingEvents": "Ładowanie zdarzeń…",
+    "errorLoad": "Nie udało się załadować danych live. Spróbuj ponownie.",
+    "updatedAt": "Zaktualizowano o {time}",
+    "liveCount": "{count} w trakcie",
+    "statusLive": "Live",
+    "statusFinished": "Koniec",
+    "statusScheduled": "Zaplanowany",
+    "fixtureDate": "Data",
+    "selectCompetition": "Rozgrywki",
+    "selectCompetitionPlaceholder": "Wybierz ligę…",
+    "eventsTitle": "Zdarzenia meczu",
+    "close": "Zamknij",
+    "noEvents": "Brak zdarzeń dla tego meczu.",
+    "eventsNote": "Zdarzenia pochodzą z danych meczu (bramki, kartki, zmiany). Pełny komentarz tekstowy wymaga planu premium API.",
+    "emptyLiveMessage": "Brak meczów na żywo. Wróć w dni meczowe.",
+    "emptyFixturesMessage": "Brak meczów w tym terminie.",
+    "emptyStandingsMessage": "Wybierz rozgrywki, aby załadować tabelę."
+  },
   "comingSoon": {
     "title":    "Wkrótce",
     "subtitle": "Ta sekcja jest w budowie. Wróć wkrótce.",

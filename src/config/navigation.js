@@ -4,7 +4,7 @@
 export const PHASE2_FEATURES = {
   trivia: true,
   history: true,
-  live: false,
+  live: true,
 }
 
 /** Show live scores widget on home hero (only when Live section is ready). */

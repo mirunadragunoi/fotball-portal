@@ -64,7 +64,7 @@ const routes = [
   {
     path: '/live',
     name: 'Live',
-    component: () => import('@/views/ComingSoonView.vue'),
+    component: () => import('@/views/live/LiveView.vue'),
   },
   // Legal pages — all served by a single shared view, legalKey drives content
   {
