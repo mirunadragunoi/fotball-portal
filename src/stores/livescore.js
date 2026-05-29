@@ -162,16 +162,8 @@ export const useLiveScoreStore = defineStore('livescore', () => {
         const existing = byName.get(key)
         if (!existing || Number(c.id) > Number(existing.id)) byName.set(key, c)
       }
-      const deduped = [...byName.values()].sort((a, b) =>
+      competitions.value = [...byName.values()].sort((a, b) =>
         (a.name || '').localeCompare(b.name || '')
-      )
-
-      // Filter to only competitions that actually return standings data
-      const checks = await Promise.allSettled(
-        deduped.map(c => fetchStandings(creds.value, String(c.id)))
-      )
-      competitions.value = deduped.filter((_, i) =>
-        checks[i].status === 'fulfilled' && Array.isArray(checks[i].value) && checks[i].value.length > 0
       )
 
       if (!standingsCompetitionId.value && competitions.value[0]?.id) {
@@ -216,9 +208,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
         fetchMatchStatistics(creds.value, matchId),
         fetchMatchLineups(creds.value, matchId),
       ])
-      const evList = events.status === 'fulfilled' ? events.value : []
-      selectedMatchEvents.value = evList
-      if (evList.length) console.log('[livescore] first event raw:', JSON.stringify(evList[0], null, 2))
+      selectedMatchEvents.value = events.status === 'fulfilled' ? events.value : []
       selectedMatchCommentary.value = commentary.status === 'fulfilled' ? commentary.value : []
       selectedMatchStats.value      = stats.status     === 'fulfilled' ? stats.value     : []
       selectedMatchLineups.value    = lineups.status   === 'fulfilled' ? lineups.value   : {}

@@ -32,8 +32,10 @@ const lastUpdatedLabel = computed(() => {
 })
 
 onMounted(async () => {
-  await store.loadCompetitions()
-  await store.loadTabData()
+  await Promise.all([
+    store.loadTabData(),
+    store.loadCompetitions(),
+  ])
   store.setupVisibilityPolling(LIVESCORE_POLL.live)
 })
 
@@ -106,7 +108,10 @@ function goToChampionship() {
 
     <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="store.setTab" />
 
-    <p v-if="errorMessage" class="live-page__error" role="alert">{{ errorMessage }}</p>
+    <div v-if="errorMessage" class="live-page__error" role="alert">
+      <span>{{ errorMessage }}</span>
+      <button type="button" class="live-page__retry" @click="store.loadTabData()">Retry</button>
+    </div>
 
     <div class="live-page__layout">
       <section class="live-page__main" aria-labelledby="live-heading">
@@ -279,8 +284,29 @@ function goToChampionship() {
 }
 
 .live-page__error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   color: var(--color-accent);
   margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.live-page__retry {
+  padding: 4px 12px;
+  border-radius: var(--radius-button);
+  border: 1px solid currentColor;
+  background: none;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition-default);
+}
+
+.live-page__retry:hover {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
 }
 
 .live-page__layout {
