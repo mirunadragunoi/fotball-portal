@@ -11,7 +11,7 @@ import brandLogo from '@brand/assets/logo.svg'
 import { filterVisibleNav, PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
-import { useFavoritesStore } from '@/stores/favorites'
+import LiveBadge from '@/components/livescore/LiveBadge.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -58,7 +58,6 @@ function onAuthCtaClick() {
     authStore.logout()
     useGamesStore().clear()
     useVideosStore().clear()
-    useFavoritesStore().clear()
     router.push('/')
     return
   }
@@ -99,13 +98,14 @@ function onAuthCtaClick() {
 
       <!-- Right side actions -->
       <div class="app-header__actions">
-        <button
-          v-if="!isF2 && PHASE2_LIVE_HERO_ENABLED"
+        <RouterLink
+          v-if="PHASE2_LIVE_HERO_ENABLED"
+          to="/live"
           class="app-header__live-btn"
-          aria-label="Live matches"
+          :aria-label="t('nav.live', 'Live')"
         >
-          <AppIcon name="live" :size="16" style="stroke: var(--color-red)" />
-        </button>
+          <LiveBadge :show-count="true" />
+        </RouterLink>
         <button type="button" class="app-header__cta" @click="onAuthCtaClick">
           <AppIcon v-if="isF2 && !isLoggedIn" name="user" :size="16" stroke="currentColor" />
           {{ isLoggedIn ? t('auth.logout') : isF2 ? t('auth.signupLink') : t('auth.loginLink') }}
@@ -253,15 +253,20 @@ function onAuthCtaClick() {
 
 
 .app-header__live-btn {
-  width: 38px;
   height: 38px;
-  display: grid;
-  place-items: center;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
   background: color-mix(in srgb, var(--color-text) 4%, transparent);
   border: 1px solid var(--color-line);
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: var(--transition-default);
+}
+
+.app-header__live-btn:hover {
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
 .app-header__cta {

@@ -4,7 +4,6 @@ import { setUnauthorizedHandler } from '@/services/footballApi'
 import { useAuthStore } from '@/stores/auth'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
-import { useFavoritesStore } from '@/stores/favorites'
 
 const routes = [
   {
@@ -65,6 +64,36 @@ const routes = [
     path: '/live',
     name: 'Live',
     component: () => import('@/views/live/LiveView.vue'),
+  },
+  {
+    path: '/live/match/:matchId',
+    name: 'MatchDetail',
+    component: () => import('@/views/live/MatchDetailView.vue'),
+  },
+  {
+    path: '/live/tournament/:competitionId',
+    name: 'Tournament',
+    component: () => import('@/views/live/TournamentView.vue'),
+  },
+  {
+    path: '/live/h2h/:team1Id/:team2Id',
+    name: 'H2H',
+    component: () => import('@/views/live/H2HView.vue'),
+  },
+  {
+    path: '/live/standings/:competitionId',
+    name: 'Standings',
+    component: () => import('@/views/live/StandingsView.vue'),
+  },
+  {
+    path: '/live/competition/:competitionId',
+    name: 'CompetitionDetail',
+    component: () => import('@/views/live/CompetitionDetailView.vue'),
+  },
+  {
+    path: '/live/team/:teamId',
+    name: 'TeamDetail',
+    component: () => import('@/views/live/TeamDetailView.vue'),
   },
   // Legal pages — all served by a single shared view, legalKey drives content
   {
@@ -135,7 +164,6 @@ setUnauthorizedHandler(() => {
   auth.logout()
   useGamesStore().clear()
   useVideosStore().clear()
-  useFavoritesStore().clear()
   router.push({
     name: 'Login',
     query: redirect && redirect !== '/login' ? { redirect } : undefined,

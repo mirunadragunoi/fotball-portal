@@ -1,27 +1,28 @@
 <script setup>
 import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL } from '@/config/livescore'
+import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import LiveTabs from '@/components/livescore/LiveTabs.vue'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
-import MatchEventsPanel from '@/components/livescore/MatchEventsPanel.vue'
+import MatchDetail from '@/components/livescore/MatchDetail.vue'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 
 const { t } = useI18n()
+const router = useRouter()
 const brandStore = useBrandStore()
 const store = useLiveScoreStore()
 
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 
-const errorMessage = computed(() => {
-  if (!store.error) return ''
-  return typeof store.error === 'string' ? store.error : t('live.errorLoad')
-})
+const errorMessage = computed(() =>
+  store.error ? (typeof store.error === 'string' ? store.error : t('live.errorLoad')) : '',
+)
 
 const lastUpdatedLabel = computed(() => {
   if (!store.lastUpdated) return ''
@@ -33,39 +34,38 @@ const lastUpdatedLabel = computed(() => {
 onMounted(async () => {
   await store.loadCompetitions()
   await store.loadTabData()
-  store.startLivePolling(LIVESCORE_POLL.live)
+  store.setupVisibilityPolling(LIVESCORE_POLL.live)
 })
 
 onUnmounted(() => {
-  store.stopLivePolling()
-  store.clearSelectedMatch()
+  store.teardownVisibilityPolling()
+  store.clearSelection()
+})
+
+watch(() => store.activeTab, () => store.loadTabData())
+
+watch(() => store.fixtureDate, () => {
+  if (store.activeTab === 'fixtures') store.loadFixtures()
+})
+
+watch(() => store.standingsCompetitionId, () => {
+  if (store.activeTab === 'standings') store.loadStandings()
 })
 
 watch(
-  () => store.activeTab,
-  () => store.loadTabData(),
-)
-
-watch(
-  () => store.fixtureDate,
-  () => {
-    if (store.activeTab === 'fixtures') store.loadFixtures()
+  () => store.selectedMatch,
+  (match) => {
+    if (match) store.startDetailPolling()
+    else store.stopDetailPolling()
   },
 )
-
-watch(
-  () => store.standingsCompetitionId,
-  () => {
-    if (store.activeTab === 'standings') store.loadStandings()
-  },
-)
-
-function onTabChange(tab) {
-  store.setTab(tab)
-}
 
 async function onMatchSelect(match) {
-  await store.loadMatchEvents(match)
+  await store.selectMatch(match)
+}
+
+function goToTournament() {
+  router.push({ name: 'Tournament', params: { competitionId: WC_2026_COMPETITION_ID } })
 }
 </script>
 
@@ -78,15 +78,20 @@ async function onMatchSelect(match) {
         id="live-heading"
       />
       <p class="live-page__subtitle">{{ t('live.subtitle') }}</p>
-      <p v-if="store.activeTab === 'live' && lastUpdatedLabel" class="live-page__updated">
-        {{ lastUpdatedLabel }}
-        <span v-if="store.liveCount" class="live-page__count">
-          · {{ t('live.liveCount', { count: store.liveCount }) }}
-        </span>
-      </p>
+      <div class="live-page__meta">
+        <p v-if="store.activeTab === 'live' && lastUpdatedLabel" class="live-page__updated">
+          {{ lastUpdatedLabel }}
+          <span v-if="store.liveCount" class="live-page__count">
+            · {{ t('live.liveCount', { count: store.liveCount }) }}
+          </span>
+        </p>
+        <button type="button" class="live-page__tournament-btn" @click="goToTournament">
+          Tournament 2026 →
+        </button>
+      </div>
     </div>
 
-    <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="onTabChange" />
+    <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="store.setTab" />
 
     <p v-if="errorMessage" class="live-page__error" role="alert">{{ errorMessage }}</p>
 
@@ -140,11 +145,7 @@ async function onMatchSelect(match) {
             <span>{{ t('live.selectCompetition') }}</span>
             <select v-model="store.standingsCompetitionId">
               <option value="">{{ t('live.selectCompetitionPlaceholder') }}</option>
-              <option
-                v-for="c in store.competitions"
-                :key="c.id"
-                :value="String(c.id)"
-              >
+              <option v-for="c in store.competitions" :key="c.id" :value="String(c.id)">
                 {{ c.name }}
               </option>
             </select>
@@ -154,13 +155,17 @@ async function onMatchSelect(match) {
         </template>
       </section>
 
-      <MatchEventsPanel
+      <!-- Match detail panel -->
+      <MatchDetail
         v-if="store.selectedMatch"
-        class="live-page__events"
+        class="live-page__detail"
         :match="store.selectedMatch"
         :events="store.selectedMatchEvents"
-        :loading="store.eventsLoading"
-        @close="store.clearSelectedMatch()"
+        :commentary="store.selectedMatchCommentary"
+        :stats="store.selectedMatchStats"
+        :lineups="store.selectedMatchLineups"
+        :loading="store.detailLoading"
+        @close="store.clearSelection()"
       />
     </div>
   </main>
@@ -185,15 +190,40 @@ async function onMatchSelect(match) {
   max-width: 640px;
 }
 
+.live-page__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
 .live-page__updated {
-  margin: 8px 0 0;
   font-size: 13px;
   color: var(--color-text-secondary);
+  margin: 0;
 }
 
 .live-page__count {
   color: var(--color-accent);
   font-weight: 700;
+}
+
+.live-page__tournament-btn {
+  border: none;
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: var(--transition-default);
+  min-height: 36px;
+}
+
+.live-page__tournament-btn:hover {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .live-page__error {
@@ -208,14 +238,12 @@ async function onMatchSelect(match) {
 
 @media (min-width: 1024px) {
   .live-page__layout {
-    grid-template-columns: 1fr minmax(280px, 360px);
+    grid-template-columns: 1fr minmax(320px, 400px);
     align-items: start;
   }
 }
 
-.live-page__group + .live-page__group {
-  margin-top: 24px;
-}
+.live-page__group + .live-page__group { margin-top: 24px; }
 
 .live-page__group-title {
   margin: 0 0 12px;
@@ -232,10 +260,7 @@ async function onMatchSelect(match) {
   gap: 10px;
 }
 
-.live-page__skeletons {
-  display: grid;
-  gap: 12px;
-}
+.live-page__skeletons { display: grid; gap: 12px; }
 
 .live-page__date,
 .live-page__select {
@@ -256,6 +281,11 @@ async function onMatchSelect(match) {
   border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
   background: var(--color-surface);
   color: var(--color-text);
+}
+
+.live-page__detail {
+  position: sticky;
+  top: calc(var(--header-height) + 16px);
 }
 
 .live-page--f2 .live-page__group-title {

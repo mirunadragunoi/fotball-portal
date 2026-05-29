@@ -73,7 +73,6 @@ export function mapProductToGame(product) {
     plays: formatCount(product.rating_count ?? 0),
     duration: '',
     releaseDate: '',
-    isFavorite: Boolean(product.is_favorite),
     raw: product,
   }
 }
@@ -97,20 +96,6 @@ export function mapProductToVideo(product) {
     views: formatCount(product.rating_count ?? 0),
     publishedAt: '',
     tone: VIDEO_TONES[idx % VIDEO_TONES.length],
-    isFavorite: Boolean(product.is_favorite),
     raw: product,
-  }
-}
-
-/** Map a favorites list item to minimal product shape for UI. */
-export function mapFavoriteItem(item) {
-  return {
-    id: String(item.product_id ?? item.id),
-    title: item.title || '',
-    type: item.type,
-    url: item.url || '',
-    thumbnail: item.icon_large || item.icon_small || '',
-    code: item.code || '',
-    favoritedAt: item.favorited_at || '',
   }
 }

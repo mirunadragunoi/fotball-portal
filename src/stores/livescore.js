@@ -1,46 +1,61 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { LIVESCORE_TABS } from '@/config/livescore'
+import { LIVESCORE_TABS, LIVESCORE_POLL } from '@/config/livescore'
 import { getCompetitionFilterForCountry } from '@/utils/liveScoreFormat'
 import {
   fetchLiveMatches,
   fetchFixtures,
   fetchMatchEvents,
+  fetchMatchCommentary,
+  fetchMatchStatistics,
+  fetchMatchLineups,
   fetchStandings,
   fetchCompetitions,
 } from '@/services/livescoreApi'
 
 export const useLiveScoreStore = defineStore('livescore', () => {
+  // ─── Tab state ────────────────────────────────────────────────────────────
   const activeTab = ref('live')
+
+  // ─── Loading / error ──────────────────────────────────────────────────────
   const loading = ref(false)
-  const eventsLoading = ref(false)
+  const detailLoading = ref(false)
   const error = ref(null)
 
+  // ─── Live matches ─────────────────────────────────────────────────────────
   const liveMatches = ref([])
   const fixtures = ref([])
   const standings = ref([])
   const competitions = ref([])
+  const lastUpdated = ref(null)
+
+  // ─── Selected match detail ────────────────────────────────────────────────
   const selectedMatch = ref(null)
   const selectedMatchEvents = ref([])
+  const selectedMatchCommentary = ref([])
+  const selectedMatchStats = ref([])
+  const selectedMatchLineups = ref({})
 
+  // ─── Fixture date / standings competition ─────────────────────────────────
   const fixtureDate = ref(todayIso())
   const standingsCompetitionId = ref('')
 
-  const lastUpdated = ref(null)
+  // ─── Poll timers ──────────────────────────────────────────────────────────
   let livePollTimer = null
+  let detailPollTimer = null
 
   const authStore = useAuthStore()
   const creds = computed(() => authStore.getAuthQuery() || {})
-
   const competitionFilter = computed(() => getCompetitionFilterForCountry())
 
+  // ─── Getters ──────────────────────────────────────────────────────────────
   const matchesByCompetition = computed(() => {
     const grouped = {}
-    for (const match of liveMatches.value) {
-      const name = match?.competition?.name || 'Other'
+    for (const m of liveMatches.value) {
+      const name = m?.competition?.name || 'Other'
       if (!grouped[name]) grouped[name] = []
-      grouped[name].push(match)
+      grouped[name].push(m)
     }
     return grouped
   })
@@ -62,6 +77,11 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     ),
   )
 
+  function matchById(id) {
+    return liveMatches.value.find((m) => String(m.id) === String(id)) || null
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
   function todayIso() {
     return new Date().toISOString().slice(0, 10)
   }
@@ -70,14 +90,14 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     if (LIVESCORE_TABS.includes(tab)) activeTab.value = tab
   }
 
+  // ─── Data loaders ─────────────────────────────────────────────────────────
   async function loadLive() {
     loading.value = true
     error.value = null
     try {
-      const list = await fetchLiveMatches(creds.value, {
+      liveMatches.value = await fetchLiveMatches(creds.value, {
         competitionId: competitionFilter.value || undefined,
       })
-      liveMatches.value = list
       lastUpdated.value = new Date()
     } catch (e) {
       error.value = e?.message || 'load'
@@ -111,10 +131,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     loading.value = true
     error.value = null
     try {
-      standings.value = await fetchStandings(
-        creds.value,
-        standingsCompetitionId.value,
-      )
+      standings.value = await fetchStandings(creds.value, standingsCompetitionId.value)
     } catch (e) {
       error.value = e?.message || 'load'
       standings.value = []
@@ -134,43 +151,68 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     }
   }
 
-  async function loadMatchEvents(match) {
-    if (!match?.id) return
-    selectedMatch.value = match
-    eventsLoading.value = true
-    try {
-      selectedMatchEvents.value = await fetchMatchEvents(creds.value, match.id)
-    } catch {
-      selectedMatchEvents.value = []
-    } finally {
-      eventsLoading.value = false
-    }
-  }
-
-  function clearSelectedMatch() {
-    selectedMatch.value = null
-    selectedMatchEvents.value = []
-  }
-
   async function loadTabData() {
     switch (activeTab.value) {
-      case 'live':
-        await loadLive()
-        break
-      case 'fixtures':
-        await loadFixtures()
-        break
-      case 'standings':
-        await loadStandings()
-        break
-      default:
-        break
+      case 'live':     return loadLive()
+      case 'fixtures': return loadFixtures()
+      case 'standings': return loadStandings()
     }
   }
 
-  function startLivePolling(intervalMs) {
+  // ─── Match detail ─────────────────────────────────────────────────────────
+  async function selectMatch(match) {
+    selectedMatch.value = match
+    await fetchMatchDetail(match?.id)
+  }
+
+  async function fetchMatchDetail(matchId) {
+    if (!matchId) return
+    detailLoading.value = true
+    try {
+      const [events, commentary, stats, lineups] = await Promise.allSettled([
+        fetchMatchEvents(creds.value, matchId),
+        fetchMatchCommentary(creds.value, matchId),
+        fetchMatchStatistics(creds.value, matchId),
+        fetchMatchLineups(creds.value, matchId),
+      ])
+      selectedMatchEvents.value    = events.status === 'fulfilled'    ? events.value    : []
+      selectedMatchCommentary.value = commentary.status === 'fulfilled' ? commentary.value : []
+      selectedMatchStats.value     = stats.status === 'fulfilled'     ? stats.value     : []
+      selectedMatchLineups.value   = lineups.status === 'fulfilled'   ? lineups.value   : {}
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  async function refreshMatchDetail() {
+    const matchId = selectedMatch.value?.id
+    if (!matchId) return
+    try {
+      const [commentary, stats] = await Promise.all([
+        fetchMatchCommentary(creds.value, matchId),
+        fetchMatchStatistics(creds.value, matchId),
+      ])
+      selectedMatchCommentary.value = commentary
+      selectedMatchStats.value = stats
+    } catch {
+      // silent — keep stale data
+    }
+  }
+
+  function clearSelection() {
+    selectedMatch.value = null
+    selectedMatchEvents.value = []
+    selectedMatchCommentary.value = []
+    selectedMatchStats.value = []
+    selectedMatchLineups.value = {}
+    stopDetailPolling()
+  }
+
+  // ─── Polling ──────────────────────────────────────────────────────────────
+  function startLivePolling(intervalMs = LIVESCORE_POLL.live) {
     stopLivePolling()
     livePollTimer = setInterval(() => {
+      if (document.visibilityState !== 'visible') return
       if (activeTab.value === 'live') loadLive()
     }, intervalMs)
   }
@@ -182,32 +224,91 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     }
   }
 
+  function startDetailPolling() {
+    stopDetailPolling()
+    if (!selectedMatch.value) return
+    detailPollTimer = setInterval(() => {
+      if (document.visibilityState !== 'visible') return
+      refreshMatchDetail()
+    }, LIVESCORE_POLL.detail)
+  }
+
+  function stopDetailPolling() {
+    if (detailPollTimer) {
+      clearInterval(detailPollTimer)
+      detailPollTimer = null
+    }
+  }
+
+  // Visibility API — call setupVisibilityPolling from the view
+  function _onVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+      loadLive()
+      startLivePolling()
+      if (selectedMatch.value) startDetailPolling()
+    } else {
+      stopLivePolling()
+      stopDetailPolling()
+    }
+  }
+
+  function setupVisibilityPolling(intervalMs = LIVESCORE_POLL.live) {
+    document.addEventListener('visibilitychange', _onVisibilityChange)
+    startLivePolling(intervalMs)
+  }
+
+  function teardownVisibilityPolling() {
+    document.removeEventListener('visibilitychange', _onVisibilityChange)
+    stopLivePolling()
+    stopDetailPolling()
+  }
+
+  // ─── Legacy aliases kept for widget / hero ─────────────────────────────────
+  function startLivePoll(ms) { setupVisibilityPolling(ms) }
+  function stopLivePoll() { teardownVisibilityPolling() }
+
   return {
     activeTab,
     loading,
-    eventsLoading,
+    detailLoading,
     error,
     liveMatches,
     fixtures,
     standings,
     competitions,
+    lastUpdated,
     selectedMatch,
     selectedMatchEvents,
+    selectedMatchCommentary,
+    selectedMatchStats,
+    selectedMatchLineups,
     fixtureDate,
     standingsCompetitionId,
-    lastUpdated,
     matchesByCompetition,
     liveCount,
     inPlayMatches,
+    matchById,
     setTab,
     loadLive,
     loadFixtures,
     loadStandings,
     loadCompetitions,
-    loadMatchEvents,
-    clearSelectedMatch,
     loadTabData,
+    selectMatch,
+    fetchMatchDetail,
+    clearSelection,
     startLivePolling,
     stopLivePolling,
+    startDetailPolling,
+    stopDetailPolling,
+    setupVisibilityPolling,
+    teardownVisibilityPolling,
+    // legacy
+    startLivePoll,
+    stopLivePoll,
+    clearSelectedMatch: clearSelection,
+    loadMatchEvents: (match) => selectMatch(match),
+    eventsLoading: detailLoading,
+    selectedMatchEvents,
   }
 })

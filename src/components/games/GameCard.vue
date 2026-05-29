@@ -1,7 +1,6 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useBrandStore } from '@/stores/brand'
-import { useFavoritesStore } from '@/stores/favorites'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import PlatformBadge from '@/components/shared/PlatformBadge.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
@@ -11,19 +10,7 @@ const props = defineProps({
 })
 
 const brandStore = useBrandStore()
-const favoritesStore = useFavoritesStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
-const isFavorite = computed(() => favoritesStore.isFavorite(props.game.id))
-
-onMounted(() => {
-  if (!favoritesStore.loaded) favoritesStore.loadFavorites()
-})
-
-async function onToggleFavorite(event) {
-  event.preventDefault()
-  event.stopPropagation()
-  await favoritesStore.toggle(props.game.id)
-}
 </script>
 
 <template>
@@ -53,19 +40,6 @@ async function onToggleFavorite(event) {
           <AppIcon name="star" :size="11" stroke="var(--color-accent)" />
           {{ game.rating }}
         </div>
-
-        <!-- F2: heart button -->
-        <button
-          v-if="isF2"
-          type="button"
-          class="game-card__fav"
-          :class="{ 'game-card__fav--active': isFavorite }"
-          :aria-label="isFavorite ? `Remove ${game.title} from favourites` : `Save ${game.title} to favourites`"
-          :aria-pressed="isFavorite"
-          @click="onToggleFavorite"
-        >
-          <AppIcon name="heart" :size="14" :stroke="isFavorite ? '#fff' : 'var(--color-red)'" />
-        </button>
       </div>
     </AuthLink>
 
@@ -184,31 +158,6 @@ async function onToggleFavorite(event) {
 
 .game-card--f2 .game-card__rating {
   display: none;
-}
-
-.game-card__fav {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--color-surface);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: none;
-  cursor: pointer;
-  transition: var(--transition-default);
-}
-
-.game-card__fav:hover {
-  transform: scale(1.1);
-}
-
-.game-card__fav--active {
-  background: var(--color-red);
-  border-color: var(--color-red);
 }
 
 /* Body */

@@ -9,6 +9,7 @@ import HomeShowcase from '@/components/home/HomeShowcase.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useLandingImages } from '@/composables/useLandingImages'
+import LiveScoreWidget from '@/components/livescore/LiveScoreWidget.vue'
 
 const { t } = useI18n()
 const brandStore = useBrandStore()
@@ -79,6 +80,9 @@ const leaderboard = [
         </div>
       </div>
     </section>
+
+    <!-- Live scores widget -->
+    <LiveScoreWidget />
 
     <FeaturedGames />
 

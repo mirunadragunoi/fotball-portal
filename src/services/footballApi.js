@@ -133,24 +133,6 @@ export async function fetchProductById(id, { accessCode, portalName, language } 
   return unwrapData(data)
 }
 
-export async function fetchFavorites({ accessCode, portalName, language } = {}) {
-  const data = await request('/football/favorites', {
-    query: {
-      ...authParams(accessCode, portalName),
-      language: language || getLanguage(),
-    },
-  })
-  const list = unwrapData(data)
-  return Array.isArray(list) ? list : []
-}
-
-export async function toggleFavorite(productId, { accessCode, portalName } = {}) {
-  return request(`/football/favorites/${productId}`, {
-    method: 'POST',
-    body: authParams(accessCode, portalName),
-  })
-}
-
 export async function fetchAbout({ accessCode, portalName, language } = {}) {
   const data = await request('/football/about', {
     query: {
