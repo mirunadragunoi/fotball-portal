@@ -18,8 +18,18 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    const fetch = props.liveMatchIds.length ? fetchLiveStandings : fetchStandings
-    rows.value = await fetch(creds.value, props.competitionId, { groupId: props.groupId })
+    // Always load regular standings first (available on free plan)
+    rows.value = await fetchStandings(creds.value, props.competitionId, { groupId: props.groupId })
+
+    // If live matches are active, try to enhance with live standings
+    if (props.liveMatchIds.length && rows.value.length) {
+      try {
+        const live = await fetchLiveStandings(creds.value, props.competitionId, { groupId: props.groupId })
+        if (live?.length) rows.value = live
+      } catch {
+        // live standings not available on this plan — keep regular standings
+      }
+    }
   } catch {
     rows.value = []
   } finally {
@@ -54,14 +64,14 @@ onMounted(async () => {
         >
           <td class="group-card__team">
             <img
-              v-if="row.team?.logo"
-              :src="row.team.logo"
+              v-if="row.team?.logo || row.team_logo"
+              :src="row.team?.logo || row.team_logo"
               alt=""
               width="16"
               height="16"
               loading="lazy"
             />
-            <span>{{ row.team?.name || row.team_name || '—' }}</span>
+            <span>{{ row.team?.name || row.team?.full_name || row.team_name || row.name || '—' }}</span>
             <span v-if="row.live?.score" class="group-card__live-score">
               {{ row.live.score }}
             </span>

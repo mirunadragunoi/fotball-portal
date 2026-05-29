@@ -44,6 +44,7 @@ export const LIVESCORE_LANG_MAP = {
 }
 
 export const WC_2026_COMPETITION_ID = 362
+export const CHAMPIONSHIP_2026_COMPETITION_ID = 0
 
 export const WC_2026_GROUPS = {
   A: 4286, B: 4287, C: 4288, D: 4289,

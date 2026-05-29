@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { LIVESCORE_POLL, WC_2026_COMPETITION_ID, CHAMPIONSHIP_2026_COMPETITION_ID } from '@/config/livescore'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
@@ -67,6 +67,10 @@ async function onMatchSelect(match) {
 function goToTournament() {
   router.push({ name: 'Tournament', params: { competitionId: WC_2026_COMPETITION_ID } })
 }
+
+function goToChampionship() {
+  router.push({ name: 'Tournament', params: { competitionId: CHAMPIONSHIP_2026_COMPETITION_ID } })
+}
 </script>
 
 <template>
@@ -85,9 +89,18 @@ function goToTournament() {
             · {{ t('live.liveCount', { count: store.liveCount }) }}
           </span>
         </p>
-        <button type="button" class="live-page__tournament-btn" @click="goToTournament">
-          Tournament 2026 →
-        </button>
+        <div class="live-page__categories">
+          <button type="button" class="live-page__cat-btn live-page__cat-btn--tournament" @click="goToTournament">
+            <span class="live-page__cat-icon">🏆</span>
+            <span class="live-page__cat-label">Tournament 2026</span>
+            <span class="live-page__cat-arrow">→</span>
+          </button>
+          <button type="button" class="live-page__cat-btn live-page__cat-btn--championship" @click="goToChampionship">
+            <span class="live-page__cat-icon">🌍</span>
+            <span class="live-page__cat-label">Championship 2026</span>
+            <span class="live-page__cat-arrow">→</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -165,6 +178,7 @@ function goToTournament() {
         :stats="store.selectedMatchStats"
         :lineups="store.selectedMatchLineups"
         :loading="store.detailLoading"
+        :detail-error="store.detailError"
         @close="store.clearSelection()"
       />
     </div>
@@ -209,21 +223,59 @@ function goToTournament() {
   font-weight: 700;
 }
 
-.live-page__tournament-btn {
-  border: none;
-  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
-  color: var(--color-primary);
-  font-weight: 700;
-  font-size: 13px;
-  padding: 6px 14px;
-  border-radius: var(--radius-button);
-  cursor: pointer;
-  transition: var(--transition-default);
-  min-height: 36px;
+.live-page__categories {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.live-page__tournament-btn:hover {
-  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+.live-page__cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-button);
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-default);
+  min-height: 40px;
+  text-decoration: none;
+}
+
+.live-page__cat-btn--tournament {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.live-page__cat-btn--championship {
+  color: var(--color-secondary);
+  border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+}
+
+.live-page__cat-btn--tournament:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.live-page__cat-btn--championship:hover {
+  background: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+}
+
+.live-page__cat-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.live-page__cat-label {
+  white-space: nowrap;
+}
+
+.live-page__cat-arrow {
+  opacity: 0.6;
+  font-size: 12px;
 }
 
 .live-page__error {

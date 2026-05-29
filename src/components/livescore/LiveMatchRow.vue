@@ -18,10 +18,20 @@ const emit = defineEmits(['select'])
 
 const { t } = useI18n()
 
-const score = computed(() => parseScoreString(props.match?.scores?.score))
-const minute = computed(() => matchMinuteLabel(props.match))
-const live = computed(() => isLiveStatus(props.match?.status))
+const score    = computed(() => parseScoreString(props.match?.scores?.score))
+const minute   = computed(() => matchMinuteLabel(props.match))
+const live     = computed(() => isLiveStatus(props.match?.status))
 const finished = computed(() => isFinishedStatus(props.match?.status))
+
+// Fixtures may use flat fields (home_name / away_name) instead of nested home.name / away.name
+const homeName = computed(() =>
+  props.match?.home?.name || props.match?.home_name || props.match?.home_team_name || ''
+)
+const awayName = computed(() =>
+  props.match?.away?.name || props.match?.away_name || props.match?.away_team_name || ''
+)
+const homeLogo = computed(() => props.match?.home?.logo || props.match?.home_logo || null)
+const awayLogo = computed(() => props.match?.away?.logo || props.match?.away_logo || null)
 
 const statusLabel = computed(() => {
   if (live.value) return t('live.statusLive')
@@ -56,15 +66,15 @@ function onClick() {
     <div class="live-row__teams">
       <div class="live-row__team live-row__team--home">
         <img
-          v-if="match.home?.logo"
-          :src="match.home.logo"
+          v-if="homeLogo"
+          :src="homeLogo"
           :alt="''"
           class="live-row__logo"
           loading="lazy"
           width="24"
           height="24"
         />
-        <span class="live-row__name">{{ match.home?.name }}</span>
+        <span class="live-row__name">{{ homeName }}</span>
       </div>
 
       <div class="live-row__score-block" aria-label="Score">
@@ -80,15 +90,15 @@ function onClick() {
 
       <div class="live-row__team live-row__team--away">
         <img
-          v-if="match.away?.logo"
-          :src="match.away.logo"
+          v-if="awayLogo"
+          :src="awayLogo"
           :alt="''"
           class="live-row__logo"
           loading="lazy"
           width="24"
           height="24"
         />
-        <span class="live-row__name">{{ match.away?.name }}</span>
+        <span class="live-row__name">{{ awayName }}</span>
       </div>
     </div>
 

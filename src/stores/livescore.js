@@ -36,6 +36,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   const selectedMatchCommentary = ref([])
   const selectedMatchStats = ref([])
   const selectedMatchLineups = ref({})
+  const detailError = ref(null)
 
   // ─── Fixture date / standings competition ─────────────────────────────────
   const fixtureDate = ref(todayIso())
@@ -140,9 +141,39 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     }
   }
 
+  // Strip season patterns so "Premier League 2025/26" == "Premier League 2024/25"
+  function normCompName(name) {
+    return (name || '').toLowerCase()
+      .replace(/\d{4}[/-]\d{2,4}/g, '')
+      .replace(/\b(20|19)\d{2}\b/g, '')
+      .replace(/\bseason\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  }
+
   async function loadCompetitions() {
     try {
-      competitions.value = await fetchCompetitions(creds.value)
+      const raw = await fetchCompetitions(creds.value)
+      // Deduplicate by normalised name, keep highest ID (most recent season)
+      const byName = new Map()
+      for (const c of raw) {
+        const key = normCompName(c.name)
+        if (!key) continue
+        const existing = byName.get(key)
+        if (!existing || Number(c.id) > Number(existing.id)) byName.set(key, c)
+      }
+      const deduped = [...byName.values()].sort((a, b) =>
+        (a.name || '').localeCompare(b.name || '')
+      )
+
+      // Filter to only competitions that actually return standings data
+      const checks = await Promise.allSettled(
+        deduped.map(c => fetchStandings(creds.value, String(c.id)))
+      )
+      competitions.value = deduped.filter((_, i) =>
+        checks[i].status === 'fulfilled' && Array.isArray(checks[i].value) && checks[i].value.length > 0
+      )
+
       if (!standingsCompetitionId.value && competitions.value[0]?.id) {
         standingsCompetitionId.value = String(competitions.value[0].id)
       }
@@ -160,14 +191,24 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   }
 
   // ─── Match detail ─────────────────────────────────────────────────────────
+  function resolveMatchId(match) {
+    const id = match?.id ?? match?.match_id ?? match?.fixture_id ?? null
+    if (!id) console.warn('[livescore] selectMatch: could not resolve match ID', match)
+    return id
+  }
+
   async function selectMatch(match) {
     selectedMatch.value = match
-    await fetchMatchDetail(match?.id)
+    await fetchMatchDetail(resolveMatchId(match))
   }
 
   async function fetchMatchDetail(matchId) {
-    if (!matchId) return
+    if (!matchId) {
+      detailError.value = 'match_id_missing'
+      return
+    }
     detailLoading.value = true
+    detailError.value = null
     try {
       const [events, commentary, stats, lineups] = await Promise.allSettled([
         fetchMatchEvents(creds.value, matchId),
@@ -175,10 +216,21 @@ export const useLiveScoreStore = defineStore('livescore', () => {
         fetchMatchStatistics(creds.value, matchId),
         fetchMatchLineups(creds.value, matchId),
       ])
-      selectedMatchEvents.value    = events.status === 'fulfilled'    ? events.value    : []
+      const evList = events.status === 'fulfilled' ? events.value : []
+      selectedMatchEvents.value = evList
+      if (evList.length) console.log('[livescore] first event raw:', JSON.stringify(evList[0], null, 2))
       selectedMatchCommentary.value = commentary.status === 'fulfilled' ? commentary.value : []
-      selectedMatchStats.value     = stats.status === 'fulfilled'     ? stats.value     : []
-      selectedMatchLineups.value   = lineups.status === 'fulfilled'   ? lineups.value   : {}
+      selectedMatchStats.value      = stats.status     === 'fulfilled' ? stats.value     : []
+      selectedMatchLineups.value    = lineups.status   === 'fulfilled' ? lineups.value   : {}
+
+
+      const failures = [events, commentary, stats, lineups].filter(r => r.status === 'rejected')
+      if (failures.length > 0) {
+        console.warn('[livescore] fetchMatchDetail partial failures:', failures.map(f => f.reason?.message))
+      }
+      if (failures.length === 4) {
+        detailError.value = failures[0].reason?.message || 'api_error'
+      }
     } finally {
       detailLoading.value = false
     }
@@ -205,6 +257,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     selectedMatchCommentary.value = []
     selectedMatchStats.value = []
     selectedMatchLineups.value = {}
+    detailError.value = null
     stopDetailPolling()
   }
 
@@ -272,6 +325,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     loading,
     detailLoading,
     error,
+    detailError,
     liveMatches,
     fixtures,
     standings,

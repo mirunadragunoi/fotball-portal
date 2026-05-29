@@ -13,12 +13,16 @@ const props = defineProps({
   stats:       { type: Array,  default: () => [] },
   lineups:     { type: Object, default: () => ({}) },
   loading:     { type: Boolean, default: false },
+  detailError: { type: String,  default: null },
 })
 
 const emit = defineEmits(['close'])
 const { t } = useI18n()
 
 const TABS = ['summary', 'commentary', 'stats', 'lineups']
+
+// Commentary, stats, lineups are not available on the free API plan
+const PLAN_LIMITED_TABS = new Set(['commentary', 'stats', 'lineups'])
 const activeTab = ref('summary')
 
 const score  = computed(() => parseScoreString(props.match?.scores?.score))
@@ -61,6 +65,110 @@ function tabLabel(tab) {
 
 function eventIcon(ev) {
   return EVENT_ICON[(ev.event || ev.type || '').toUpperCase()] || '•'
+}
+
+function str(v) { return typeof v === 'string' && v ? v : null }
+
+function playerName(ev) {
+  const type = (ev.event || ev.type || '').toUpperCase()
+  // Substitutions: outgoing player is the "main" player
+  if (type === 'SUBSTITUTION') {
+    return ev.player_out?.name
+      || str(ev.player_out)
+      || ev.player_out_name
+      || ev.player?.name
+      || ev.player?.full_name
+      || str(ev.player)
+      || ev.player_name
+      || ''
+  }
+  return ev.player?.name
+    || ev.player?.full_name
+    || str(ev.player)
+    || ev.player_name
+    || ev.player1?.name
+    || str(ev.player1)
+    || ev.scorer?.name
+    || str(ev.scorer)
+    || ev.home_player
+    || ev.away_player
+    || ''
+}
+
+function secondPlayerName(ev) {
+  const type = (ev.event || ev.type || '').toUpperCase()
+  if (type === 'SUBSTITUTION') {
+    return ev.player_in?.name
+      || str(ev.player_in)
+      || ev.player_in_name
+      || ev.player2?.name
+      || str(ev.player2)
+      || ''
+  }
+  // Goals: assist
+  return ev.assist?.name
+    || ev.assist?.full_name
+    || str(ev.assist)
+    || ev.assist_name
+    || ev.assist_player_name
+    || ev.player2?.name
+    || str(ev.player2)
+    || ev.info?.name
+    || str(ev.info)
+    || ''
+}
+
+function isTruthy(v) {
+  return v === true || v === 1 || v === '1' || v === 'true'
+}
+function isFalsy(v) {
+  return v === false || v === 0 || v === '0' || v === 'false'
+}
+
+// Resolve which side this event belongs to, trying every API field pattern
+function eventSide(ev) {
+  if (isTruthy(ev.is_home)) return 'home'
+  if (isTruthy(ev.is_away)) return 'away'
+  if (isTruthy(ev.home))    return 'home'
+  if (isFalsy(ev.home) && ev.home !== undefined && ev.home !== null) return 'away'
+  if (ev.team === 'home' || ev.side === 'home') return 'home'
+  if (ev.team === 'away' || ev.side === 'away') return 'away'
+
+  // team_id vs match team IDs
+  const homeId = props.match?.home?.id ?? props.match?.home_id
+  const awayId = props.match?.away?.id ?? props.match?.away_id
+  const evTeamId = ev.team_id ?? ev.club_id
+  if (evTeamId != null && homeId != null && String(evTeamId) === String(homeId)) return 'home'
+  if (evTeamId != null && awayId != null && String(evTeamId) === String(awayId)) return 'away'
+
+  // ev.team / ev.team_name as the actual team name string
+  const homeName = (props.match?.home?.name || props.match?.home_name || '').toLowerCase()
+  const awayName = (props.match?.away?.name || props.match?.away_name || '').toLowerCase()
+  const evTeam = (str(ev.team) || str(ev.team_name) || str(ev.club) || '').toLowerCase()
+  if (evTeam && homeName && evTeam === homeName) return 'home'
+  if (evTeam && awayName && evTeam === awayName) return 'away'
+
+  return ''
+}
+
+function sideClass(ev) {
+  const s = eventSide(ev)
+  if (s === 'home') return 'match-detail__summary-item--home'
+  if (s === 'away') return 'match-detail__summary-item--away'
+  return ''
+}
+
+function eventTeamName(ev) {
+  // First try to get the team name directly from the event
+  const direct = str(ev.team_name)
+    || (str(ev.team) !== 'home' && str(ev.team) !== 'away' ? str(ev.team) : null)
+  if (direct) return direct
+
+  // Fall back to deriving from side
+  const s = eventSide(ev)
+  if (s === 'home') return props.match?.home?.name || props.match?.home_name || ''
+  if (s === 'away') return props.match?.away?.name || props.match?.away_name || ''
+  return ''
 }
 </script>
 
@@ -108,51 +216,47 @@ function eventIcon(ev) {
       </button>
     </div>
 
+    <!-- Error banner -->
+    <div v-if="detailError && !loading" class="match-detail__error" role="alert">
+      <span v-if="detailError === 'match_id_missing'">Match data unavailable (no ID).</span>
+      <span v-else>Could not load match data: {{ detailError }}</span>
+    </div>
+
     <!-- Panel -->
     <div class="match-detail__panel">
       <!-- Summary -->
       <template v-if="activeTab === 'summary'">
         <p v-if="loading" class="match-detail__hint">Loading events…</p>
-        <p v-else-if="!summaryEvents.length" class="match-detail__hint">
-          No key events yet.
-        </p>
+        <p v-else-if="!summaryEvents.length" class="match-detail__hint">No key events yet.</p>
         <ul v-else class="match-detail__summary-list">
           <li
             v-for="(ev, i) in summaryEvents"
             :key="ev.id || i"
             class="match-detail__summary-item"
-            :class="{ 'match-detail__summary-item--home': ev.is_home, 'match-detail__summary-item--away': ev.is_away }"
+            :class="sideClass(ev)"
           >
-            <span class="match-detail__ev-min">{{ ev.time ?? ev.sort ?? '' }}'</span>
+            <span class="match-detail__ev-min">{{ ev.time ?? ev.minute ?? ev.sort ?? '' }}'</span>
             <span class="match-detail__ev-icon">{{ eventIcon(ev) }}</span>
-            <span class="match-detail__ev-player">{{ ev.player?.name || '' }}</span>
-            <span v-if="ev.info?.name" class="match-detail__ev-info">
-              {{ ev.event === 'SUBSTITUTION' ? '↑' : '' }} {{ ev.info.name }}
+            <span class="match-detail__ev-body">
+              <span class="match-detail__ev-row">
+                <span class="match-detail__ev-player">{{ playerName(ev) }}</span>
+                <span v-if="eventTeamName(ev)" class="match-detail__ev-team">({{ eventTeamName(ev) }})</span>
+              </span>
+              <span v-if="secondPlayerName(ev)" class="match-detail__ev-row match-detail__ev-second">
+                <span>{{ (ev.event || ev.type || '').toUpperCase() === 'SUBSTITUTION' ? '↑' : 'assist:' }} {{ secondPlayerName(ev) }}</span>
+                <span v-if="eventTeamName(ev)" class="match-detail__ev-team">({{ eventTeamName(ev) }})</span>
+              </span>
             </span>
           </li>
         </ul>
       </template>
 
-      <!-- Commentary -->
-      <CommentaryTimeline
-        v-else-if="activeTab === 'commentary'"
-        :events="commentary"
-        :loading="loading"
-      />
-
-      <!-- Stats -->
-      <MatchStatsPanel
-        v-else-if="activeTab === 'stats'"
-        :stats="stats"
-        :loading="loading"
-      />
-
-      <!-- Lineups -->
-      <LineupList
-        v-else-if="activeTab === 'lineups'"
-        :lineups="lineups"
-        :loading="loading"
-      />
+      <!-- Commentary / Stats / Lineups — not available on free API plan -->
+      <template v-else-if="PLAN_LIMITED_TABS.has(activeTab)">
+        <p class="match-detail__plan-notice">
+          {{ tabLabel(activeTab) }} data requires an upgraded API plan.
+        </p>
+      </template>
     </div>
   </aside>
 </template>
@@ -246,6 +350,15 @@ function eventIcon(ev) {
   background: color-mix(in srgb, var(--color-accent) 18%, transparent);
 }
 
+/* Error */
+.match-detail__error {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #c62828;
+  background: #ffebee;
+  border-bottom: 1px solid #ef9a9a;
+}
+
 /* Tabs */
 .match-detail__tabs {
   display: flex;
@@ -299,14 +412,45 @@ function eventIcon(ev) {
   gap: 2px;
 }
 
+.match-detail__plan-notice {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
 .match-detail__summary-item {
   display: grid;
   grid-template-columns: 28px 22px 1fr;
-  align-items: center;
+  align-items: start;
   gap: 6px;
   padding: 7px 10px;
   border-radius: 6px;
   font-size: 13px;
+}
+
+.match-detail__ev-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.match-detail__ev-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.match-detail__ev-second {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.match-detail__ev-team {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
 
 .match-detail__summary-item--home {

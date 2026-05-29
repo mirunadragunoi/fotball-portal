@@ -32,6 +32,8 @@ export function matchMinuteLabel(match) {
   const time = match?.time
   if (!time) return ''
   if (['HT', 'FT', 'AET', 'AP'].includes(time)) return time
+  // Clock time for scheduled fixtures (e.g. "15:00") — no apostrophe
+  if (/^\d{1,2}:\d{2}$/.test(String(time))) return String(time)
   return `${time}'`
 }
 
