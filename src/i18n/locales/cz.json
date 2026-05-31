@@ -4,12 +4,13 @@
     "tagline": "Fotbalové hry, sestřihy a to nejlepší ze sportu."
   },
   "nav": {
-    "home":    "Domů",
-    "games":   "Hry",
-    "videos":  "Videa",
-    "trivia":  "Kvíz",
-    "history": "Historie",
-    "live":    "Živě"
+    "home":     "Domů",
+    "games":    "Hry",
+    "videos":   "Videa",
+    "live":     "Živě",
+    "worldcup": "Mistrovství 2026",
+    "trivia":   "Kvíz",
+    "history":  "Historie"
   },
   "hero": {
     "f1": {
@@ -284,6 +285,32 @@
     "noFixtures": "Žádné naplánované zápasy",
     "noGroups": "Žádná skupinová data",
     "noGoalscorers": "Žádná data o střelcích"
+  },
+  "worldcup": {
+    "eyebrow":         "⚽ Léto 2026",
+    "title":           "Mistrovství světa 2026",
+    "subtitle":        "Kanada · Mexiko · USA — 11. června – 19. července",
+    "statTeams":       "48 týmů",
+    "statMatches":     "104 zápasů",
+    "statStadiums":    "16 stadionů",
+    "liveNow":         "Živě nyní",
+    "noLive":          "Žádné živé zápasy momentálně.",
+    "liveBannerCount": "{count} zápas živě | {count} zápasy živě",
+    "liveBannerLink":  "Sledovat zde",
+    "tabsGroups":      "Skupiny",
+    "tabsFixtures":    "Všechny zápasy",
+    "tabsTeams":       "Týmy",
+    "tabsScorers":     "Střelci",
+    "emptyGroups":     "Data skupin zatím nejsou k dispozici.",
+    "emptyFixtures":   "Zápasy zatím nejsou k dispozici.",
+    "emptyScorers":    "Data střelců zatím nejsou k dispozici.",
+    "ariaLabel":       "Mistrovství světa 2026",
+    "ariaTabs":        "Sekce mistrovství světa",
+    "ariaLive":        "Živé zápasy",
+    "ariaGroups":      "Skupinová fáze",
+    "ariaFixtures":    "Všechny zápasy",
+    "ariaTeams":       "Kvalifikované týmy",
+    "ariaScorers":     "Střelci"
   },
   "common": {
     "back": "Zpět"

@@ -86,7 +86,10 @@ function onAuthCtaClick() {
           :to="item.path"
           :public="item.path === '/'"
           class="app-header__nav-link"
-          :class="{ 'app-header__nav-link--active': isActive(item) }"
+          :class="{
+            'app-header__nav-link--active': isActive(item),
+            'app-header__nav-link--highlight': item.highlight && !isActive(item),
+          }"
           :aria-current="isActive(item) ? 'page' : undefined"
         >
           {{ item.label }}
@@ -133,7 +136,10 @@ function onAuthCtaClick() {
             :to="item.path"
             :public="item.path === '/'"
             class="app-header__mobile-link"
-            :class="{ 'app-header__mobile-link--active': isActive(item) }"
+            :class="{
+              'app-header__mobile-link--active': isActive(item),
+              'app-header__mobile-link--highlight': item.highlight && !isActive(item),
+            }"
             :aria-current="isActive(item) ? 'page' : undefined"
             @click="closeMobile"
           >
@@ -217,6 +223,16 @@ function onAuthCtaClick() {
 
 .app-header__nav-link:hover:not(.app-header__nav-link--active) {
   color: var(--color-text);
+}
+
+.app-header__nav-link--highlight {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.app-header__nav-link--highlight:hover {
+  color: var(--color-accent) !important;
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .app-header__nav-indicator {
@@ -354,6 +370,15 @@ function onAuthCtaClick() {
 .app-header__mobile-link:hover {
   color: var(--color-text);
   background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+
+.app-header__mobile-link--highlight {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.app-header__mobile-link--highlight:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 /* Transitions */

@@ -22,6 +22,19 @@ const score    = computed(() => parseScoreString(props.match?.scores?.score))
 const minute   = computed(() => matchMinuteLabel(props.match))
 const live     = computed(() => isLiveStatus(props.match?.status))
 const finished = computed(() => isFinishedStatus(props.match?.status))
+const scheduled = computed(() => !live.value && !finished.value)
+
+const scheduledDate = computed(() => {
+  if (!scheduled.value) return null
+  const raw = props.match?.date || props.match?.match_date || props.match?.fixture?.date || ''
+  if (!raw) return null
+  try {
+    const d = new Date(`${raw}T00:00:00`)
+    return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+  } catch {
+    return raw
+  }
+})
 
 // Fixtures may use flat fields (home_name / away_name) instead of nested home.name / away.name
 const homeName = computed(() =>
@@ -59,7 +72,8 @@ function onClick() {
       <span class="live-row__competition">{{ match.competition?.name }}</span>
       <span class="live-row__status" :class="{ 'live-row__status--live': live }">
         <span v-if="live" class="live-row__dot" aria-hidden="true"></span>
-        {{ statusLabel }}
+        <template v-if="scheduled && scheduledDate">{{ scheduledDate }}</template>
+        <template v-else>{{ statusLabel }}</template>
       </span>
     </div>
 

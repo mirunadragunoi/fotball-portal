@@ -55,7 +55,7 @@ const visibleTeams = computed(() => {
 
 <style scoped>
 .qts {
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .qts__title {

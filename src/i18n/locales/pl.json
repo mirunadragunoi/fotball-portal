@@ -4,12 +4,13 @@
     "tagline": "Gry piłkarskie, skróty i to, co kochasz w sporcie."
   },
   "nav": {
-    "home":    "Strona główna",
-    "games":   "Gry",
-    "videos":  "Filmy",
-    "trivia":  "Quiz",
-    "history": "Historia",
-    "live":    "Na żywo"
+    "home":     "Strona główna",
+    "games":    "Gry",
+    "videos":   "Filmy",
+    "live":     "Na żywo",
+    "worldcup": "Mistrzostwa 2026",
+    "trivia":   "Quiz",
+    "history":  "Historia"
   },
   "hero": {
     "f1": {
@@ -284,6 +285,32 @@
     "noFixtures": "Brak zaplanowanych meczów",
     "noGroups": "Brak danych grupowych",
     "noGoalscorers": "Brak danych o strzelcach"
+  },
+  "worldcup": {
+    "eyebrow":         "⚽ Lato 2026",
+    "title":           "Mistrzostwa Świata 2026",
+    "subtitle":        "Kanada · Meksyk · USA — 11 Czerwca – 19 Lipca",
+    "statTeams":       "48 Drużyn",
+    "statMatches":     "104 Mecze",
+    "statStadiums":    "16 Stadionów",
+    "liveNow":         "Na żywo teraz",
+    "noLive":          "Brak meczów na żywo.",
+    "liveBannerCount": "{count} mecz na żywo | {count} mecze na żywo",
+    "liveBannerLink":  "Oglądaj tutaj",
+    "tabsGroups":      "Grupy",
+    "tabsFixtures":    "Wszystkie Mecze",
+    "tabsTeams":       "Drużyny",
+    "tabsScorers":     "Strzelcy",
+    "emptyGroups":     "Dane grup nie są jeszcze dostępne.",
+    "emptyFixtures":   "Mecze nie są jeszcze dostępne.",
+    "emptyScorers":    "Dane strzelców nie są jeszcze dostępne.",
+    "ariaLabel":       "Mistrzostwa Świata 2026",
+    "ariaTabs":        "Sekcje Mistrzostw Świata",
+    "ariaLive":        "Mecze na żywo",
+    "ariaGroups":      "Faza grupowa",
+    "ariaFixtures":    "Wszystkie mecze",
+    "ariaTeams":       "Zakwalifikowane drużyny",
+    "ariaScorers":     "Strzelcy"
   },
   "common": {
     "back": "Wróć"

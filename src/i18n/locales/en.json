@@ -4,12 +4,13 @@
     "tagline": "Football games, highlights and more."
   },
   "nav": {
-    "home":    "Home",
-    "games":   "Games",
-    "videos":  "Videos",
-    "trivia":  "Trivia",
-    "history": "History",
-    "live":    "Live"
+    "home":     "Home",
+    "games":    "Games",
+    "videos":   "Videos",
+    "live":     "Live",
+    "worldcup": "World Cup 2026",
+    "trivia":   "Trivia",
+    "history":  "History"
   },
   "hero": {
     "f1": {
@@ -284,6 +285,32 @@
     "noFixtures": "No fixtures available",
     "noGroups": "No group data available",
     "noGoalscorers": "No goalscorer data available"
+  },
+  "worldcup": {
+    "eyebrow":         "⚽ Summer 2026",
+    "title":           "World Cup 2026",
+    "subtitle":        "Canada · Mexico · USA — 11 June – 19 July",
+    "statTeams":       "48 Teams",
+    "statMatches":     "104 Matches",
+    "statStadiums":    "16 Stadiums",
+    "liveNow":         "Live now",
+    "noLive":          "No live matches right now.",
+    "liveBannerCount": "{count} match live | {count} matches live",
+    "liveBannerLink":  "Watch here",
+    "tabsGroups":      "Groups",
+    "tabsFixtures":    "All Fixtures",
+    "tabsTeams":       "Teams",
+    "tabsScorers":     "Top Scorers",
+    "emptyGroups":     "Group data not available yet.",
+    "emptyFixtures":   "Fixtures not available yet.",
+    "emptyScorers":    "Goalscorer data not available yet.",
+    "ariaLabel":       "World Cup 2026",
+    "ariaTabs":        "World Cup sections",
+    "ariaLive":        "Live matches",
+    "ariaGroups":      "Group stage",
+    "ariaFixtures":    "All fixtures",
+    "ariaTeams":       "Qualified teams",
+    "ariaScorers":     "Top goalscorers"
   },
   "common": {
     "back": "Back"

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL, WC_2026_COMPETITION_ID, CHAMPIONSHIP_2026_COMPETITION_ID } from '@/config/livescore'
+import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
@@ -66,13 +66,9 @@ async function onMatchSelect(match) {
   await store.selectMatch(match)
 }
 
-function goToTournament() {
-  router.push({ name: 'Tournament', params: { competitionId: WC_2026_COMPETITION_ID } })
-}
-
-function goToChampionship() {
-  router.push({ name: 'Tournament', params: { competitionId: CHAMPIONSHIP_2026_COMPETITION_ID } })
-}
+const wcLiveMatches = computed(() =>
+  store.liveMatches?.filter(m => String(m.competition?.id) === String(WC_2026_COMPETITION_ID)) || []
+)
 </script>
 
 <template>
@@ -91,19 +87,16 @@ function goToChampionship() {
             · {{ t('live.liveCount', { count: store.liveCount }) }}
           </span>
         </p>
-        <div class="live-page__categories">
-          <button type="button" class="live-page__cat-btn live-page__cat-btn--tournament" @click="goToTournament">
-            <span class="live-page__cat-icon">🏆</span>
-            <span class="live-page__cat-label">Tournament 2026</span>
-            <span class="live-page__cat-arrow">→</span>
-          </button>
-          <button type="button" class="live-page__cat-btn live-page__cat-btn--championship" @click="goToChampionship">
-            <span class="live-page__cat-icon">🌍</span>
-            <span class="live-page__cat-label">Championship 2026</span>
-            <span class="live-page__cat-arrow">→</span>
-          </button>
-        </div>
       </div>
+
+      <!-- WC live banner — shown only when WC matches are live -->
+      <RouterLink v-if="wcLiveMatches.length" to="/world-cup" class="live-page__wc-banner">
+        <span class="live-page__wc-dot" aria-hidden="true"></span>
+        <span class="live-page__wc-text">
+          <strong>{{ t('worldcup.title') }}</strong> — {{ t('worldcup.liveBannerCount', wcLiveMatches.length) }}
+        </span>
+        <span class="live-page__wc-arrow">{{ t('worldcup.liveBannerLink') }} →</span>
+      </RouterLink>
     </div>
 
     <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="store.setTab" />
@@ -228,59 +221,48 @@ function goToChampionship() {
   font-weight: 700;
 }
 
-.live-page__categories {
+.live-page__wc-banner {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.live-page__cat-btn {
-  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 10px;
+  padding: 10px 16px;
+  margin-top: 12px;
   border-radius: var(--radius-button);
-  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
-  background: var(--color-surface);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition-default);
-  min-height: 40px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
   text-decoration: none;
+  font-size: 14px;
+  transition: var(--transition-default);
 }
 
-.live-page__cat-btn--tournament {
-  color: var(--color-primary);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+.live-page__wc-banner:hover {
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
 }
 
-.live-page__cat-btn--championship {
-  color: var(--color-secondary);
-  border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+.live-page__wc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e53935;
+  flex-shrink: 0;
+  animation: wc-pulse 1.2s ease-in-out infinite;
 }
 
-.live-page__cat-btn--tournament:hover {
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+@keyframes wc-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
-.live-page__cat-btn--championship:hover {
-  background: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+.live-page__wc-text {
+  flex: 1;
+  color: var(--color-text);
 }
 
-.live-page__cat-icon {
-  font-size: 15px;
-  line-height: 1;
-}
-
-.live-page__cat-label {
+.live-page__wc-arrow {
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 13px;
   white-space: nowrap;
-}
-
-.live-page__cat-arrow {
-  opacity: 0.6;
-  font-size: 12px;
 }
 
 .live-page__error {

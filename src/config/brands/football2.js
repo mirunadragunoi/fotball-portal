@@ -33,12 +33,13 @@ export default {
   },
 
   nav: [
-    { key: 'home', label: 'Home', path: '/' },
-    { key: 'games', label: 'Games', path: '/games' },
-    { key: 'videos', label: 'Videos', path: '/videos' },
-    { key: 'trivia', label: 'Trivia', path: '/trivia' },
-    { key: 'history', label: 'History', path: '/history' },
-    { key: 'live', label: 'Live', path: '/live' },
+    { key: 'home',     label: 'Home',           path: '/' },
+    { key: 'games',    label: 'Games',           path: '/games' },
+    { key: 'videos',   label: 'Videos',          path: '/videos' },
+    { key: 'live',     label: 'Live',            path: '/live' },
+    { key: 'worldcup', label: 'World Cup 2026',  path: '/world-cup', highlight: true },
+    { key: 'trivia',   label: 'Trivia',          path: '/trivia' },
+    { key: 'history',  label: 'History',         path: '/history' },
   ],
 
   hero: {

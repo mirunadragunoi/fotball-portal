@@ -68,15 +68,15 @@ function goBack() {
   if (window.history.length > 1) {
     router.back()
   } else {
-    router.push({ name: 'Tournament', params: { competitionId: 362 } })
+    router.push({ name: 'WorldCup', query: { tab: 'teams' } })
   }
 }
 </script>
 
 <template>
   <main class="tsv">
-    <button class="tsv__back" @click="goBack" aria-label="Back to Qualified Teams">
-      ← Qualified Teams
+    <button class="tsv__back" @click="goBack" aria-label="Back to Teams">
+      ← Teams
     </button>
 
     <!-- loading -->

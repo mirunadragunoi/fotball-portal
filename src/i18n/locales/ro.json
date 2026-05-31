@@ -4,12 +4,13 @@
     "tagline": "Jocuri de fotbal, rezumate și tot ce iubești despre sport."
   },
   "nav": {
-    "home":    "Acasă",
-    "games":   "Jocuri",
-    "videos":  "Videoclipuri",
-    "trivia":  "Trivial",
-    "history": "Istorie",
-    "live":    "Live"
+    "home":     "Acasă",
+    "games":    "Jocuri",
+    "videos":   "Videoclipuri",
+    "live":     "Live",
+    "worldcup": "Cupa Mondială 2026",
+    "trivia":   "Trivial",
+    "history":  "Istorie"
   },
   "hero": {
     "f1": {
@@ -284,6 +285,32 @@
     "noFixtures": "Nu există meciuri programate",
     "noGroups": "Nu există date pentru grupe",
     "noGoalscorers": "Nu există date despre golgheteri"
+  },
+  "worldcup": {
+    "eyebrow":         "⚽ Vara 2026",
+    "title":           "Cupa Mondială 2026",
+    "subtitle":        "Canada · Mexic · SUA — 11 Iunie – 19 Iulie",
+    "statTeams":       "48 Echipe",
+    "statMatches":     "104 Meciuri",
+    "statStadiums":    "16 Stadioane",
+    "liveNow":         "Live acum",
+    "noLive":          "Niciun meci live momentan.",
+    "liveBannerCount": "{count} meci live | {count} meciuri live",
+    "liveBannerLink":  "Vezi aici",
+    "tabsGroups":      "Grupe",
+    "tabsFixtures":    "Toate Meciurile",
+    "tabsTeams":       "Echipe",
+    "tabsScorers":     "Golghețari",
+    "emptyGroups":     "Datele grupelor nu sunt disponibile.",
+    "emptyFixtures":   "Meciurile nu sunt disponibile.",
+    "emptyScorers":    "Datele golgheterilor nu sunt disponibile.",
+    "ariaLabel":       "Cupa Mondială 2026",
+    "ariaTabs":        "Secțiuni Cupa Mondială",
+    "ariaLive":        "Meciuri live",
+    "ariaGroups":      "Faza grupelor",
+    "ariaFixtures":    "Toate meciurile",
+    "ariaTeams":       "Echipe calificate",
+    "ariaScorers":     "Golghețari"
   },
   "common": {
     "back": "Înapoi"

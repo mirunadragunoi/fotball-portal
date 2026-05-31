@@ -49,6 +49,17 @@ const routes = [
     name: 'VideoDetail',
     component: () => import('@/views/VideoDetailView.vue'),
   },
+  {
+    path: '/world-cup',
+    name: 'WorldCup',
+    component: () => import('@/views/WorldCupView.vue'),
+  },
+  {
+    path: '/world-cup/team/:teamId',
+    name: 'WorldCupTeamSquad',
+    component: () => import('@/views/live/TeamSquadView.vue'),
+    props: true,
+  },
   // Phase 2 placeholders
   {
     path: '/trivia',
@@ -72,8 +83,7 @@ const routes = [
   },
   {
     path: '/live/tournament/:competitionId',
-    name: 'Tournament',
-    component: () => import('@/views/live/TournamentView.vue'),
+    redirect: '/world-cup',
   },
   {
     path: '/live/h2h/:team1Id/:team2Id',
@@ -97,9 +107,7 @@ const routes = [
   },
   {
     path: '/live/tournament/team/:teamId',
-    name: 'TeamSquad',
-    component: () => import('@/views/live/TeamSquadView.vue'),
-    props: true,
+    redirect: to => ({ name: 'WorldCupTeamSquad', params: { teamId: to.params.teamId } }),
   },
   // Legal pages — all served by a single shared view, legalKey drives content
   {

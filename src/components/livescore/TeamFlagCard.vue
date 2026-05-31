@@ -9,7 +9,7 @@ const router = useRouter()
 
 function navigate() {
   if (!props.team.id) return
-  router.push({ name: 'TeamSquad', params: { teamId: props.team.id } })
+  router.push({ name: 'WorldCupTeamSquad', params: { teamId: props.team.id } })
 }
 </script>
 
