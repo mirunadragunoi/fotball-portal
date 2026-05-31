@@ -170,7 +170,7 @@ function onAuthCtaClick() {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 16px;
 }
 
 /* Logo */
@@ -194,20 +194,21 @@ function onAuthCtaClick() {
 /* Nav */
 .app-header__nav {
   display: flex;
-  gap: 4px;
-  margin-left: 8px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
 .app-header__nav-link {
   position: relative;
-  padding: 10px 14px;
+  padding: 8px 10px;
   border-radius: 6px;
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-decoration: none;
+  white-space: nowrap;
   color: var(--nav-inactive-color);
   background: transparent;
   transition: var(--transition-default);
@@ -237,8 +238,8 @@ function onAuthCtaClick() {
 
 .app-header__nav-indicator {
   position: absolute;
-  left: 14px;
-  right: 14px;
+  left: 10px;
+  right: 10px;
   bottom: 4px;
   height: 2px;
   background: var(--nav-indicator);
@@ -248,7 +249,7 @@ function onAuthCtaClick() {
 .app-header--f2 .app-header__nav-link {
   border-radius: 999px;
   text-transform: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0;
 }
@@ -393,29 +394,30 @@ function onAuthCtaClick() {
 }
 
 /* Responsive */
-@media (max-width: 767px) {
-  .app-header__nav,
-  .app-header__actions {
+/* ≤1023px — tablet + mobile: hamburger replaces desktop nav */
+@media (max-width: 1023px) {
+  .app-header__nav {
     display: none;
   }
   .app-header__hamburger {
-    display: flex; /* flex: better cross-browser than grid for buttons */
+    display: flex;
   }
   .app-header__inner {
-    padding-inline: 1rem; /* reduce from 40px so hamburger always fits */
+    padding-inline: 1rem;
     gap: 12px;
   }
   .app-header__logo-img {
-    max-width: 130px; /* cap logo width so it can't push hamburger off-screen */
+    max-width: 130px;
     height: 36px;
   }
   .app-header__spacer {
-    min-width: 0; /* allow spacer to collapse completely on very narrow screens */
+    min-width: 0;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .app-header__live-btn {
+/* ≤767px — mobile: also hide actions (only hamburger + logo visible) */
+@media (max-width: 767px) {
+  .app-header__actions {
     display: none;
   }
 }
