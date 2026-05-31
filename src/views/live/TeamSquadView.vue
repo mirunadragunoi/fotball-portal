@@ -1,0 +1,177 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
+import TeamBanner from '@/components/livescore/TeamBanner.vue'
+import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
+import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
+import SkeletonCard from '@/components/shared/SkeletonCard.vue'
+import EmptyState from '@/components/shared/EmptyState.vue'
+
+const route  = useRoute()
+const router = useRouter()
+const store  = useWorldCupTeamsStore()
+
+onMounted(() => store.loadTeams())
+
+const teamId = computed(() => route.params.teamId)
+
+const team = computed(() => store.getTeamById(teamId.value))
+
+const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker']
+const POSITION_LABELS = {
+  Goalkeeper: 'Goalkeepers',
+  Defender:   'Defenders',
+  Midfielder: 'Midfielders',
+  Attacker:   'Attackers',
+}
+
+const playersByPosition = computed(() => {
+  if (!team.value?.players?.length) return []
+  const map = {}
+  for (const p of team.value.players) {
+    const pos = p.position || 'Other'
+    if (!map[pos]) map[pos] = []
+    map[pos].push(p)
+  }
+  // Sort by number within each position
+  for (const pos in map) {
+    map[pos].sort((a, b) => (a.number || 99) - (b.number || 99))
+  }
+  return POSITION_ORDER
+    .filter((pos) => map[pos]?.length)
+    .map((pos) => ({
+      position: pos,
+      label:    POSITION_LABELS[pos] || pos,
+      players:  map[pos],
+    }))
+    .concat(
+      // any unlisted positions (e.g. 'Other') appended at the end
+      Object.entries(map)
+        .filter(([pos]) => !POSITION_ORDER.includes(pos))
+        .map(([pos, players]) => ({ position: pos, label: pos, players }))
+    )
+})
+
+// Player detail modal
+const activePlayer = ref(null)
+
+function openPlayer(player) {
+  activePlayer.value = player
+}
+
+function closePlayer() {
+  activePlayer.value = null
+}
+
+function goBack() {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push({ name: 'Tournament', params: { competitionId: 362 } })
+  }
+}
+</script>
+
+<template>
+  <main class="tsv">
+    <button class="tsv__back" @click="goBack" aria-label="Back to Qualified Teams">
+      ← Qualified Teams
+    </button>
+
+    <!-- loading -->
+    <div v-if="store.loading" class="tsv__skeletons">
+      <SkeletonCard v-for="n in 4" :key="n" />
+    </div>
+
+    <!-- not found -->
+    <EmptyState
+      v-else-if="!team"
+      message="Team not found."
+      :show-reset="false"
+    />
+
+    <template v-else>
+      <TeamBanner :team="team" />
+
+      <div class="tsv__summary">
+        <span class="tsv__player-count">{{ team.players?.length || 0 }} players</span>
+        <span v-if="!team.players?.length" class="tsv__no-squad">
+          Squad data not yet available — run the sync script.
+        </span>
+      </div>
+
+      <PlayerPositionGroup
+        v-for="group in playersByPosition"
+        :key="group.position"
+        :position-label="group.label"
+        :players="group.players"
+        :team="team"
+        @select-player="openPlayer"
+      />
+    </template>
+
+    <!-- Player detail modal -->
+    <PlayerDetailModal
+      :player="activePlayer"
+      :team="team"
+      @close="closePlayer"
+    />
+  </main>
+</template>
+
+<style scoped>
+.tsv {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 20px var(--content-padding) 64px;
+}
+
+.tsv__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 8px 14px;
+  border-radius: var(--radius-button);
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.tsv__back:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tsv__skeletons {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.tsv__summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tsv__player-count {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  padding: 4px 10px;
+  border-radius: 99px;
+}
+
+.tsv__no-squad {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+</style>

@@ -95,6 +95,12 @@ const routes = [
     name: 'TeamDetail',
     component: () => import('@/views/live/TeamDetailView.vue'),
   },
+  {
+    path: '/live/tournament/team/:teamId',
+    name: 'TeamSquad',
+    component: () => import('@/views/live/TeamSquadView.vue'),
+    props: true,
+  },
   // Legal pages — all served by a single shared view, legalKey drives content
   {
     path: '/about',

@@ -12,6 +12,7 @@ import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
 import MatchDetail from '@/components/livescore/MatchDetail.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
+import QualifiedTeamsSection from '@/components/livescore/QualifiedTeamsSection.vue'
 
 const { t } = useI18n()
 const CID = WC_2026_COMPETITION_ID
@@ -22,6 +23,11 @@ const brandStore = useBrandStore()
 
 const isF2      = computed(() => brandStore.activeBrand === 'football2')
 const activeTab = ref('groups')
+const TABS = [
+  { key: 'groups',  label: 'Groups' },
+  { key: 'matches', label: 'Matches' },
+  { key: 'teams',   label: 'Qualified Teams' },
+]
 
 const wcLiveMatches = computed(() =>
   liveStore.liveMatches.filter(m => String(m.competition?.id) === String(CID))
@@ -71,24 +77,16 @@ onUnmounted(() => {
     <!-- Sub-tabs -->
     <div class="tournament-page__tabs" role="tablist" aria-label="Championship sections">
       <button
+        v-for="tab in TABS"
+        :key="tab.key"
         type="button"
         role="tab"
         class="tournament-page__tab"
-        :class="{ 'tournament-page__tab--active': activeTab === 'groups' }"
-        :aria-selected="activeTab === 'groups'"
-        @click="activeTab = 'groups'"
+        :class="{ 'tournament-page__tab--active': activeTab === tab.key }"
+        :aria-selected="activeTab === tab.key"
+        @click="activeTab = tab.key"
       >
-        Groups
-      </button>
-      <button
-        type="button"
-        role="tab"
-        class="tournament-page__tab"
-        :class="{ 'tournament-page__tab--active': activeTab === 'matches' }"
-        :aria-selected="activeTab === 'matches'"
-        @click="activeTab = 'matches'"
-      >
-        Matches
+        {{ tab.label }}
       </button>
     </div>
 
@@ -118,6 +116,11 @@ onUnmounted(() => {
           :loading="!compStore.topGoalscorers.length && compStore.loading"
         />
       </section>
+    </template>
+
+    <!-- ── QUALIFIED TEAMS TAB ── -->
+    <template v-else-if="activeTab === 'teams'">
+      <QualifiedTeamsSection />
     </template>
 
     <!-- ── MATCHES TAB ── -->
