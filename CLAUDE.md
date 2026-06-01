@@ -4,7 +4,10 @@
 
 This is a **Vue 3 + Vite + JavaScript** portal for football content. The codebase already exists as a wellness portal with a brand override system. We are adding **two new football brands** (`football1`, `football2`) that override the base design with football-specific theming, layout tweaks, and content structure.
 
-The portal is **generic football** — absolutely NO references to FIFA, UEFA, World Cup™, or any trademarked competition names anywhere in code, copy, meta tags, or assets. Use terms like "international tournament", "global championship", "the big tournament 2026", or simply "football" instead.
+**Branding posture (updated 2026-06-01):**
+- "World Cup 2026" and "World Cup" ARE used freely throughout copy, headlines, routes (`/world-cup`), and component names. This is generic tournament wording.
+- DO NOT introduce sponsor or governing-body brand names in user-facing copy: **no FIFA, UEFA, CONMEBOL, AFC, etc., and no official sponsor logos**.
+- Competition names returned by external APIs (e.g. "UEFA Champions League" in `src/config/allowedCompetitions.js`) are tolerated as data labels — don't strip them from API payloads, just don't promote them in marketing copy.
 
 ---
 
@@ -96,13 +99,19 @@ src/
 
 ---
 
-## PHASE 2 — COMING LATER (just prepare routing placeholders)
+## PHASE 2 — BUILT (as of 2026-06-01)
 
-These pages will be added later. For now, create route entries and placeholder view components with a "Coming Soon" state:
+These sections were placeholders in the original spec but are now fully implemented. Treat them as production features, not stubs.
 
-- `/trivia` — Football Trivia & Quiz section
-- `/history` — International Tournament History (timelines, records, stats from 1930)
-- `/live` — Live Scores & Commentary (real-time data feeds)
+- `/trivia` — Sports trivia powered by **Open Trivia DB** (category 21). See `src/services/triviaApi.js`, `src/config/trivia.js`, `src/views/trivia/TriviaView.vue`. Dev hits `opentdb.com` via Vite proxy `/opentdb`; prod uses `VITE_OPENTDB_URL` or backend relay.
+- `/history` — Tournament history backed by own backend at `/football/history/*`. Tabs: tournaments, teams, matches, players, squads. See `src/services/historyApi.js`, `src/views/history/HistoryView.vue`, components under `src/components/history/`.
+- `/live` — Live scores, fixtures, standings, lineups, H2H, commentary, group stages. Powered by **live-score-api** through own backend `/football/livescore/*` (24 endpoints, see `src/config/livescore.js`). Polling: live=30s, hero=60s, detail=15s. Main view `src/views/live/LiveView.vue`; sub-views for match detail, H2H, team detail, standings, competition detail, tournament, team squad.
+- `/world-cup` — Dedicated World Cup 2026 section. WC 2026 competition ID is `362`; group IDs (A–L) hardcoded as `WC_2026_GROUPS` in `src/config/livescore.js`. View at `src/views/WorldCupView.vue`, store `src/stores/worldcupTeams.js`, static fallback data `public/data/wc2026-teams.json`.
+
+Other live integrations:
+- **api-football** for team/player photos (`src/services/apiFootballService.js`).
+- Legal pages (about, contact, faq, terms, privacy, cookies, unsubscribe) all served by `src/legal/LegalPageView.vue`.
+- i18n covers 5 locales (en/ro/cz/sk/pl) with a recursive base-plus-brand-override merge (`src/i18n/index.js`). Per-brand overrides live in `src/brands/<brand>/i18n/locales/`.
 
 ---
 

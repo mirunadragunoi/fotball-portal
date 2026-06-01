@@ -46,6 +46,11 @@ Desktop.ini
 # Asset source archives (extracted versions are committed)
 *.zip
 
+# Generated image folders (populated by sync — not source code)
+public/images/players/
+public/images/teams/
+public/images/venues/
+
 # Test / coverage
 coverage/
 *.lcov
