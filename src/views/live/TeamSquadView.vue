@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
 import TeamBanner from '@/components/livescore/TeamBanner.vue'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
@@ -8,6 +9,7 @@ import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 
+const { t } = useI18n()
 const route  = useRoute()
 const router = useRouter()
 const store  = useWorldCupTeamsStore()
@@ -19,12 +21,12 @@ const teamId = computed(() => route.params.teamId)
 const team = computed(() => store.getTeamById(teamId.value))
 
 const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker']
-const POSITION_LABELS = {
-  Goalkeeper: 'Goalkeepers',
-  Defender:   'Defenders',
-  Midfielder: 'Midfielders',
-  Attacker:   'Attackers',
-}
+const POSITION_LABELS = computed(() => ({
+  Goalkeeper: t('worldcup.posGoalkeepers'),
+  Defender:   t('worldcup.posDefenders'),
+  Midfielder: t('worldcup.posMidfielders'),
+  Attacker:   t('worldcup.posAttackers'),
+}))
 
 const playersByPosition = computed(() => {
   if (!team.value?.players?.length) return []
@@ -42,7 +44,7 @@ const playersByPosition = computed(() => {
     .filter((pos) => map[pos]?.length)
     .map((pos) => ({
       position: pos,
-      label:    POSITION_LABELS[pos] || pos,
+      label:    POSITION_LABELS.value[pos] || pos,
       players:  map[pos],
     }))
     .concat(
@@ -75,8 +77,8 @@ function goBack() {
 
 <template>
   <main class="tsv">
-    <button class="tsv__back" @click="goBack" aria-label="Back to Teams">
-      ← Teams
+    <button class="tsv__back" @click="goBack" :aria-label="t('worldcup.backToTeams')">
+      {{ t('worldcup.backToTeams') }}
     </button>
 
     <!-- loading -->
@@ -87,7 +89,7 @@ function goBack() {
     <!-- not found -->
     <EmptyState
       v-else-if="!team"
-      message="Team not found."
+      :message="t('worldcup.teamNotFound')"
       :show-reset="false"
     />
 
@@ -95,9 +97,9 @@ function goBack() {
       <TeamBanner :team="team" />
 
       <div class="tsv__summary">
-        <span class="tsv__player-count">{{ team.players?.length || 0 }} players</span>
+        <span class="tsv__player-count">{{ t('worldcup.playerCount', { count: team.players?.length || 0 }) }}</span>
         <span v-if="!team.players?.length" class="tsv__no-squad">
-          Squad data not yet available — run the sync script.
+          {{ t('worldcup.noSquad') }}
         </span>
       </div>
 

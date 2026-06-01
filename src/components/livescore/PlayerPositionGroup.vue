@@ -54,7 +54,7 @@ defineEmits(['select-player'])
 
 @media (min-width: 1024px) {
   .ppg__grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 }
 </style>

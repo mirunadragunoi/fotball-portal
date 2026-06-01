@@ -99,7 +99,17 @@ const wcLiveMatches = computed(() =>
       </RouterLink>
     </div>
 
-    <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="store.setTab" />
+    <div class="live-page__controls">
+      <LiveTabs :active="store.activeTab" :is-f2="isF2" @change="store.setTab" />
+      <button
+        class="live-page__europe-btn"
+        :class="{ 'live-page__europe-btn--active': store.filterEurope }"
+        @click="store.toggleEuropeFilter"
+        :title="store.filterEurope ? t('live.filterEuropeOff') : t('live.filterEuropeOn')"
+      >
+        🌍 {{ store.filterEurope ? t('live.filterEuropeOn') : t('live.filterEuropeOff') }}
+      </button>
+    </div>
 
     <div v-if="errorMessage" class="live-page__error" role="alert">
       <span>{{ errorMessage }}</span>
@@ -131,6 +141,12 @@ const wcLiveMatches = computed(() =>
               </div>
             </div>
           </template>
+          <template v-else-if="store.filterEurope && !Object.keys(store.matchesByCompetition).length && store.liveMatches.length">
+            <p class="live-page__no-europe">{{ t('live.noEuropeMatches') }}</p>
+            <button class="live-page__show-all" @click="store.toggleEuropeFilter">
+              {{ t('live.showAll') }} →
+            </button>
+          </template>
           <EmptyState v-else :message="t('live.emptyLiveMessage')" :show-reset="false" />
         </template>
 
@@ -139,15 +155,21 @@ const wcLiveMatches = computed(() =>
             <span>{{ t('live.fixtureDate') }}</span>
             <input v-model="store.fixtureDate" type="date" />
           </label>
-          <div v-if="store.fixtures.length" class="live-page__list">
+          <div v-if="store.filteredFixtures.length" class="live-page__list">
             <LiveMatchRow
-              v-for="match in store.fixtures"
+              v-for="match in store.filteredFixtures"
               :key="match.id || match.fixture_id"
               :match="match"
               :selected="store.selectedMatch?.id === match.id"
               @select="onMatchSelect"
             />
           </div>
+          <template v-else-if="store.filterEurope && !store.filteredFixtures.length && store.fixtures.length">
+            <p class="live-page__no-europe">{{ t('live.noEuropeMatches') }}</p>
+            <button class="live-page__show-all" @click="store.toggleEuropeFilter">
+              {{ t('live.showAll') }} →
+            </button>
+          </template>
           <EmptyState v-else :message="t('live.emptyFixturesMessage')" :show-reset="false" />
         </template>
 
@@ -301,6 +323,62 @@ const wcLiveMatches = computed(() =>
     grid-template-columns: 1fr minmax(320px, 400px);
     align-items: start;
   }
+}
+
+.live-page__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.live-page__controls :deep(.live-tabs) {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.live-page__europe-btn {
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-button);
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-default);
+  white-space: nowrap;
+}
+
+.live-page__europe-btn--active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.live-page__europe-btn:hover:not(.live-page__europe-btn--active) {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
+}
+
+.live-page__no-europe {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+}
+
+.live-page__show-all {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .live-page__group + .live-page__group { margin-top: 24px; }

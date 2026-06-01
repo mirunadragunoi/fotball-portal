@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
 import GroupFilterTabs from './GroupFilterTabs.vue'
 import TeamFlagCard from './TeamFlagCard.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 
+const { t } = useI18n()
 const store = useWorldCupTeamsStore()
 
 onMounted(() => store.loadTeams())
@@ -19,8 +21,8 @@ const visibleTeams = computed(() => {
 </script>
 
 <template>
-  <section class="qts" aria-label="Qualified Teams">
-    <h2 class="qts__title">Qualified Teams</h2>
+  <section class="qts" :aria-label="t('worldcup.qualifiedTeams')">
+    <h2 class="qts__title">{{ t('worldcup.qualifiedTeams') }}</h2>
 
     <GroupFilterTabs
       :groups="store.groupKeys"
@@ -35,7 +37,7 @@ const visibleTeams = computed(() => {
 
     <EmptyState
       v-else-if="!store.teams.length"
-      message="Team data not available yet."
+      :message="t('worldcup.teamDataUnavailable')"
       :show-reset="false"
     />
 
@@ -48,7 +50,7 @@ const visibleTeams = computed(() => {
     </div>
 
     <p v-if="store.lastSync" class="qts__sync-note">
-      Data synced: {{ new Date(store.lastSync).toLocaleDateString() }}
+      {{ t('worldcup.syncNote', { date: new Date(store.lastSync).toLocaleDateString() }) }}
     </p>
   </section>
 </template>
