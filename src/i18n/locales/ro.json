@@ -9,6 +9,7 @@
     "videos":   "Videoclipuri",
     "live":     "Live",
     "worldcup": "Cupa Mondială 2026",
+    "news":     "Știri",
     "trivia":   "Trivial",
     "history":  "Istorie"
   },
@@ -350,6 +351,19 @@
     "playerRating":          "Rating",
     "playerNoStats":         "Statistici detaliate indisponibile.",
     "playerYrs":             "ani"
+  },
+  "news": {
+    "eyebrow":    "Știri Fotbal",
+    "title":      "Ultimele Știri",
+    "subtitle":   "Transferuri, preview-uri, rezultate și analize de la cele mai importante surse de fotbal.",
+    "featured":   "Recomandate",
+    "latest":     "Ultimele Știri",
+    "loadMore":   "Mai Multe",
+    "noNews":     "Nicio știre disponibilă momentan.",
+    "readMore":   "Citește articolul",
+    "source":     "Sursă",
+    "allSources": "Toate Sursele",
+    "seeAll":     "Vezi toate știrile"
   },
   "common": {
     "back": "Înapoi"

@@ -10,6 +10,7 @@ import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useLandingImages } from '@/composables/useLandingImages'
 import LiveScoreWidget from '@/components/livescore/LiveScoreWidget.vue'
+import NewsWidget from '@/components/news/NewsWidget.vue'
 
 const { t } = useI18n()
 const brandStore = useBrandStore()
@@ -87,6 +88,13 @@ const leaderboard = [
     <FeaturedGames />
 
     <HomeShowcase />
+
+    <!-- News widget -->
+    <section class="home-news" aria-label="Football News">
+      <div class="home-news__inner">
+        <NewsWidget :limit="5" />
+      </div>
+    </section>
 
     <!-- F1 editorial strip -->
     <section v-if="!isF2" class="home-editorial" aria-label="Editorial feature">
@@ -230,6 +238,16 @@ const leaderboard = [
   margin-top: 4px;
   font-size: 13px;
   color: var(--color-text-secondary);
+}
+
+/* News widget section */
+.home-news {
+  padding: 0 var(--content-padding) 48px;
+}
+
+.home-news__inner {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
 }
 
 /* F1 editorial */

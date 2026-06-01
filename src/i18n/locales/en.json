@@ -9,6 +9,7 @@
     "videos":   "Videos",
     "live":     "Live",
     "worldcup": "World Cup 2026",
+    "news":     "News",
     "trivia":   "Trivia",
     "history":  "History"
   },
@@ -350,6 +351,19 @@
     "playerRating":          "Rating",
     "playerNoStats":         "Detailed stats not available yet.",
     "playerYrs":             "yrs"
+  },
+  "news": {
+    "eyebrow":    "Football News",
+    "title":      "Latest News",
+    "subtitle":   "Live transfer updates, match previews, results and analysis from the top football sources.",
+    "featured":   "Featured",
+    "latest":     "Latest News",
+    "loadMore":   "Load More",
+    "noNews":     "No news available right now.",
+    "readMore":   "Read article",
+    "source":     "Source",
+    "allSources": "All Sources",
+    "seeAll":     "See all news"
   },
   "common": {
     "back": "Back"
