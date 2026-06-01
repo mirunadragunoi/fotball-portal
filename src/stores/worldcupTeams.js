@@ -97,6 +97,42 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     teams.value.find((t) => String(t.id) === String(id)) || null
   )
 
+  const getTeamByLsaId = computed(() => (lsaId) => {
+    if (!lsaId) return null
+    return teams.value.find((t) => t.liveScoreApiId != null && String(t.liveScoreApiId) === String(lsaId)) || null
+  })
+
+  const getTeamByName = computed(() => (name) => {
+    if (!name) return null
+
+    const DIACRITICS = new RegExp('[̀-ͯ]', 'g')
+    function normName(s) {
+      return String(s)
+        .toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(DIACRITICS, '')  // strip diacritics: ü→u, ç→c, Türkiye→Turkiye
+        .replace(/\band\b/g, '&') // "Bosnia and Herzegovina" → "Bosnia & Herzegovina"
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    // Specific aliases: normalized livescore name → normalized wc2026-teams name
+    const ALIASES = {
+      'turkey':     'turkiye',             // Turkey  → Türkiye
+      'dr congo':   'congo dr',            // DR Congo → Congo DR
+      'cape verde': 'cape verde islands',  // Cape Verde → Cape Verde Islands
+    }
+
+    const q = normName(name)
+    const qa = ALIASES[q] || q
+
+    return teams.value.find((t) => {
+      const tn = normName(t.name)
+      return tn === q || tn === qa
+    }) || null
+  })
+
   const totalPlayers = computed(() =>
     teams.value.reduce((sum, t) => sum + (t.players?.length || 0), 0)
   )
@@ -114,6 +150,8 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     teamsByGroup,
     groupKeys,
     getTeamById,
+    getTeamByLsaId,
+    getTeamByName,
     totalPlayers,
     loadTeams,
     loadPlayerDetails,

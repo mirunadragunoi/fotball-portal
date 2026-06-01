@@ -6,6 +6,7 @@ export const PHASE2_FEATURES = {
   history: true,
   live: true,
   worldcup: true,
+  news: true,
 }
 
 /** Show live scores widget on home hero (only when Live section is ready). */
@@ -17,9 +18,10 @@ const BASE_NAV_KEYS = ['home', 'games', 'videos']
 
 export function getVisibleNavKeys() {
   const keys = [...BASE_NAV_KEYS]
+  if (PHASE2_FEATURES.worldcup) keys.push('worldcup')
+  if (PHASE2_FEATURES.news) keys.push('news')
   if (PHASE2_FEATURES.trivia) keys.push('trivia')
   if (PHASE2_FEATURES.history) keys.push('history')
-  if (PHASE2_FEATURES.worldcup) keys.push('worldcup')
   if (PHASE2_FEATURES.live) keys.push('live')
   return keys
 }

@@ -1,9 +1,24 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 const props = defineProps({
   player:   { type: Object, required: true },
   team:     { type: Object, required: true },
 })
 const emit = defineEmits(['select'])
+
+const { t } = useI18n()
+
+const POS_KEY = {
+  Goalkeeper: 'history.posGK',
+  Defender:   'history.posDF',
+  Midfielder: 'history.posMF',
+  Attacker:   'history.posFW',
+}
+
+function posLabel(pos) {
+  return pos ? t(POS_KEY[pos] || 'history.posGK', pos) : ''
+}
 
 function initials(name) {
   return (name || '?')
@@ -40,7 +55,7 @@ function initials(name) {
     <!-- info strip -->
     <div class="ppc__info">
       <span class="ppc__name">{{ player.name }}</span>
-      <span class="ppc__sub">{{ player.position }}<template v-if="player.age"> · {{ player.age }}y</template></span>
+      <span class="ppc__sub">{{ posLabel(player.position) }}<template v-if="player.age"> · {{ player.age }}y</template></span>
     </div>
 
     <!-- team logo -->

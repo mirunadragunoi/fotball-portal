@@ -1,14 +1,27 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
 
 const props = defineProps({
-  player: { type: Object, default: null }, // basic player object from squad
+  player: { type: Object, default: null },
   team:   { type: Object, default: null },
 })
 const emit = defineEmits(['close'])
 
+const { t } = useI18n()
 const store = useWorldCupTeamsStore()
+
+const POS_KEY = {
+  Goalkeeper: 'history.posGK',
+  Defender:   'history.posDF',
+  Midfielder: 'history.posMF',
+  Attacker:   'history.posFW',
+}
+
+function posLabel(pos) {
+  return pos ? t(POS_KEY[pos] || pos, pos) : ''
+}
 
 const detail     = ref(null)
 const detailFull = computed(() => detail.value?.player || null)
@@ -38,6 +51,12 @@ function fmtDate(iso) {
   if (!iso) return '—'
   try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) }
   catch { return iso }
+}
+
+function fmtRating(val) {
+  if (!val) return null
+  const n = parseFloat(val)
+  return isNaN(n) ? null : n.toFixed(1)
 }
 </script>
 
@@ -73,9 +92,9 @@ function fmtDate(iso) {
             <div class="pdm__number" v-if="player.number">#{{ player.number }}</div>
             <h2 class="pdm__name">{{ detailFull?.name || player.name }}</h2>
             <div class="pdm__pos-age">
-              <span class="pdm__badge">{{ player.position }}</span>
+              <span class="pdm__badge">{{ posLabel(player.position) }}</span>
               <template v-if="detailFull?.age || player.age">
-                <span>{{ detailFull?.age || player.age }} yrs</span>
+                <span>{{ detailFull?.age || player.age }} {{ t('worldcup.playerYrs') }}</span>
               </template>
             </div>
 
@@ -83,43 +102,58 @@ function fmtDate(iso) {
               <div class="pdm__team-row">
                 <img v-if="team.logo" :src="team.logo" :alt="team.name" class="pdm__team-logo" />
                 <span class="pdm__team-name">{{ team.name }}</span>
-                <span class="pdm__group-badge" v-if="team.group">Group {{ team.group }}</span>
+                <span class="pdm__group-badge" v-if="team.group">{{ t('worldcup.groupLabel') }} {{ team.group }}</span>
+              </div>
+            </template>
+
+            <!-- current club (shown in header when available) -->
+            <template v-if="stats?.team?.name">
+              <div class="pdm__club-row">
+                <img v-if="stats.team.logo" :src="stats.team.logo" :alt="stats.team.name" class="pdm__club-logo" />
+                <div class="pdm__club-info">
+                  <span class="pdm__club-label">{{ t('worldcup.playerCurrentClub') }}</span>
+                  <span class="pdm__club-value">{{ stats.team.name }}<template v-if="stats.league?.name"> · {{ stats.league.name }}</template></span>
+                </div>
               </div>
             </template>
           </div>
         </div>
 
-        <!-- personal details (from lazy-loaded detail) -->
-        <div v-if="store.playerDetailLoading && !detail" class="pdm__loading">Loading details…</div>
+        <!-- loading -->
+        <div v-if="store.playerDetailLoading && !detail" class="pdm__loading">{{ t('worldcup.playerLoading') }}</div>
 
+        <!-- personal details -->
         <template v-if="detailFull">
-          <div class="pdm__section-title">Personal</div>
+          <div class="pdm__section-title">{{ t('worldcup.playerPersonal') }}</div>
           <div class="pdm__grid-2">
-            <div class="pdm__kv"><span>Born</span><strong>{{ fmtDate(detailFull.birth?.date) }}</strong></div>
-            <div class="pdm__kv"><span>Nationality</span><strong>{{ detailFull.nationality || '—' }}</strong></div>
-            <div class="pdm__kv" v-if="detailFull.height"><span>Height</span><strong>{{ detailFull.height }}</strong></div>
-            <div class="pdm__kv" v-if="detailFull.weight"><span>Weight</span><strong>{{ detailFull.weight }}</strong></div>
+            <div class="pdm__kv"><span>{{ t('worldcup.playerBorn') }}</span><strong>{{ fmtDate(detailFull.birth?.date) }}</strong></div>
+            <div class="pdm__kv"><span>{{ t('worldcup.playerNationality') }}</span><strong>{{ detailFull.nationality || '—' }}</strong></div>
+            <div class="pdm__kv" v-if="detailFull.birth?.place"><span>{{ t('worldcup.playerBirthplace') }}</span><strong>{{ detailFull.birth.place }}</strong></div>
+            <div class="pdm__kv" v-if="detailFull.height"><span>{{ t('worldcup.playerHeight') }}</span><strong>{{ detailFull.height }}</strong></div>
+            <div class="pdm__kv" v-if="detailFull.weight"><span>{{ t('worldcup.playerWeight') }}</span><strong>{{ detailFull.weight }}</strong></div>
           </div>
         </template>
 
         <!-- club stats -->
         <template v-if="stats">
           <div class="pdm__section-title">
-            {{ stats.league?.name || 'Club stats' }}
-            <span class="pdm__club-name">· {{ stats.team?.name }}</span>
+            {{ t('worldcup.playerClubStats') }}
+            <span v-if="stats.league?.season" class="pdm__season-badge">{{ stats.league.season }}/{{ String(stats.league.season + 1).slice(2) }}</span>
           </div>
           <div class="pdm__grid-3">
-            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.games?.appearences ?? '—' }}</div><div class="pdm__stat-lbl">Apps</div></div>
-            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.goals?.total ?? '—' }}</div><div class="pdm__stat-lbl">Goals</div></div>
-            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.goals?.assists ?? '—' }}</div><div class="pdm__stat-lbl">Assists</div></div>
-            <div class="pdm__stat" v-if="stats.passes?.accuracy"><div class="pdm__stat-val">{{ stats.passes.accuracy }}%</div><div class="pdm__stat-lbl">Pass acc.</div></div>
-            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.cards?.yellow ?? 0 }}🟨 {{ stats.cards?.red ?? 0 }}🟥</div><div class="pdm__stat-lbl">Cards</div></div>
-            <div class="pdm__stat" v-if="stats.shots?.on != null"><div class="pdm__stat-val">{{ stats.shots.on }}/{{ stats.shots.total }}</div><div class="pdm__stat-lbl">Shots on</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.games?.appearences ?? '—' }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerApps') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.goals?.total ?? '—' }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerGoals') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.goals?.assists ?? '—' }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerAssists') }}</div></div>
+            <div class="pdm__stat" v-if="stats.games?.minutes != null"><div class="pdm__stat-val">{{ stats.games.minutes }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerMinutes') }}</div></div>
+            <div class="pdm__stat" v-if="fmtRating(stats.games?.rating)"><div class="pdm__stat-val pdm__stat-val--rating">{{ fmtRating(stats.games.rating) }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerRating') }}</div></div>
+            <div class="pdm__stat" v-if="stats.passes?.accuracy"><div class="pdm__stat-val">{{ stats.passes.accuracy }}%</div><div class="pdm__stat-lbl">{{ t('worldcup.playerPassAcc') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.cards?.yellow ?? 0 }}🟨 {{ stats.cards?.red ?? 0 }}🟥</div><div class="pdm__stat-lbl">{{ t('worldcup.playerCards') }}</div></div>
+            <div class="pdm__stat" v-if="stats.shots?.on != null"><div class="pdm__stat-val">{{ stats.shots.on }}/{{ stats.shots.total }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerShotsOn') }}</div></div>
           </div>
         </template>
 
         <div v-else-if="!store.playerDetailLoading" class="pdm__no-stats">
-          Detailed stats not available yet.
+          {{ t('worldcup.playerNoStats') }}
         </div>
       </div>
     </div>
@@ -294,6 +328,46 @@ function fmtDate(iso) {
   font-family: var(--font-heading);
 }
 
+.pdm__club-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+
+.pdm__club-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pdm__club-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.pdm__club-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.pdm__club-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .pdm__loading {
   text-align: center;
   color: var(--color-text-secondary);
@@ -308,13 +382,21 @@ function fmtDate(iso) {
   letter-spacing: 0.1em;
   color: var(--color-text-secondary);
   margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.pdm__club-name {
+.pdm__season-badge {
   text-transform: none;
   letter-spacing: 0;
-  font-size: 12px;
+  font-size: 10px;
   font-family: var(--font-body);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
 .pdm__grid-2 {
@@ -356,6 +438,10 @@ function fmtDate(iso) {
   font-weight: 800;
   color: var(--color-primary);
   line-height: 1;
+}
+
+.pdm__stat-val--rating {
+  color: #f59e0b;
 }
 
 .pdm__stat-lbl {

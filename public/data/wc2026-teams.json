@@ -1,5 +1,5 @@
 {
-  "lastSync": "2026-06-01T06:32:49Z",
+  "lastSync": "2026-06-01T11:24:30Z",
   "requestsUsed": 49,
   "teams": [
     {
@@ -410,9 +410,9 @@
       "id": 3,
       "name": "Croatia",
       "code": "CRO",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "L",
+      "groupId_lsa": 4294,
+      "liveScoreApiId": 211,
       "logo": "/images/teams/3.png",
       "venue": {
         "id": 22430,
@@ -636,9 +636,9 @@
       "id": 5,
       "name": "Sweden",
       "code": "SWE",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "F",
+      "groupId_lsa": 4291,
+      "liveScoreApiId": 1451,
       "logo": "/images/teams/5.png",
       "venue": {
         "id": 21411,
@@ -1276,7 +1276,7 @@
       "code": "COL",
       "group": "K",
       "groupId_lsa": 4295,
-      "liveScoreApiId": null,
+      "liveScoreApiId": 1457,
       "logo": "/images/teams/8.png",
       "venue": {
         "id": 366,
@@ -1760,7 +1760,7 @@
       "code": "ENG",
       "group": "L",
       "groupId_lsa": 4294,
-      "liveScoreApiId": null,
+      "liveScoreApiId": 1456,
       "logo": "/images/teams/10.png",
       "venue": {
         "id": 566,
@@ -2032,9 +2032,9 @@
       "id": 11,
       "name": "Panama",
       "code": "PAN",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "L",
+      "groupId_lsa": 4294,
+      "liveScoreApiId": 1454,
       "logo": "/images/teams/11.png",
       "venue": {
         "id": 11535,
@@ -2048,7 +2048,7 @@
           "id": 458846,
           "name": "JD Gunn",
           "age": 25,
-          "number": 12,
+          "number": 1,
           "position": "Goalkeeper",
           "photo": "/images/players/458846.png"
         },
@@ -2152,7 +2152,7 @@
           "id": 57803,
           "name": "J. Gutiérrez",
           "age": 27,
-          "number": 23,
+          "number": 26,
           "position": "Defender",
           "photo": "/images/players/57803.png"
         },
@@ -2169,7 +2169,7 @@
           "name": "C. Harvey",
           "age": 25,
           "number": 14,
-          "position": "Defender",
+          "position": "Midfielder",
           "photo": "/images/players/71230.png"
         },
         {
@@ -2208,7 +2208,7 @@
           "id": 57667,
           "name": "J. Ramos",
           "age": 28,
-          "number": 3,
+          "number": 13,
           "position": "Defender",
           "photo": "/images/players/57667.png"
         },
@@ -2321,14 +2321,14 @@
           "name": "Y. Bárcenas",
           "age": 32,
           "number": 11,
-          "position": "Attacker",
+          "position": "Midfielder",
           "photo": "/images/players/46855.png"
         },
         {
           "id": 544681,
           "name": "K. Barria",
           "age": 18,
-          "number": null,
+          "number": 27,
           "position": "Attacker",
           "photo": "/images/players/544681.png"
         },
@@ -2345,7 +2345,7 @@
           "name": "I. Díaz",
           "age": 28,
           "number": 10,
-          "position": "Attacker",
+          "position": "Midfielder",
           "photo": "/images/players/96615.png"
         },
         {
@@ -2392,8 +2392,8 @@
           "id": 39612,
           "name": "J. Murillo",
           "age": 30,
-          "number": 13,
-          "position": "Attacker",
+          "number": 29,
+          "position": "Midfielder",
           "photo": "/images/players/39612.png"
         },
         {
@@ -6126,9 +6126,9 @@
       "id": 770,
       "name": "Czech Republic",
       "code": "CZE",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "A",
+      "groupId_lsa": 4286,
+      "liveScoreApiId": 1722,
       "logo": "/images/teams/770.png",
       "venue": {
         "id": 435,
@@ -6546,9 +6546,9 @@
       "id": 777,
       "name": "Türkiye",
       "code": "TUR",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "D",
+      "groupId_lsa": 4289,
+      "liveScoreApiId": 1744,
       "logo": "/images/teams/777.png",
       "venue": {
         "id": 22441,
@@ -7272,9 +7272,9 @@
       "id": 1113,
       "name": "Bosnia & Herzegovina",
       "code": "BOS",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "B",
+      "groupId_lsa": 4287,
+      "liveScoreApiId": 2686,
       "logo": "/images/teams/1113.png",
       "venue": {
         "id": 2186,
@@ -7934,9 +7934,9 @@
       "id": 1504,
       "name": "Ghana",
       "code": "GHA",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "L",
+      "groupId_lsa": 4294,
+      "liveScoreApiId": 214,
       "logo": "/images/teams/1504.png",
       "venue": {
         "id": 21410,
@@ -8160,9 +8160,9 @@
       "id": 1508,
       "name": "Congo DR",
       "code": "CON",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "K",
+      "groupId_lsa": 4295,
+      "liveScoreApiId": 2752,
       "logo": "/images/teams/1508.png",
       "venue": {
         "id": 391,
@@ -9466,9 +9466,9 @@
       "id": 1567,
       "name": "Iraq",
       "code": "IRA",
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "I",
+      "groupId_lsa": 4297,
+      "liveScoreApiId": 1715,
       "logo": "/images/teams/1567.png",
       "venue": {
         "id": 20704,
@@ -10668,7 +10668,7 @@
           "id": 266606,
           "name": "C. Brady",
           "age": 21,
-          "number": 26,
+          "number": 25,
           "position": "Goalkeeper",
           "photo": "/images/players/266606.png"
         },
@@ -10684,7 +10684,7 @@
           "id": 50728,
           "name": "M. Freese",
           "age": 27,
-          "number": 25,
+          "number": 24,
           "position": "Goalkeeper",
           "photo": "/images/players/50728.png"
         },
@@ -10717,7 +10717,7 @@
           "name": "S. Dest",
           "age": 25,
           "number": 2,
-          "position": "Defender",
+          "position": "Midfielder",
           "photo": "/images/players/38735.png"
         },
         {
@@ -10757,7 +10757,7 @@
           "name": "A. Robinson",
           "age": 28,
           "number": 5,
-          "position": "Defender",
+          "position": "Midfielder",
           "photo": "/images/players/19549.png"
         },
         {
@@ -10772,7 +10772,7 @@
           "id": 50852,
           "name": "J. Scally",
           "age": 23,
-          "number": 19,
+          "number": 23,
           "position": "Defender",
           "photo": "/images/players/50852.png"
         },
@@ -10788,7 +10788,7 @@
           "id": 50737,
           "name": "A. Trusty",
           "age": 27,
-          "number": 2,
+          "number": 6,
           "position": "Defender",
           "photo": "/images/players/50737.png"
         },
@@ -10804,7 +10804,7 @@
           "id": 201713,
           "name": "S. Berhalter",
           "age": 24,
-          "number": 8,
+          "number": 14,
           "position": "Midfielder",
           "photo": "/images/players/201713.png"
         },
@@ -10845,14 +10845,14 @@
           "name": "G. Reyna",
           "age": 23,
           "number": 7,
-          "position": "Midfielder",
+          "position": "Attacker",
           "photo": "/images/players/161921.png"
         },
         {
           "id": 51114,
           "name": "C. Roldan",
           "age": 30,
-          "number": 10,
+          "number": 15,
           "position": "Midfielder",
           "photo": "/images/players/51114.png"
         },
@@ -10885,7 +10885,7 @@
           "name": "T. Weah",
           "age": 25,
           "number": 21,
-          "position": "Midfielder",
+          "position": "Attacker",
           "photo": "/images/players/1138.png"
         },
         {
@@ -10901,7 +10901,7 @@
           "name": "M. Arfsten",
           "age": 24,
           "number": 18,
-          "position": "Attacker",
+          "position": "Midfielder",
           "photo": "/images/players/362400.png"
         },
         {
@@ -11716,9 +11716,9 @@
       "id": 5530,
       "name": "Curaçao",
       "code": null,
-      "group": null,
-      "groupId_lsa": null,
-      "liveScoreApiId": null,
+      "group": "E",
+      "groupId_lsa": 4290,
+      "liveScoreApiId": 2732,
       "logo": "/images/teams/5530.png",
       "venue": {
         "id": 11918,

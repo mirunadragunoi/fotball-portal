@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { LIVESCORE_TABS, LIVESCORE_POLL } from '@/config/livescore'
+import { LIVESCORE_TABS, LIVESCORE_POLL, EUROPE_COUNTRY_IDS } from '@/config/livescore'
 import { getCompetitionFilterForCountry } from '@/utils/liveScoreFormat'
 import {
   fetchLiveMatches,
@@ -41,6 +41,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   // ─── Fixture date / standings competition ─────────────────────────────────
   const fixtureDate = ref(todayIso())
   const standingsCompetitionId = ref('')
+  const filterEurope = ref(true)
 
   // ─── Poll timers ──────────────────────────────────────────────────────────
   let livePollTimer = null
@@ -50,10 +51,28 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   const creds = computed(() => authStore.getAuthQuery() || {})
   const competitionFilter = computed(() => getCompetitionFilterForCountry())
 
+  // ─── Europe filter helpers ────────────────────────────────────────────────
+  function isEuropean(m) {
+    const cid = Number(m?.country?.id)
+    return !isNaN(cid) && EUROPE_COUNTRY_IDS.has(cid)
+  }
+
+  function toggleEuropeFilter() {
+    filterEurope.value = !filterEurope.value
+  }
+
   // ─── Getters ──────────────────────────────────────────────────────────────
+  const filteredLiveMatches = computed(() =>
+    filterEurope.value ? liveMatches.value.filter(isEuropean) : liveMatches.value
+  )
+
+  const filteredFixtures = computed(() =>
+    filterEurope.value ? fixtures.value.filter(isEuropean) : fixtures.value
+  )
+
   const matchesByCompetition = computed(() => {
     const grouped = {}
-    for (const m of liveMatches.value) {
+    for (const m of filteredLiveMatches.value) {
       const name = m?.competition?.name || 'Other'
       if (!grouped[name]) grouped[name] = []
       grouped[name].push(m)
@@ -328,6 +347,10 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     selectedMatchLineups,
     fixtureDate,
     standingsCompetitionId,
+    filterEurope,
+    filteredLiveMatches,
+    filteredFixtures,
+    toggleEuropeFilter,
     matchesByCompetition,
     liveCount,
     inPlayMatches,

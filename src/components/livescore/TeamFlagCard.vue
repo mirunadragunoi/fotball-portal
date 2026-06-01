@@ -1,10 +1,12 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   team: { type: Object, required: true },
 })
 
+const { t } = useI18n()
 const router = useRouter()
 
 function navigate() {
@@ -40,7 +42,7 @@ function navigate() {
       <span class="tfc__meta">
         <span class="tfc__group-badge">{{ team.group }}</span>
         <span v-if="team.players?.length" class="tfc__players">
-          {{ team.players.length }} players
+          {{ t('worldcup.playerCount', { count: team.players.length }) }}
         </span>
       </span>
     </div>

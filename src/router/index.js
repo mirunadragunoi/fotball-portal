@@ -60,6 +60,11 @@ const routes = [
     component: () => import('@/views/live/TeamSquadView.vue'),
     props: true,
   },
+  {
+    path: '/news',
+    name: 'News',
+    component: () => import('@/views/NewsView.vue'),
+  },
   // Phase 2 placeholders
   {
     path: '/trivia',

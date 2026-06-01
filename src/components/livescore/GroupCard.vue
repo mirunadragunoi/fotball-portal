@@ -1,33 +1,37 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
+import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
 import { fetchStandings, fetchLiveStandings } from '@/services/livescoreApi'
 
 const props = defineProps({
-  groupName:  { type: String, required: true },   // "A", "B", …
+  groupName:  { type: String, required: true },
   groupId:    { type: [Number, String], required: true },
   competitionId: { type: [Number, String], required: true },
-  liveMatchIds:  { type: Array, default: () => [] }, // match IDs currently live for this group
+  liveMatchIds:  { type: Array, default: () => [] },
 })
 
+const { t } = useI18n()
+const router = useRouter()
 const authStore = useAuthStore()
-const creds = computed(() => authStore.getAuthQuery() || {})
+const wcStore = useWorldCupTeamsStore()
 
+const creds = computed(() => authStore.getAuthQuery() || {})
 const rows = ref([])
 const loading = ref(true)
 
 onMounted(async () => {
+  wcStore.loadTeams()
   try {
-    // Always load regular standings first (available on free plan)
     rows.value = await fetchStandings(creds.value, props.competitionId, { groupId: props.groupId })
-
-    // If live matches are active, try to enhance with live standings
     if (props.liveMatchIds.length && rows.value.length) {
       try {
         const live = await fetchLiveStandings(creds.value, props.competitionId, { groupId: props.groupId })
         if (live?.length) rows.value = live
       } catch {
-        // live standings not available on this plan — keep regular standings
+        // live standings not available on this plan
       }
     }
   } catch {
@@ -36,24 +40,42 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+function findWcTeam(row) {
+  const lsaId = row.team_id || row.team?.id
+  const byId = lsaId ? wcStore.getTeamByLsaId(lsaId) : null
+  if (byId) return byId
+  const name = row.name || row.team?.name || row.team?.full_name || row.team_name
+  return name ? wcStore.getTeamByName(name) : null
+}
+
+function navigateToTeam(row) {
+  const wcTeam = findWcTeam(row)
+  if (!wcTeam) return
+  router.push({ name: 'WorldCupTeamSquad', params: { teamId: wcTeam.id } })
+}
+
+function teamHasLink(row) {
+  return findWcTeam(row) != null
+}
 </script>
 
 <template>
   <div class="group-card">
-    <h3 class="group-card__title">Group {{ groupName }}</h3>
+    <h3 class="group-card__title">{{ t('worldcup.groupLabel') }} {{ groupName }}</h3>
 
-    <p v-if="loading" class="group-card__hint">Loading…</p>
-    <p v-else-if="!rows.length" class="group-card__hint">No data yet.</p>
+    <p v-if="loading" class="group-card__hint">{{ t('worldcup.groupLoading') }}</p>
+    <p v-else-if="!rows.length" class="group-card__hint">{{ t('worldcup.groupNoData') }}</p>
 
     <table v-else class="group-card__table">
       <thead>
         <tr>
-          <th class="group-card__th-team">Team</th>
+          <th class="group-card__th-team">{{ t('worldcup.groupColTeam') }}</th>
           <th>P</th>
           <th>W</th>
           <th>D</th>
           <th>L</th>
-          <th>Pts</th>
+          <th>{{ t('worldcup.groupColPts') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -64,14 +86,23 @@ onMounted(async () => {
         >
           <td class="group-card__team">
             <img
-              v-if="row.team?.logo || row.team_logo"
-              :src="row.team?.logo || row.team_logo"
+              v-if="row.team?.logo || row.team_logo || findWcTeam(row)?.logo"
+              :src="row.team?.logo || row.team_logo || findWcTeam(row)?.logo"
               alt=""
               width="16"
               height="16"
               loading="lazy"
             />
-            <span>{{ row.team?.name || row.team?.full_name || row.team_name || row.name || '—' }}</span>
+            <button
+              v-if="teamHasLink(row)"
+              class="group-card__team-link"
+              @click="navigateToTeam(row)"
+            >
+              {{ row.team?.name || row.team?.full_name || row.team_name || row.name || '—' }}
+            </button>
+            <span v-else>
+              {{ row.team?.name || row.team?.full_name || row.team_name || row.name || '—' }}
+            </span>
             <span v-if="row.live?.score" class="group-card__live-score">
               {{ row.live.score }}
             </span>
@@ -140,6 +171,24 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   font-weight: 600;
+}
+
+.group-card__team-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.group-card__team-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 
 .group-card__live-score {

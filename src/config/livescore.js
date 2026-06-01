@@ -43,6 +43,33 @@ export const LIVESCORE_LANG_MAP = {
   en: null, pl: 'pl', sk: 'sk', ro: 'ro', cz: 'cs',
 }
 
+// Country IDs (livescore API) for Western/Central European football
+export const EUROPE_COUNTRY_IDS = new Set([
+  1,  // Germany
+  2,  // Belgium
+  3,  // Scotland
+  5,  // Denmark
+  6,  // Norway
+  7,  // Sweden
+  8,  // Austria
+  9,  // Switzerland
+  11, // Czech Republic
+  13, // Ukraine
+  14, // Poland
+  19, // England
+  21, // France
+  32, // Portugal
+  36, // Romania
+  42, // Netherlands
+  43, // Spain
+  47, // Italy
+  48, // Turkey
+  50, // Serbia
+  53, // Slovakia
+  54, // Croatia
+  78, // Greece
+])
+
 export const WC_2026_COMPETITION_ID = 362
 export const CHAMPIONSHIP_2026_COMPETITION_ID = 0
 
