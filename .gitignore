@@ -51,6 +51,9 @@ public/images/players/
 public/images/teams/
 public/images/venues/
 
+# Generated dataset (populated by scripts/sync_apifootball.py)
+public/data/wc2026-teams.json
+
 # Test / coverage
 coverage/
 *.lcov
