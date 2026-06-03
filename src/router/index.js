@@ -25,6 +25,12 @@ const routes = [
     meta: { public: true, authPage: true },
   },
   {
+    path: '/dologin/:token',
+    name: 'DoLogin',
+    component: () => import('@/views/auth/DoLoginView.vue'),
+    meta: { public: true },
+  },
+  {
     path: '/games',
     name: 'Games',
     component: () => import('@/views/GamesView.vue'),

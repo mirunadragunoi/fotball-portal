@@ -368,6 +368,12 @@
   "common": {
     "back": "Înapoi"
   },
+  "dologin": {
+    "loading":      "Te autentificăm…",
+    "errorTitle":   "Autentificare eșuată",
+    "errorFallback":"Link-ul poate fi expirat. Te rugăm să te autentifici manual.",
+    "goToLogin":    "Mergi la autentificare"
+  },
   "comingSoon": {
     "title":    "În curând",
     "subtitle": "Această secțiune este în construcție. Reveniți pentru actualizări.",

@@ -159,27 +159,27 @@ export async function getAbout({ language } = {}) {
 }
 
 export async function getLegalContact({ language } = {}) {
-  const data = await request('/football/legal/contact', { query: legalContext(language) })
+  const data = await request('/football/legals/contact', { query: legalContext(language) })
   return unwrapData(data)
 }
 
 export async function getLegalFaq({ language } = {}) {
-  const data = await request('/football/legal/faq', { query: legalContext(language) })
+  const data = await request('/football/legals/faq', { query: legalContext(language) })
   return unwrapData(data)
 }
 
 export async function getLegalTerms({ language } = {}) {
-  const data = await request('/football/legal/terms', { query: legalContext(language) })
+  const data = await request('/football/legals/terms', { query: legalContext(language) })
   return unwrapData(data)
 }
 
 export async function getLegalPrivacy({ language } = {}) {
-  const data = await request('/football/legal/privacy', { query: legalContext(language) })
+  const data = await request('/football/legals/privacy', { query: legalContext(language) })
   return unwrapData(data)
 }
 
 export async function getLegalCookies({ language } = {}) {
-  const data = await request('/football/legal/cookies', { query: legalContext(language) })
+  const data = await request('/football/legals/cookies_policy', { query: legalContext(language) })
   return unwrapData(data)
 }
 
@@ -189,7 +189,7 @@ export async function getLegalUnsubscribe() {
 }
 
 export async function unsubscribePhoneNumber({ country, language, phoneNumber, recaptchaToken } = {}) {
-  const data = await request('/football/legal/unsubscribe', {
+  const data = await request('/football/UnsubscribePhoneNumber', {
     method: 'POST',
     body: {
       portal_name:    getPortalName(),

@@ -368,6 +368,12 @@
   "common": {
     "back": "Back"
   },
+  "dologin": {
+    "loading":      "Signing you in…",
+    "errorTitle":   "Sign-in failed",
+    "errorFallback":"The link may have expired. Please sign in manually.",
+    "goToLogin":    "Go to sign-in"
+  },
   "comingSoon": {
     "title":    "Coming soon",
     "subtitle": "This section is under construction. Check back for updates.",
