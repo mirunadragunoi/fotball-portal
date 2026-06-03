@@ -10,7 +10,6 @@ import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import LiveTabs from '@/components/livescore/LiveTabs.vue'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
-import MatchDetail from '@/components/livescore/MatchDetail.vue'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 
 const { t } = useI18n()
@@ -54,16 +53,10 @@ watch(() => store.standingsCompetitionId, () => {
   if (store.activeTab === 'standings') store.loadStandings()
 })
 
-watch(
-  () => store.selectedMatch,
-  (match) => {
-    if (match) store.startDetailPolling()
-    else store.stopDetailPolling()
-  },
-)
 
-async function onMatchSelect(match) {
-  await store.selectMatch(match)
+function onMatchSelect(match) {
+  const id = match.id ?? match.match_id ?? match.fixture_id
+  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 const wcLiveMatches = computed(() =>
@@ -116,8 +109,7 @@ const wcLiveMatches = computed(() =>
       <button type="button" class="live-page__retry" @click="store.loadTabData()">Retry</button>
     </div>
 
-    <div class="live-page__layout">
-      <section class="live-page__main" aria-labelledby="live-heading">
+    <section class="live-page__main" aria-labelledby="live-heading">
         <div v-if="store.loading" class="live-page__skeletons">
           <SkeletonCard v-for="n in 4" :key="n" />
         </div>
@@ -135,7 +127,7 @@ const wcLiveMatches = computed(() =>
                   v-for="match in groupMatches"
                   :key="match.id"
                   :match="match"
-                  :selected="store.selectedMatch?.id === match.id"
+
                   @select="onMatchSelect"
                 />
               </div>
@@ -160,7 +152,6 @@ const wcLiveMatches = computed(() =>
               v-for="match in store.filteredFixtures"
               :key="match.id || match.fixture_id"
               :match="match"
-              :selected="store.selectedMatch?.id === match.id"
               @select="onMatchSelect"
             />
           </div>
@@ -186,22 +177,7 @@ const wcLiveMatches = computed(() =>
           <StandingsTable v-if="store.standings.length" :rows="store.standings" />
           <EmptyState v-else :message="t('live.emptyStandingsMessage')" :show-reset="false" />
         </template>
-      </section>
-
-      <!-- Match detail panel -->
-      <MatchDetail
-        v-if="store.selectedMatch"
-        class="live-page__detail"
-        :match="store.selectedMatch"
-        :events="store.selectedMatchEvents"
-        :commentary="store.selectedMatchCommentary"
-        :stats="store.selectedMatchStats"
-        :lineups="store.selectedMatchLineups"
-        :loading="store.detailLoading"
-        :detail-error="store.detailError"
-        @close="store.clearSelection()"
-      />
-    </div>
+    </section>
   </main>
 </template>
 
@@ -313,17 +289,6 @@ const wcLiveMatches = computed(() =>
   background: color-mix(in srgb, var(--color-accent) 15%, transparent);
 }
 
-.live-page__layout {
-  display: grid;
-  gap: 20px;
-}
-
-@media (min-width: 1024px) {
-  .live-page__layout {
-    grid-template-columns: 1fr minmax(320px, 400px);
-    align-items: start;
-  }
-}
 
 .live-page__controls {
   display: flex;
@@ -419,11 +384,6 @@ const wcLiveMatches = computed(() =>
   border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
   background: var(--color-surface);
   color: var(--color-text);
-}
-
-.live-page__detail {
-  position: sticky;
-  top: calc(var(--header-height) + 16px);
 }
 
 .live-page--f2 .live-page__group-title {
