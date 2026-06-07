@@ -1,11 +1,45 @@
 /**
- * Frontend-only RSS fetching via api.codetabs.com CORS proxy.
+ * Frontend-only RSS fetching via public CORS proxies, with fallback.
  * Local feeds (per country) are shown first, international feeds follow.
  */
 
 import { getCountryKey } from '@/config/brand'
 
-const PROXY = 'https://api.codetabs.com/v1/proxy?quest='
+// Proxy fallback chain — first working one wins per feed. codetabs is last
+// because it has been throwing Cloudflare 522 since mid-2026.
+const PROXIES = [
+  (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+]
+
+const PROXY_TIMEOUT_MS = 8000
+
+async function fetchViaProxy(url) {
+  let lastErr = null
+  for (const buildProxyUrl of PROXIES) {
+    try {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), PROXY_TIMEOUT_MS)
+      const res = await fetch(buildProxyUrl(url), { signal: controller.signal })
+      clearTimeout(timer)
+      if (!res.ok) {
+        lastErr = new Error(`HTTP ${res.status}`)
+        continue
+      }
+      const text = await res.text()
+      if (!text || text.length < 200) {
+        lastErr = new Error('empty response')
+        continue
+      }
+      return text
+    } catch (e) {
+      lastErr = e
+      // try next proxy
+    }
+  }
+  throw lastErr || new Error('all proxies failed')
+}
 
 // ── Feed catalogue ─────────────────────────────────────────────────────────
 
@@ -84,11 +118,7 @@ async function fetchFeed(feed) {
   const cached = _cache.get(feed.slug)
   if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.articles
 
-  const res = await fetch(PROXY + encodeURIComponent(feed.url))
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const text = await res.text()
-  if (!text || text.length < 200) throw new Error('empty response')
-
+  const text = await fetchViaProxy(feed.url)
   const doc = new DOMParser().parseFromString(text, 'text/xml')
   const articles = [...doc.getElementsByTagName('item')]
     .map((item, i) => {
