@@ -20,9 +20,14 @@ onMounted(async () => {
     // selectTeam picks from already-loaded teams (may be empty for direct navigation)
     teamsStore.selectTeam(teamId.value)
     await teamsStore.loadLastMatches(teamId.value)
-    // Squad requires competitionId — load if provided as query param
+    // Squad requires competitionId AND season (backend mandates season as of 2026-06-07).
+    // Season hardcoded to 2026 for now — future: pull from /livescore/seasons per competition.
     if (route.query.competitionId) {
-      await teamsStore.loadSquad(route.query.competitionId, teamId.value)
+      await teamsStore.loadSquad(
+        route.query.competitionId,
+        teamId.value,
+        route.query.season || '2026',
+      )
     }
   } catch (e) {
     error.value = e?.message || 'Failed to load team data'

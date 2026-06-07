@@ -24,6 +24,7 @@ function posLabel(pos) {
 }
 
 const detail     = ref(null)
+const fantasy    = ref(null)
 const detailFull = computed(() => detail.value?.player || null)
 const stats      = computed(() => detail.value?.statistics?.[0] || null)
 
@@ -31,10 +32,17 @@ watch(
   () => props.player?.id,
   async (id) => {
     detail.value = null
+    fantasy.value = null
     if (!id) return
+
+    // Personal + club-season stats from api-football
     const cached = store.playerDetails[id]
-    if (cached) { detail.value = cached; return }
-    detail.value = await store.loadPlayerDetails(id)
+    detail.value = cached || await store.loadPlayerDetails(id)
+
+    // Fantasy stats from /football/livescore/fantasy (aggregated across WC matches)
+    if (props.team) {
+      fantasy.value = await store.loadPlayerFantasy(props.player, props.team)
+    }
   },
   { immediate: true },
 )
@@ -155,6 +163,25 @@ function fmtRating(val) {
         <div v-else-if="!store.playerDetailLoading" class="pdm__no-stats">
           {{ t('worldcup.playerNoStats') }}
         </div>
+
+        <!-- WC 2026 fantasy stats (aggregated across matches) -->
+        <template v-if="fantasy">
+          <div class="pdm__section-title">
+            {{ t('worldcup.playerWcStats', 'World Cup 2026') }}
+            <span class="pdm__season-badge">{{ fantasy.matches }} {{ fantasy.matches === 1 ? t('worldcup.playerWcMatch', 'match') : t('worldcup.playerWcMatches', 'matches') }}</span>
+          </div>
+          <div class="pdm__grid-3">
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.goals }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerGoals') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.assists }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerAssists') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.shots }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcShots', 'Shots') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.passes }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcPasses', 'Passes') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.tackles }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcTackles', 'Tackles') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.duels }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcDuels', 'Duels') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.interceptions }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcIntercepts', 'Intercepts') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.clearances }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcClearances', 'Clearances') }}</div></div>
+            <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.ball_touches }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcTouches', 'Touches') }}</div></div>
+          </div>
+        </template>
       </div>
     </div>
   </Teleport>

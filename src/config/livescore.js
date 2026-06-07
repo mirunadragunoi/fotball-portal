@@ -23,6 +23,7 @@ export const LIVESCORE_API = {
   federations:      '/football/livescore/federations',
   seasons:          '/football/livescore/seasons',
   verify:           '/football/livescore/verify',
+  fantasy:          '/football/livescore/fantasy',
 }
 
 export const LIVESCORE_POLL = {

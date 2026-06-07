@@ -245,15 +245,43 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     }
   }
 
+  // Highest match_second already loaded (used as `from_second` cursor for polling).
+  function lastCommentarySecond() {
+    let maxSec = 0
+    for (const c of selectedMatchCommentary.value) {
+      const sec = Number(c?.match_second) ||
+                  (Number(c?.minute || 0) * 60 + Number(c?.second || 0))
+      if (sec > maxSec) maxSec = sec
+    }
+    return maxSec
+  }
+
   async function refreshMatchDetail() {
     const matchId = selectedMatch.value?.id
     if (!matchId) return
     try {
-      const [commentary, stats] = await Promise.all([
-        fetchMatchCommentary(creds.value, matchId),
+      // Ask backend only for events newer than what we already show — small payload,
+      // no UI flicker. First poll (empty commentary) refetches everything.
+      const fromSecond = lastCommentarySecond()
+      const commentaryOpts = fromSecond > 0 ? { fromSecond: fromSecond + 1 } : {}
+      const [incoming, stats] = await Promise.all([
+        fetchMatchCommentary(creds.value, matchId, commentaryOpts),
         fetchMatchStatistics(creds.value, matchId),
       ])
-      selectedMatchCommentary.value = commentary
+
+      if (fromSecond > 0 && incoming.length) {
+        // Append fresh entries, dedupe by id
+        const seen = new Set(
+          selectedMatchCommentary.value.map(c => c?.id).filter(Boolean),
+        )
+        const fresh = incoming.filter(c => !c?.id || !seen.has(c.id))
+        if (fresh.length) {
+          selectedMatchCommentary.value = [...selectedMatchCommentary.value, ...fresh]
+        }
+      } else if (fromSecond === 0) {
+        // Initial polling cycle after a reset — full replace
+        selectedMatchCommentary.value = incoming
+      }
       selectedMatchStats.value = stats
     } catch {
       // silent — keep stale data

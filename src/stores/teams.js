@@ -61,20 +61,24 @@ export const useTeamsStore = defineStore('teams', () => {
     }
   }
 
-  async function loadEventMinutes(teamId) {
-    if (!teamId) return
+  async function loadEventMinutes({ teamIds, eventTypes, number } = {}) {
+    if (!teamIds || !eventTypes) return
     try {
-      teamEventMinutes.value = await fetchTeamEventMinutes(creds.value, teamId)
+      teamEventMinutes.value = await fetchTeamEventMinutes(creds.value, {
+        teamIds,
+        eventTypes,
+        number,
+      })
     } catch {
       teamEventMinutes.value = null
     }
   }
 
-  async function loadSquad(competitionId, teamId) {
-    if (!competitionId || !teamId) return
+  async function loadSquad(competitionId, teamId, season) {
+    if (!competitionId || !teamId || !season) return
     loading.value = true
     try {
-      teamSquad.value = await fetchSquad(creds.value, competitionId, teamId)
+      teamSquad.value = await fetchSquad(creds.value, competitionId, teamId, season)
     } catch {
       teamSquad.value = []
     } finally {

@@ -2,6 +2,24 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { fetchPlayerDetails } from '@/services/apiFootballService'
+import { fetchFantasy } from '@/services/livescoreApi'
+import { WC_2026_COMPETITION_ID } from '@/config/livescore'
+
+const DIACRITICS = /[̀-ͯ]/g
+function normName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(DIACRITICS, '')
+    .replace(/\s+/g, ' ')
+}
+
+const FANTASY_METRICS = [
+  'goals', 'assists', 'shots',
+  'passes', 'tackles', 'duels', 'clearances', 'interceptions',
+  'fouls', 'ball_touches',
+]
 
 export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
   const teams       = ref([])
@@ -15,6 +33,10 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
   // cache: playerId → extended detail object from API-Football
   const playerDetails = ref({})
   const playerDetailLoading = ref(false)
+
+  // cache: playerId → aggregated fantasy stats from /football/livescore/fantasy
+  const playerFantasy = ref({})
+  const playerFantasyLoading = ref(false)
 
   const authStore = useAuthStore()
   const creds = computed(() => authStore.getAuthQuery() || {})
@@ -36,6 +58,51 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  /**
+   * Aggregate fantasy stats for a WC player.
+   *
+   * The fantasy endpoint speaks live-score-api IDs, but WC player IDs come
+   * from api-football — they don't match. We fetch fantasy for the team
+   * (via team.liveScoreApiId) filtered to WC 2026, then match by player name.
+   */
+  async function loadPlayerFantasy(player, team) {
+    const playerId = player?.id
+    const lsaTeamId = team?.liveScoreApiId
+    if (!playerId || !lsaTeamId) return null
+    if (playerFantasy.value[playerId]) return playerFantasy.value[playerId]
+
+    playerFantasyLoading.value = true
+    try {
+      const matches = await fetchFantasy(creds.value, {
+        teamId: lsaTeamId,
+        competitionId: WC_2026_COMPETITION_ID,
+      })
+
+      const target = normName(player.name)
+      const agg = { matches: 0 }
+      FANTASY_METRICS.forEach(k => (agg[k] = 0))
+
+      for (const m of matches) {
+        const entry = (m?.stats || []).find(s => normName(s.name) === target)
+        if (!entry) continue
+        agg.matches++
+        for (const k of FANTASY_METRICS) {
+          agg[k] += Number(entry[k] || 0)
+        }
+      }
+
+      if (agg.matches > 0) {
+        playerFantasy.value[playerId] = agg
+        return agg
+      }
+    } catch (e) {
+      console.warn('Player fantasy fetch failed', e?.message)
+    } finally {
+      playerFantasyLoading.value = false
+    }
+    return null
   }
 
   // lazy-load extended player stats (on modal open)
@@ -146,6 +213,8 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     selectedPlayer,
     playerDetails,
     playerDetailLoading,
+    playerFantasy,
+    playerFantasyLoading,
     teamsSorted,
     teamsByGroup,
     groupKeys,
@@ -155,6 +224,7 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     totalPlayers,
     loadTeams,
     loadPlayerDetails,
+    loadPlayerFantasy,
     selectTeam,
     selectPlayer,
     clearSelection,

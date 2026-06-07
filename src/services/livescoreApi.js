@@ -84,9 +84,12 @@ export async function fetchMatchEvents(creds, matchId) {
   return asArray(data, 'event', 'events')
 }
 
-export async function fetchMatchCommentary(creds, matchId) {
+export async function fetchMatchCommentary(creds, matchId, { fromSecond, toSecond } = {}) {
   if (!matchId) return []
-  const data = await apiRequest(LIVESCORE_API.commentary, creds, { match_id: matchId })
+  const q = { match_id: matchId }
+  if (fromSecond != null) q.from_second = fromSecond
+  if (toSecond != null) q.to_second = toSecond
+  const data = await apiRequest(LIVESCORE_API.commentary, creds, q)
   return asArray(data, 'commentary', 'comments', 'comment')
 }
 
@@ -170,20 +173,24 @@ export async function fetchDisciplinary(creds, competitionId) {
   return asArray(data, 'players', 'disciplinary')
 }
 
-export async function fetchSquad(creds, competitionId, teamId) {
-  if (!competitionId || !teamId) return []
+export async function fetchSquad(creds, competitionId, teamId, season) {
+  // Backend now REQUIRES season (e.g. 2024). Without it → 400.
+  if (!competitionId || !teamId || !season) return []
   const data = await apiRequest(LIVESCORE_API.squad, creds, {
     competition_id: competitionId,
     team_id: teamId,
+    season,
   })
   return asArray(data, 'participants', 'players', 'squad')
 }
 
 export async function fetchRosters(creds, competitionId, season) {
-  if (!competitionId) return {}
-  const q = { competition_id: competitionId }
-  if (season) q.season = season
-  const data = await apiRequest(LIVESCORE_API.rosters, creds, q)
+  // Backend now REQUIRES season. Without it → 400.
+  if (!competitionId || !season) return {}
+  const data = await apiRequest(LIVESCORE_API.rosters, creds, {
+    competition_id: competitionId,
+    season,
+  })
   return data || {}
 }
 
@@ -206,16 +213,45 @@ export async function fetchTeams(creds, { countryId, competitionId, federationId
   return asArray(data, 'team', 'teams')
 }
 
-export async function fetchTeamLastMatches(creds, teamId) {
+export async function fetchTeamLastMatches(creds, teamId, { number } = {}) {
   if (!teamId) return []
-  const data = await apiRequest(LIVESCORE_API.teamLastMatches, creds, { team_id: teamId })
+  const q = { team_id: teamId }
+  if (number != null) q.number = number
+  const data = await apiRequest(LIVESCORE_API.teamLastMatches, creds, q)
   return asArray(data, 'match', 'matches')
 }
 
-export async function fetchTeamEventMinutes(creds, teamId) {
-  if (!teamId) return {}
-  const data = await apiRequest(LIVESCORE_API.teamEventMinutes, creds, { team_id: teamId })
+/**
+ * Team event minutes — NEW signature (2026-06-07).
+ * Old `team_id` is gone; backend now requires CSV `team_ids` + CSV `event_types`.
+ * `teamIds` / `eventTypes` may be passed as arrays or already-joined strings.
+ */
+export async function fetchTeamEventMinutes(creds, { teamIds, eventTypes, number } = {}) {
+  if (!teamIds || !eventTypes) return {}
+  const q = {
+    team_ids: Array.isArray(teamIds) ? teamIds.join(',') : teamIds,
+    event_types: Array.isArray(eventTypes) ? eventTypes.join(',') : eventTypes,
+  }
+  if (number != null) q.number = number
+  const data = await apiRequest(LIVESCORE_API.teamEventMinutes, creds, q)
   return data || {}
+}
+
+/**
+ * Fantasy player statistics.
+ * At least one of `competitionId` / `matchId` / `playerId` / `teamId` should be passed
+ * to avoid pulling huge result sets. `opponentTeamId` only works combined with
+ * `playerId` OR `teamId`.
+ */
+export async function fetchFantasy(creds, { competitionId, matchId, playerId, teamId, opponentTeamId } = {}) {
+  const q = {}
+  if (competitionId)    q.competition_id    = competitionId
+  if (matchId)          q.match_id          = matchId
+  if (playerId)         q.player_id         = playerId
+  if (teamId)           q.team_id           = teamId
+  if (opponentTeamId)   q.opponent_team_id  = opponentTeamId
+  const data = await apiRequest(LIVESCORE_API.fantasy, creds, q)
+  return asArray(data, 'matches', 'data', 'fantasy')
 }
 
 export async function fetchCountries(creds) {
