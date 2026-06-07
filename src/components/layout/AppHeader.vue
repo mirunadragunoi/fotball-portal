@@ -11,6 +11,7 @@ import brandLogo from '@brand/assets/logo.svg'
 import { filterVisibleNav, PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
+import { useLiveScoreStore } from '@/stores/livescore'
 import LiveBadge from '@/components/livescore/LiveBadge.vue'
 
 const { t } = useI18n()
@@ -18,11 +19,14 @@ const route = useRoute()
 const router = useRouter()
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
-const { goToLogin, goToSignup } = useAuth()
+const { goToLogin } = useAuth()
 
 const mobileOpen = ref(false)
 const config = computed(() => brandStore.config)
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
+const liveStore = useLiveScoreStore()
+const hasLiveMatches = computed(() => liveStore.liveCount > 0)
+const isAuthPage = computed(() => Boolean(route.meta?.authPage))
 
 function toggleMobile() {
   mobileOpen.value = !mobileOpen.value
@@ -36,12 +40,14 @@ function closeMobile() {
 const navItems = computed(() =>
   filterVisibleNav(
     (config.value?.nav || [
-      { key: 'home',    path: '/' },
-      { key: 'games',   path: '/games' },
-      { key: 'videos',  path: '/videos' },
-      { key: 'trivia',  path: '/trivia' },
-      { key: 'history', path: '/history' },
-      { key: 'live',    path: '/live' },
+      { key: 'home',     path: '/' },
+      { key: 'worldcup', path: '/world-cup', highlight: true },
+      { key: 'live',     path: '/live' },
+      { key: 'news',     path: '/news' },
+      { key: 'history',  path: '/history' },
+      { key: 'trivia',   path: '/trivia' },
+      { key: 'games',    path: '/games' },
+      { key: 'videos',   path: '/videos' },
     ]).map(item => ({ ...item, label: t(`nav.${item.key}`) }))
   )
 )
@@ -61,8 +67,12 @@ function onAuthCtaClick() {
     router.push('/')
     return
   }
-  if (isF2.value) goToSignup()
-  else goToLogin()
+  goToLogin()
+}
+
+function onMobileAuthClick() {
+  closeMobile()
+  onAuthCtaClick()
 }
 </script>
 
@@ -79,7 +89,7 @@ function onAuthCtaClick() {
       </RouterLink>
 
       <!-- Desktop nav -->
-      <nav class="app-header__nav" aria-label="Main navigation">
+      <nav v-if="!isAuthPage" class="app-header__nav" aria-label="Main navigation">
         <AuthLink
           v-for="item in navItems"
           :key="item.key"
@@ -100,9 +110,9 @@ function onAuthCtaClick() {
       <div class="app-header__spacer"></div>
 
       <!-- Right side actions -->
-      <div class="app-header__actions">
+      <div v-if="!isAuthPage" class="app-header__actions">
         <RouterLink
-          v-if="PHASE2_LIVE_HERO_ENABLED"
+          v-if="PHASE2_LIVE_HERO_ENABLED && hasLiveMatches"
           to="/live"
           class="app-header__live-btn"
           :aria-label="t('nav.live', 'Live')"
@@ -111,12 +121,13 @@ function onAuthCtaClick() {
         </RouterLink>
         <button type="button" class="app-header__cta" @click="onAuthCtaClick">
           <AppIcon v-if="isF2 && !isLoggedIn" name="user" :size="16" stroke="currentColor" />
-          {{ isLoggedIn ? t('auth.logout') : isF2 ? t('auth.signupLink') : t('auth.loginLink') }}
+          {{ isLoggedIn ? t('auth.logout') : t('auth.loginLink') }}
         </button>
       </div>
 
       <!-- Mobile hamburger -->
       <button
+        v-if="!isAuthPage"
         class="app-header__hamburger"
         :aria-expanded="mobileOpen"
         :aria-label="mobileOpen ? t('a11y.closeMenu') : t('a11y.openMenu')"
@@ -128,7 +139,7 @@ function onAuthCtaClick() {
 
     <!-- Mobile menu -->
     <Transition name="mobile-menu">
-      <div v-if="mobileOpen" class="app-header__mobile-menu" role="dialog" aria-modal="true" :aria-label="t('a11y.openMenu')">
+      <div v-if="mobileOpen && !isAuthPage" class="app-header__mobile-menu" role="dialog" aria-modal="true" :aria-label="t('a11y.openMenu')">
         <nav aria-label="Mobile navigation">
           <AuthLink
             v-for="item in navItems"
@@ -146,6 +157,14 @@ function onAuthCtaClick() {
             {{ item.label }}
           </AuthLink>
         </nav>
+        <button
+          type="button"
+          class="app-header__mobile-link app-header__mobile-link--auth"
+          :class="isLoggedIn ? 'app-header__mobile-link--logout' : 'app-header__mobile-link--login'"
+          @click="onMobileAuthClick"
+        >
+          {{ isLoggedIn ? t('auth.logout') : t('auth.loginLink') }}
+        </button>
       </div>
     </Transition>
   </header>
@@ -185,7 +204,9 @@ function onAuthCtaClick() {
   display: block;
   height: 40px;
   width: auto;
+  max-width: 100%;
 }
+
 
 .app-header--f2 .app-header__logo-img {
   height: 42px;
@@ -382,6 +403,33 @@ function onAuthCtaClick() {
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
+.app-header__mobile-link--auth {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 18px;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.app-header__mobile-link--login {
+  color: #16A34A;
+}
+
+.app-header__mobile-link--logout {
+  color: var(--color-red);
+}
+
+.app-header__mobile-link--auth:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
 /* Transitions */
 .mobile-menu-enter-active,
 .mobile-menu-leave-active {
@@ -407,8 +455,11 @@ function onAuthCtaClick() {
     gap: 12px;
   }
   .app-header__logo-img {
-    max-width: 130px;
-    height: 36px;
+    /* Take all available space minus padding (~24) + gap (12) + hamburger (44) ≈ 80px */
+    max-width: calc(100vw - 80px);
+    max-height: 40px;
+    width: auto;
+    height: auto;
   }
   .app-header__spacer {
     min-width: 0;

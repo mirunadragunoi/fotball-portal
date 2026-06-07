@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <div id="app-root">
-    <AppHeader v-if="!isAuthPage" />
+    <AppHeader />
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" :key="$route.path" />
