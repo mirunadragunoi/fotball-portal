@@ -6,7 +6,7 @@ const props = defineProps({
   article: { type: Object, required: true },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function open() {
   if (props.article.link) window.open(props.article.link, '_blank', 'noopener,noreferrer')
@@ -23,7 +23,7 @@ function open() {
         :alt="article.title"
         class="nc__img"
         loading="lazy"
-        referrerpolicy="no-referrer"
+        referrerpolicy="strict-origin-when-cross-origin"
       />
       <div v-else class="nc__img-fallback" aria-hidden="true">
         <span class="nc__source-initial">{{ (article.source?.name || '?')[0] }}</span>
@@ -37,7 +37,7 @@ function open() {
         <span class="nc__source">{{ article.source?.name }}</span>
         <span class="nc__sep" aria-hidden="true">·</span>
         <time class="nc__time" :datetime="article.publishedAt">
-          {{ timeAgo(article.publishedAt) }}
+          {{ timeAgo(article.publishedAt, { t, locale: locale }) }}
         </time>
         <span class="nc__read-more">{{ t('news.readMore') }} ↗</span>
       </footer>

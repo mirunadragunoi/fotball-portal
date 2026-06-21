@@ -38,6 +38,12 @@
 
       <!-- Unsubscribe form -->
       <section v-else-if="pageKey === 'unsubscribe'" class="unsubscribe-section">
+        <!-- Per-portal/country intro text from the backend, shown above the form -->
+        <div
+          v-if="content"
+          class="legal-content unsubscribe-intro"
+          v-html="toHtml(String(content))"
+        />
         <div v-if="submitSuccess" class="legal-success" role="status">
           {{ t('legal.unsubscribe_form.success') }}
         </div>
@@ -183,15 +189,12 @@ function toHtml(raw) {
     .join('\n')
 }
 
-// ─── Payload normalization ─────────────────────────────────────────────────────
-function unwrapPayload(data) {
-  if (data && typeof data === 'object' && 'data' in data) return data.data
-  return data
-}
-
-function normalizeFaq(payload) {
-  if (!Array.isArray(payload)) return []
-  return [...payload].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+// Service already extracts the right shape per endpoint — FAQ comes as an array
+// of { order, question, answer }; everything else is a string of HTML/text or null.
+function sortFaq(items) {
+  return Array.isArray(items)
+    ? [...items].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    : []
 }
 
 // ─── reCAPTCHA ─────────────────────────────────────────────────────────────────
@@ -284,13 +287,11 @@ async function loadContent() {
   const loader = LOADERS[pageKey.value]
   if (loader) {
     try {
-      const raw     = await loader({ language: currentApiLanguage() })
-      const payload = unwrapPayload(raw)
-
+      const raw = await loader({ language: currentApiLanguage() })
       if (pageKey.value === 'faq') {
-        faqItems.value = normalizeFaq(payload)
-      } else if (payload != null) {
-        content.value = payload?.content ?? payload
+        faqItems.value = sortFaq(raw)
+      } else if (raw != null) {
+        content.value = raw
       }
     } catch {
       if (pageKey.value !== 'unsubscribe') {

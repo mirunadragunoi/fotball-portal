@@ -39,14 +39,14 @@ async function parseResponse(res) {
   }
 }
 
-function unwrapData(payload) {
+export function unwrapData(payload) {
   if (payload && typeof payload === 'object' && 'data' in payload) {
     return payload.data
   }
   return payload
 }
 
-async function request(path, { method = 'GET', query, body } = {}) {
+export async function request(path, { method = 'GET', query, body } = {}) {
   const res = await fetch(buildUrl(path, query), {
     method,
     headers: {
@@ -143,7 +143,9 @@ export async function fetchAbout({ accessCode, portalName, language } = {}) {
   return unwrapData(data)
 }
 
-// ─── Legal / public endpoints (no access_code required) ───────────────────────
+// ─── Legal / about endpoints (public) ────────────────────────────────────────
+// Public endpoints — no access_code. Backend identifies the content to serve
+// from portal_name + country + language only.
 
 function legalContext(language) {
   return {
@@ -153,39 +155,62 @@ function legalContext(language) {
   }
 }
 
+// Backend wraps legal responses as { treatment, error_code, error_description, <key>: ... }.
+// Some endpoints (like /about on Goalplaza) additionally wrap in { data: {...} } — unwrapData
+// + the per-endpoint key access below normalises both cases to a usable shape.
+
 export async function getAbout({ language } = {}) {
+  // Backend returns the About payload flat: { content, label, language }.
+  // No need to unwrap a `data` envelope here (per FRONTEND_NEWS_API.md 2026-06-08).
   const data = await request('/football/about', { query: legalContext(language) })
-  return unwrapData(data)
+  return data?.content ?? null
 }
 
+/** Returns the contact info as a single text/HTML string (joined from the backend's ordered list). */
 export async function getLegalContact({ language } = {}) {
   const data = await request('/football/legals/contact', { query: legalContext(language) })
-  return unwrapData(data)
+  const items = unwrapData(data)?.contact
+  if (!Array.isArray(items) || !items.length) return null
+  return [...items]
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map((i) => i.content || '')
+    .filter(Boolean)
+    .join('\n\n')
 }
 
+/** Returns an array of FAQ items ({ order, question, answer }) ready for the view. */
 export async function getLegalFaq({ language } = {}) {
   const data = await request('/football/legals/faq', { query: legalContext(language) })
-  return unwrapData(data)
+  const items = unwrapData(data)?.faq
+  return Array.isArray(items) ? items : []
 }
 
 export async function getLegalTerms({ language } = {}) {
   const data = await request('/football/legals/terms', { query: legalContext(language) })
-  return unwrapData(data)
+  return unwrapData(data)?.content ?? null
 }
 
 export async function getLegalPrivacy({ language } = {}) {
   const data = await request('/football/legals/privacy', { query: legalContext(language) })
-  return unwrapData(data)
+  return unwrapData(data)?.content ?? null
 }
 
 export async function getLegalCookies({ language } = {}) {
   const data = await request('/football/legals/cookies_policy', { query: legalContext(language) })
-  return unwrapData(data)
+  return unwrapData(data)?.content ?? null
 }
 
-/** Unsubscribe page has no pre-fetched content — returns null so the form renders immediately. */
-export async function getLegalUnsubscribe() {
-  return null
+/**
+ * Per-portal/country intro text shown above the unsubscribe form.
+ * Returns null on any backend failure so the form still renders.
+ */
+export async function getLegalUnsubscribe({ language } = {}) {
+  try {
+    const data = await request('/football/legals/unsubscribe', { query: legalContext(language) })
+    return unwrapData(data)?.content ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function unsubscribePhoneNumber({ country, language, phoneNumber, recaptchaToken } = {}) {

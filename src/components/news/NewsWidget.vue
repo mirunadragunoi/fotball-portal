@@ -9,7 +9,7 @@ const props = defineProps({
   limit: { type: Number, default: 5 },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const router = useRouter()
 const store = useNewsStore()
 
@@ -45,7 +45,7 @@ onMounted(() => {
             :alt="article.title"
             class="nw__thumb"
             loading="lazy"
-            referrerpolicy="no-referrer"
+            referrerpolicy="strict-origin-when-cross-origin"
           />
           <div v-else class="nw__thumb-fallback" aria-hidden="true">
             {{ (article.source?.name || '?')[0] }}
@@ -53,7 +53,7 @@ onMounted(() => {
         </div>
         <div class="nw__item-body">
           <span class="nw__item-title">{{ article.title }}</span>
-          <span class="nw__item-meta">{{ article.source?.name }} · {{ timeAgo(article.publishedAt) }}</span>
+          <span class="nw__item-meta">{{ article.source?.name }} · {{ timeAgo(article.publishedAt, { t, locale: locale }) }}</span>
         </div>
       </a>
     </div>

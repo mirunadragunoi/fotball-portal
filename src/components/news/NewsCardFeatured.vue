@@ -7,7 +7,7 @@ const props = defineProps({
   large:   { type: Boolean, default: false },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function open() {
   if (props.article.link) window.open(props.article.link, '_blank', 'noopener,noreferrer')
@@ -31,7 +31,7 @@ function open() {
         :alt="article.title"
         class="ncf__img"
         loading="lazy"
-        referrerpolicy="no-referrer"
+        referrerpolicy="strict-origin-when-cross-origin"
       />
       <div v-else class="ncf__img-fallback" aria-hidden="true">
         <span class="ncf__source-initial">{{ (article.source?.name || '?')[0] }}</span>
@@ -42,7 +42,7 @@ function open() {
       <span class="ncf__source">{{ article.source?.name }}</span>
       <h3 class="ncf__title">{{ article.title }}</h3>
       <time class="ncf__time" :datetime="article.publishedAt">
-        {{ timeAgo(article.publishedAt) }}
+        {{ timeAgo(article.publishedAt, { t, locale: locale }) }}
       </time>
     </div>
   </article>
