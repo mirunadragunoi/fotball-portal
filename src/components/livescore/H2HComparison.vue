@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { formatKickoff } from '@/utils/liveScoreFormat'
 
 const props = defineProps({
   matches: { type: Array,  default: () => [] },
@@ -8,7 +9,10 @@ const props = defineProps({
   team2Id: { type: [String, Number], default: null },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+function kickoffStr(m) {
+  return formatKickoff(m.date || m.match_date, m.time, { locale: locale.value }).dateTime
+}
 
 const summary = computed(() => {
   let w1 = 0, w2 = 0, draws = 0, gf1 = 0, gf2 = 0
@@ -101,7 +105,7 @@ function resultLabel(m) {
         :key="m.id || i"
         class="h2h__match"
       >
-        <span class="h2h__date">{{ m.date || m.match_date || '' }}</span>
+        <span class="h2h__date">{{ kickoffStr(m) }}</span>
         <span class="h2h__home">{{ m.home_name || m.home?.name || '—' }}</span>
         <span class="h2h__score-wrap">
           <span class="h2h__score">{{ scoreParts(m).join(' – ') }}</span>

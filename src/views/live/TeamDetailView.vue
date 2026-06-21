@@ -3,10 +3,14 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTeamsStore } from '@/stores/teams'
+import { formatKickoff } from '@/utils/liveScoreFormat'
 
 const route  = useRoute()
 const router = useRouter()
-const { t }  = useI18n()
+const { t, locale }  = useI18n()
+function kickoffStr(m) {
+  return formatKickoff(m.date || m.match_date, m.time, { locale: locale.value }).dateTime
+}
 
 const teamsStore = useTeamsStore()
 
@@ -93,7 +97,7 @@ const squadGroups = computed(() => positionGroup(squad.value))
               :to="`/live/match/${m.id}`"
               class="team-view__match"
             >
-              <span class="team-view__match-date">{{ m.date || m.match_date || '' }}</span>
+              <span class="team-view__match-date">{{ kickoffStr(m) }}</span>
               <span
                 class="team-view__match-home"
                 :class="{ 'team-view__match-name--bold': String(m.home_id || m.home?.id) === String(teamId) }"

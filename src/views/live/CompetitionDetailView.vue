@@ -3,13 +3,17 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCompetitionStore } from '@/stores/competition'
+import { formatKickoff } from '@/utils/liveScoreFormat'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
 
 const route  = useRoute()
 const router = useRouter()
-const { t }  = useI18n()
+const { t, locale }  = useI18n()
+function kickoffStr(m) {
+  return formatKickoff(m.date || m.match_date, m.time, { locale: locale.value }).dateTime
+}
 
 const compStore = useCompetitionStore()
 
@@ -92,7 +96,7 @@ const tabs = computed(() => [
               :to="`/live/match/${m.id}`"
               class="comp-view__fixture"
             >
-              <span class="comp-view__fx-date">{{ m.date || m.match_date || '' }}</span>
+              <span class="comp-view__fx-date">{{ kickoffStr(m) }}</span>
               <span class="comp-view__fx-home">{{ m.home_name || m.home?.name || '—' }}</span>
               <span class="comp-view__fx-score">{{ m.score || m.ft_score || m.time || '—' }}</span>
               <span class="comp-view__fx-away">{{ m.away_name || m.away?.name || '—' }}</span>

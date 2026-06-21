@@ -52,7 +52,7 @@ function findWcTeam(row) {
 function navigateToTeam(row) {
   const wcTeam = findWcTeam(row)
   if (!wcTeam) return
-  router.push({ name: 'WorldCupTeamSquad', params: { teamId: wcTeam.id } })
+  router.push({ name: 'TournamentTeamSquad', params: { teamId: wcTeam.id } })
 }
 
 function teamHasLink(row) {

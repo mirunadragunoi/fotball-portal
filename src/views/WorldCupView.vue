@@ -9,7 +9,6 @@ import { WC_2026_COMPETITION_ID, LIVESCORE_POLL } from '@/config/livescore'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
-import MatchDetail from '@/components/livescore/MatchDetail.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
 import QualifiedTeamsSection from '@/components/livescore/QualifiedTeamsSection.vue'
@@ -37,6 +36,14 @@ const activeTab = ref(route.query.tab || 'groups')
 function setTab(key) {
   activeTab.value = key
   router.replace({ query: { tab: key } })
+}
+
+// Click on a match row navigates to the dedicated match page with full
+// commentary, stats and lineups. The inline `MatchDetail` panel that this
+// view used to render is no longer needed.
+function onMatchClick(m) {
+  const id = m?.id ?? m?.match_id ?? m?.fixture_id
+  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 // ── Per-tab loading states (compStore.loading only covers loadFixtures) ──
@@ -155,7 +162,7 @@ onUnmounted(() => {
             :key="m.id"
             :match="m"
             :selected="liveStore.selectedMatch?.id === m.id"
-            @select="liveStore.selectMatch"
+            @select="onMatchClick"
           />
         </div>
       </template>
@@ -219,23 +226,11 @@ onUnmounted(() => {
                   :key="m.id || m.fixture_id"
                   :match="m"
                   :selected="liveStore.selectedMatch?.id === (m.id || m.fixture_id)"
-                  @select="liveStore.selectMatch"
+                  @select="onMatchClick"
                 />
               </div>
             </template>
           </div>
-          <MatchDetail
-            v-if="liveStore.selectedMatch"
-            class="wc-fixtures-detail"
-            :match="liveStore.selectedMatch"
-            :events="liveStore.selectedMatchEvents"
-            :commentary="liveStore.selectedMatchCommentary"
-            :stats="liveStore.selectedMatchStats"
-            :lineups="liveStore.selectedMatchLineups"
-            :loading="liveStore.detailLoading"
-            :detail-error="liveStore.detailError"
-            @close="liveStore.clearSelection()"
-          />
         </div>
       </section>
     </template>

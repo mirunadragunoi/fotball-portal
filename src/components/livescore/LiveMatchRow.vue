@@ -6,6 +6,7 @@ import {
   matchMinuteLabel,
   isLiveStatus,
   isFinishedStatus,
+  formatKickoff,
 } from '@/utils/liveScoreFormat'
 
 const props = defineProps({
@@ -16,7 +17,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select'])
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const score    = computed(() => parseScoreString(props.match?.scores?.score))
 const minute   = computed(() => matchMinuteLabel(props.match))
@@ -28,12 +29,8 @@ const scheduledDate = computed(() => {
   if (!scheduled.value) return null
   const raw = props.match?.date || props.match?.match_date || props.match?.fixture?.date || ''
   if (!raw) return null
-  try {
-    const d = new Date(`${raw}T00:00:00`)
-    return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
-  } catch {
-    return raw
-  }
+  const { date } = formatKickoff(raw, props.match?.time, { locale: locale.value })
+  return date || raw
 })
 
 // Fixtures may use flat fields (home_name / away_name) instead of nested home.name / away.name

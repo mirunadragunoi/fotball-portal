@@ -70,7 +70,7 @@ function goBack() {
   if (window.history.length > 1) {
     router.back()
   } else {
-    router.push({ name: 'WorldCup', query: { tab: 'teams' } })
+    router.push({ name: 'Tournament', query: { tab: 'teams' } })
   }
 }
 </script>

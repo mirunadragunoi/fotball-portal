@@ -13,6 +13,56 @@ export function getCompetitionFilterForCountry() {
   return LIVESCORE_COMPETITION_IDS[brand]?.[country] || ''
 }
 
+// ─── Match kickoff in visitor's country timezone ────────────────────────────
+// live-score-api returns date/time as UTC. We render in the timezone of the
+// subdomain country (ro.goalplaza.com → Europe/Bucharest, etc.).
+
+const COUNTRY_TZ = {
+  UK: 'Europe/London',
+  RO: 'Europe/Bucharest',
+  CZ: 'Europe/Prague',
+  SK: 'Europe/Bratislava',
+  PL: 'Europe/Warsaw',
+}
+
+const LOCALE_BCP47 = { en: 'en-GB', ro: 'ro-RO', cz: 'cs-CZ', sk: 'sk-SK', pl: 'pl-PL' }
+
+export function getCountryTimezone() {
+  return COUNTRY_TZ[getCountryKey()] || 'UTC'
+}
+
+/**
+ * Format a match kickoff in the visitor's country timezone.
+ * Input:  dateStr "YYYY-MM-DD"  (required) + optional timeStr "HH:MM" or "HH:MM:SS"
+ *         assumed UTC; pass {locale} to localize the day/month name.
+ * Output: { date: "10 Jun", time: "12:30", dateTime: "10 Jun · 12:30" } (or '' if invalid)
+ */
+export function formatKickoff(dateStr, timeStr, { locale } = {}) {
+  if (!dateStr) return { date: '', time: '', dateTime: '' }
+
+  let timeNorm = ''
+  if (timeStr && /^\d{1,2}:\d{2}(:\d{2})?$/.test(String(timeStr))) {
+    const t = String(timeStr)
+    timeNorm = t.length === 5 ? `${t}:00` : t
+  }
+  const iso = timeNorm ? `${dateStr}T${timeNorm}Z` : `${dateStr}T00:00:00Z`
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return { date: '', time: '', dateTime: '' }
+
+  const tz = getCountryTimezone()
+  const bcp = LOCALE_BCP47[String(locale || 'en').toLowerCase()] || 'en-GB'
+
+  const dateOut = new Intl.DateTimeFormat(bcp, {
+    timeZone: tz, day: 'numeric', month: 'short',
+  }).format(d)
+  if (!timeNorm) return { date: dateOut, time: '', dateTime: dateOut }
+
+  const timeOut = new Intl.DateTimeFormat(bcp, {
+    timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false,
+  }).format(d)
+  return { date: dateOut, time: timeOut, dateTime: `${dateOut} · ${timeOut}` }
+}
+
 /** Parse API score string "2 - 1" into { home: 2, away: 1 }. */
 export function parseScoreString(scoreStr) {
   if (!scoreStr || typeof scoreStr !== 'string') {
@@ -32,8 +82,16 @@ export function matchMinuteLabel(match) {
   const time = match?.time
   if (!time) return ''
   if (['HT', 'FT', 'AET', 'AP'].includes(time)) return time
-  // Clock time for scheduled fixtures (e.g. "15:00") — no apostrophe
-  if (/^\d{1,2}:\d{2}$/.test(String(time))) return String(time)
+  // Scheduled kickoff — convert UTC clock to the visitor's country timezone
+  // when we have the date; otherwise fall back to the raw HH:MM(:SS) string.
+  if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(String(time))) {
+    const date = match?.date || match?.match_date
+    if (date) {
+      const { time: localTime } = formatKickoff(date, time)
+      if (localTime) return localTime
+    }
+    return String(time).slice(0, 5)
+  }
   return `${time}'`
 }
 

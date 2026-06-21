@@ -93,16 +93,87 @@ export async function fetchMatchCommentary(creds, matchId, { fromSecond, toSecon
   return asArray(data, 'commentary', 'comments', 'comment')
 }
 
+// Order used to render the stat bars top-to-bottom. Anything not listed goes
+// to the end. Both spellings of the buggy backend keys ("possesion"/"fauls")
+// are included so a future backend fix doesn't break the order.
+const STAT_ORDER = [
+  'possesion', 'possession',
+  'shots_on_target', 'shots_off_target', 'shots_blocked', 'attempts_on_goal',
+  'saves',
+  'corners', 'offsides',
+  'free_kicks', 'goal_kicks', 'throw_ins',
+  'fauls', 'fouls',
+  'yellow_cards', 'red_cards', 'substitutions',
+  'attacks', 'dangerous_attacks',
+  'penalties', 'treatments',
+]
+const STAT_ORDER_IDX = new Map(STAT_ORDER.map((k, i) => [k, i]))
+
+const STAT_LABEL_FIX = {
+  possesion: 'Possession',  // backend typo
+  fauls: 'Fouls',           // backend typo
+}
+
+function prettifyStat(key) {
+  if (STAT_LABEL_FIX[key]) return STAT_LABEL_FIX[key]
+  return String(key).replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
+}
+
 export async function fetchMatchStatistics(creds, matchId) {
   if (!matchId) return []
   const data = await apiRequest(LIVESCORE_API.statistics, creds, { match_id: matchId })
-  return asArray(data, 'statistics', 'stats', 'stat')
+  if (!data) return []
+  // Some endpoints/versions return an array directly — preserve that path.
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data.stats) || Array.isArray(data.statistics) || Array.isArray(data.stat)) {
+    return asArray(data, 'statistics', 'stats', 'stat')
+  }
+  // Live-score-api flat shape: { yellow_cards: "1:1", possesion: "54:46", ... }.
+  return Object.entries(data)
+    .reduce((out, [key, value]) => {
+      if (value == null || typeof value !== 'string' || !value.includes(':')) return out
+      const [home, away] = value.split(':').map((s) => s.trim())
+      if (home === '' || away === undefined) return out
+      out.push({ type: prettifyStat(key), home, away, _rawKey: key })
+      return out
+    }, [])
+    .sort((a, b) => {
+      const ai = STAT_ORDER_IDX.has(a._rawKey) ? STAT_ORDER_IDX.get(a._rawKey) : 999
+      const bi = STAT_ORDER_IDX.has(b._rawKey) ? STAT_ORDER_IDX.get(b._rawKey) : 999
+      return ai - bi
+    })
+}
+
+function normalizeLineupSide(side) {
+  if (!side || typeof side !== 'object') return null
+  const team = side.team || {}
+  const players = Array.isArray(side.players) ? side.players : []
+  const starting = []
+  const substitutes = []
+  for (const p of players) {
+    // Live-score-api flag: "0" = starter, "1" = substitute.
+    if (String(p.substitution) === '1') substitutes.push(p)
+    else starting.push(p)
+  }
+  return {
+    name: team.name || side.name || '',
+    formation: side.formation || team.formation || '',
+    starting,
+    substitutes,
+    team,
+  }
 }
 
 export async function fetchMatchLineups(creds, matchId) {
   if (!matchId) return {}
   const data = await apiRequest(LIVESCORE_API.lineups, creds, { match_id: matchId })
-  return data || {}
+  if (!data) return {}
+  // Backend wraps as { lineup: { home: { team, players }, away: { team, players } } }.
+  const lineup = data.lineup || data
+  return {
+    home: normalizeLineupSide(lineup?.home),
+    away: normalizeLineupSide(lineup?.away),
+  }
 }
 
 // ─── History ─────────────────────────────────────────────────────────────────

@@ -27,10 +27,10 @@ export const LIVESCORE_API = {
 }
 
 export const LIVESCORE_POLL = {
-  live:          30_000,
+  live:          60_000,
   hero:          60_000,
-  detail:        15_000,
-  liveStandings: 30_000,
+  detail:        120_000,
+  liveStandings: 60_000,
 }
 
 export const LIVESCORE_TABS = ['live', 'fixtures', 'standings']

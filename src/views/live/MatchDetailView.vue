@@ -46,6 +46,11 @@ const summaryEvents = computed(() =>
     .sort((a, b) => Number(a.time ?? a.sort ?? 0) - Number(b.time ?? b.sort ?? 0))
 )
 
+// Same list, newest first — used by the right-side summary panel. The
+// ascending `summaryEvents` is kept for the scoreboard goal lists, which
+// read more naturally in chronological order.
+const summaryEventsDescending = computed(() => [...summaryEvents.value].reverse())
+
 const homeGoals = computed(() =>
   summaryEvents.value.filter(e =>
     GOAL_TYPES.has((e.event || e.type || '').toUpperCase()) && eventSide(e) === 'home'
@@ -531,10 +536,10 @@ watch(matchId, async (id) => {
             </div>
             <div class="ds__body">
               <p v-if="store.detailLoading" class="ds__hint">{{ t('live.loadingEvents') }}</p>
-              <p v-else-if="!summaryEvents.length" class="ds__hint">{{ t('live.noEvents') }}</p>
+              <p v-else-if="!summaryEventsDescending.length" class="ds__hint">{{ t('live.noEvents') }}</p>
               <ul v-else class="event-list" aria-label="Key events">
                 <li
-                  v-for="(ev, i) in summaryEvents"
+                  v-for="(ev, i) in summaryEventsDescending"
                   :key="ev.id || i"
                   class="event-item"
                   :class="sideClass(ev)"

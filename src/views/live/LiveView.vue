@@ -83,7 +83,7 @@ const wcLiveMatches = computed(() =>
       </div>
 
       <!-- WC live banner — shown only when WC matches are live -->
-      <RouterLink v-if="wcLiveMatches.length" to="/world-cup" class="live-page__wc-banner">
+      <RouterLink v-if="wcLiveMatches.length" to="/tournament" class="live-page__wc-banner">
         <span class="live-page__wc-dot" aria-hidden="true"></span>
         <span class="live-page__wc-text">
           <strong>{{ t('worldcup.title') }}</strong> — {{ t('worldcup.liveBannerCount', wcLiveMatches.length) }}

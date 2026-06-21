@@ -167,7 +167,7 @@ function fmtRating(val) {
         <!-- WC 2026 fantasy stats (aggregated across matches) -->
         <template v-if="fantasy">
           <div class="pdm__section-title">
-            {{ t('worldcup.playerWcStats', 'World Cup 2026') }}
+            {{ t('worldcup.playerWcStats', 'Tournament 2026') }}
             <span class="pdm__season-badge">{{ fantasy.matches }} {{ fantasy.matches === 1 ? t('worldcup.playerWcMatch', 'match') : t('worldcup.playerWcMatches', 'matches') }}</span>
           </div>
           <div class="pdm__grid-3">
