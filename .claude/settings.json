@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -w \"\\\\nHTTP %{http_code} | size: %{size_download}b\\\\n\" \"https://api.codetabs.com/v1/proxy?quest=https://feeds.bbci.co.uk/sport/football/rss.xml\" --max-time 15)",
+      "Bash(curl -s -w \"\\\\nHTTP %{http_code} | size: %{size_download}b\\\\n\" \"https://api.codetabs.com/v1/proxy?quest=https://www.theguardian.com/football/rss\" --max-time 15)"
+    ]
+  }
+}
