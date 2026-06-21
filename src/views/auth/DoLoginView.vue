@@ -28,7 +28,8 @@ onMounted(async () => {
     return
   }
 
-  const result = await authStore.login(token)
+  const accessCode = extractAccessCode(token)
+  const result = await authStore.login(accessCode)
   if (!result.ok) {
     status.value = 'error'
     errorKey.value = result.error
@@ -38,6 +39,19 @@ onMounted(async () => {
   await prefetchCatalog().catch(() => {})
   redirectUser()
 })
+
+/**
+ * Token from the URL can arrive in two formats:
+ *   - "123456"   → 6-digit access code, used as-is
+ *   - "AB123456" → 2-letter prefix + 6-digit access code; we strip the prefix
+ *     and authenticate with only the digits. Prefix case is ignored.
+ * Anything else falls through verbatim so the backend can decide.
+ */
+function extractAccessCode(raw) {
+  const t = String(raw || '').trim()
+  const m = t.match(/^[A-Za-z]{2}(\d{6})$/)
+  return m ? m[1] : t
+}
 
 function redirectUser() {
   const redirect = route.query.redirect

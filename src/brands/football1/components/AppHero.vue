@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
 import { useLiveScores } from '@/composables/useLiveScores'
+import { useTournamentEyebrow } from '@/composables/useTournamentEyebrow'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
@@ -12,6 +13,7 @@ const { t } = useI18n()
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
+const { eyebrow } = useTournamentEyebrow()
 
 const showLiveWidget = computed(
   () => PHASE2_LIVE_HERO_ENABLED && brandStore.config?.featureFlags?.liveScores !== false,
@@ -55,7 +57,7 @@ watch(
       <div class="f1-hero__left">
         <div class="f1-hero__eyebrow" aria-label="Tournament countdown">
           <span class="f1-hero__eyebrow-bar" aria-hidden="true"></span>
-          {{ t('hero.f1.eyebrow') }}
+          {{ eyebrow }}
         </div>
 
         <h1 class="f1-hero__headline">
@@ -66,12 +68,12 @@ watch(
         <p class="f1-hero__body">{{ t('hero.f1.body') }}</p>
 
         <div class="f1-hero__ctas">
-          <AuthLink to="/games" class="f1-hero__cta-primary">
-            <AppIcon name="play" :size="16" stroke="#1a1500" />
+          <AuthLink to="/tournament" class="f1-hero__cta-primary">
+            <AppIcon name="trophy" :size="16" stroke="#1a1500" />
             {{ t('hero.f1.ctaPrimary') }}
           </AuthLink>
-          <AuthLink to="/videos" class="f1-hero__cta-secondary">
-            <AppIcon name="play-o" :size="16" />
+          <AuthLink to="/live" class="f1-hero__cta-secondary">
+            <AppIcon name="live" :size="16" />
             {{ t('hero.f1.ctaSecondary') }}
           </AuthLink>
         </div>

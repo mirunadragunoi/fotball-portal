@@ -34,7 +34,7 @@ export default {
 
   nav: [
     { key: 'home',     label: 'Home',           path: '/' },
-    { key: 'worldcup', label: 'World Cup 2026',  path: '/world-cup', highlight: true },
+    { key: 'worldcup', label: 'Tournament 2026', path: '/tournament', highlight: true },
     { key: 'live',     label: 'Live',            path: '/live' },
     { key: 'news',     label: 'News',            path: '/news' },
     { key: 'history',  label: 'History',         path: '/history' },
@@ -51,9 +51,9 @@ export default {
     ctaPrimary: 'Start playing',
     ctaSecondary: 'How it works',
     stats: [
-      { value: '2.4M', label: 'daily players' },
-      { value: '124', label: 'games' },
-      { value: '4.8★', label: 'app rating' },
+      { value: '48',  labelKey: 'hero.f2.statTeams' },
+      { value: '104', labelKey: 'hero.f2.statMatches' },
+      { value: '12',  labelKey: 'hero.f2.statGroups' },
     ],
   },
 

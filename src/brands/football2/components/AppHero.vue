@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
+import { useTournamentEyebrow } from '@/composables/useTournamentEyebrow'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useGamesStore } from '@/stores/games'
@@ -12,6 +13,7 @@ const brandStore = useBrandStore()
 const gamesStore = useGamesStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
+const { eyebrow } = useTournamentEyebrow()
 const previewGames = computed(() => gamesStore.featured.slice(0, 4))
 
 onMounted(() => {
@@ -40,7 +42,7 @@ onMounted(() => {
         <div class="f2-hero__left">
           <span class="f2-hero__eyebrow" aria-label="Tournament countdown">
             <span class="f2-hero__eyebrow-dot" aria-hidden="true"></span>
-            {{ t('hero.f2.eyebrow') }}
+            {{ eyebrow }}
           </span>
 
           <h1 class="f2-hero__headline">
@@ -51,11 +53,11 @@ onMounted(() => {
           <p class="f2-hero__body">{{ t('hero.f2.body') }}</p>
 
           <div class="f2-hero__ctas">
-            <AuthLink to="/games" class="f2-hero__cta-primary">
-              <AppIcon name="play" :size="14" stroke="var(--color-text)" />
+            <AuthLink to="/tournament" class="f2-hero__cta-primary">
+              <AppIcon name="trophy" :size="14" stroke="var(--color-text)" />
               {{ t('hero.f2.ctaPrimary') }}
             </AuthLink>
-            <AuthLink to="/videos" class="f2-hero__cta-secondary">
+            <AuthLink to="/live" class="f2-hero__cta-secondary">
               {{ t('hero.f2.ctaSecondary') }}
             </AuthLink>
           </div>
@@ -65,7 +67,7 @@ onMounted(() => {
             <template v-for="(stat, i) in (config?.hero?.stats || [])" :key="i">
               <span>
                 <strong class="f2-hero__stat-value">{{ stat.value }}</strong>
-                {{ stat.label }}
+                {{ stat.labelKey ? t(stat.labelKey) : stat.label }}
               </span>
               <span v-if="i < (config?.hero?.stats?.length || 0) - 1" class="f2-hero__trust-sep" aria-hidden="true"></span>
             </template>

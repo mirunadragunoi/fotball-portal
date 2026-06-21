@@ -31,7 +31,7 @@ export default {
 
   nav: [
     { key: 'home',     label: 'Home',           path: '/' },
-    { key: 'worldcup', label: 'World Cup 2026',  path: '/world-cup', highlight: true },
+    { key: 'worldcup', label: 'Tournament 2026', path: '/tournament', highlight: true },
     { key: 'live',     label: 'Live',            path: '/live' },
     { key: 'news',     label: 'News',            path: '/news' },
     { key: 'history',  label: 'History',         path: '/history' },

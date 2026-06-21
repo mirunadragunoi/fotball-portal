@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { setLocale, availableLocales } from '@/i18n/index.js'
+import { getCountryKey } from '@/config/brand'
 import brandFooterLogo from '@brand/assets/logo-footer.svg'
 
 const { t, locale } = useI18n()
@@ -15,15 +16,24 @@ function onLangChange(e) {
   setLocale(e.target.value)
 }
 
-const legalLinks = [
-  { key: 'about',       to: '/about' },
-  { key: 'contact',     to: '/contact' },
-  { key: 'faq',         to: '/faq' },
-  { key: 'terms',       to: '/terms' },
-  { key: 'privacy',     to: '/privacy' },
-  { key: 'cookies',     to: '/cookies' },
-  { key: 'unsubscribe', to: '/unsubscribe' },
-]
+// Unsubscribe link is enabled only where the SMS-based unsubscribe flow applies.
+const UNSUBSCRIBE_COUNTRIES = new Set(['CZ', 'SK'])
+
+const legalLinks = computed(() => {
+  const all = [
+    { key: 'about',       to: '/about' },
+    { key: 'contact',     to: '/contact' },
+    { key: 'faq',         to: '/faq' },
+    { key: 'terms',       to: '/terms' },
+    { key: 'privacy',     to: '/privacy' },
+    { key: 'cookies',     to: '/cookies' },
+    { key: 'unsubscribe', to: '/unsubscribe' },
+  ]
+  const country = getCountryKey()
+  return all.filter(
+    (link) => link.key !== 'unsubscribe' || UNSUBSCRIBE_COUNTRIES.has(country),
+  )
+})
 </script>
 
 <template>
@@ -134,12 +144,12 @@ const legalLinks = [
 
 .app-footer__logo-img {
   display: block;
-  height: 44px;
+  height: 56px;
   width: auto;
-  max-width: 160px;
+  max-width: 200px;
 }
 
-.app-footer--f2 .app-footer__logo-img { height: 46px; }
+.app-footer--f2 .app-footer__logo-img { height: 58px; }
 
 .app-footer__tagline {
   max-width: 300px;

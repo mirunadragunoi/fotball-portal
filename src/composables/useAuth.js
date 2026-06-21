@@ -1,6 +1,8 @@
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { prefetchCatalog } from '@/composables/useCatalog'
+import { getBrandKey, getCountryKey } from '@/config/brand'
+import { getSubscribeLandingUrl } from '@/config/landingUrls'
 
 export function useAuth() {
   const authStore = useAuthStore()
@@ -32,6 +34,14 @@ export function useAuth() {
   }
 
   function goToSignup(redirectTo) {
+    // Active brand × country may have an external carrier landing page —
+    // prefer it over the internal phone form. Falls back to /signup when
+    // no mapping exists (e.g. UK on either brand).
+    const externalUrl = getSubscribeLandingUrl(getBrandKey(), getCountryKey())
+    if (externalUrl) {
+      window.location.href = externalUrl
+      return
+    }
     router.push({
       name: 'Signup',
       query: redirectTo ? { redirect: redirectTo } : undefined,

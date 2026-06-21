@@ -4,13 +4,22 @@ import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import GameCard from '@/components/games/GameCard.vue'
 import { useGamesStore } from '@/stores/games'
+import { useAuthStore } from '@/stores/auth'
+import { SAMPLE_GAMES } from '@/config/featuredSamples'
 
 const { t } = useI18n()
 const store = useGamesStore()
-const featured = computed(() => store.featured)
+const auth = useAuthStore()
+
+// Anonymous visitors see a static teaser (real product IDs — clicking a
+// card sends them through /login and after auth they land on the real
+// detail page).
+const featured = computed(() =>
+  auth.isAuthenticated ? store.featured : SAMPLE_GAMES,
+)
 
 onMounted(() => {
-  store.loadGames()
+  if (auth.isAuthenticated) store.loadGames()
 })
 </script>
 

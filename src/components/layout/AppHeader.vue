@@ -41,7 +41,7 @@ const navItems = computed(() =>
   filterVisibleNav(
     (config.value?.nav || [
       { key: 'home',     path: '/' },
-      { key: 'worldcup', path: '/world-cup', highlight: true },
+      { key: 'worldcup', path: '/tournament', highlight: true },
       { key: 'live',     path: '/live' },
       { key: 'news',     path: '/news' },
       { key: 'history',  path: '/history' },

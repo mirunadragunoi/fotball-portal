@@ -56,16 +56,19 @@ const routes = [
     component: () => import('@/views/VideoDetailView.vue'),
   },
   {
-    path: '/world-cup',
-    name: 'WorldCup',
+    path: '/tournament',
+    name: 'Tournament',
     component: () => import('@/views/WorldCupView.vue'),
   },
   {
-    path: '/world-cup/team/:teamId',
-    name: 'WorldCupTeamSquad',
+    path: '/tournament/team/:teamId',
+    name: 'TournamentTeamSquad',
     component: () => import('@/views/live/TeamSquadView.vue'),
     props: true,
   },
+  // Legacy redirects — old /world-cup links keep working
+  { path: '/world-cup',                redirect: '/tournament' },
+  { path: '/world-cup/team/:teamId',   redirect: to => `/tournament/team/${to.params.teamId}` },
   {
     path: '/news',
     name: 'News',
@@ -94,7 +97,7 @@ const routes = [
   },
   {
     path: '/live/tournament/:competitionId',
-    redirect: '/world-cup',
+    redirect: '/tournament',
   },
   {
     path: '/live/h2h/:team1Id/:team2Id',
@@ -118,7 +121,7 @@ const routes = [
   },
   {
     path: '/live/tournament/team/:teamId',
-    redirect: to => ({ name: 'WorldCupTeamSquad', params: { teamId: to.params.teamId } }),
+    redirect: to => ({ name: 'TournamentTeamSquad', params: { teamId: to.params.teamId } }),
   },
   // Legal pages — all served by a single shared view, legalKey drives content
   {

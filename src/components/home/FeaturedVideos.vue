@@ -4,13 +4,21 @@ import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import VideoCard from '@/components/videos/VideoCard.vue'
 import { useVideosStore } from '@/stores/videos'
+import { useAuthStore } from '@/stores/auth'
+import { SAMPLE_VIDEOS } from '@/config/featuredSamples'
 
 const { t } = useI18n()
 const store = useVideosStore()
-const featured = computed(() => store.featured)
+const auth = useAuthStore()
+
+// Anonymous visitors get a static teaser (real product IDs so the cards
+// still navigate correctly post-login).
+const featured = computed(() =>
+  auth.isAuthenticated ? store.featured : SAMPLE_VIDEOS,
+)
 
 onMounted(() => {
-  store.loadVideos()
+  if (auth.isAuthenticated) store.loadVideos()
 })
 </script>
 
