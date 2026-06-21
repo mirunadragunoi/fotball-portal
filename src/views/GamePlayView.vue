@@ -1,10 +1,12 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useGamesStore } from '@/stores/games'
 import { useBrandStore } from '@/stores/brand'
 import AppIcon from '@/components/shared/AppIcon.vue'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const store = useGamesStore()
@@ -17,7 +19,16 @@ const isMuted = ref(false)
 
 onMounted(async () => {
   await store.ensureGame(route.params.id)
-  if (!store.getById(route.params.id)) router.replace('/games')
+  const g = store.getById(route.params.id)
+  if (!g) {
+    router.replace('/games')
+    return
+  }
+  // Android games are APKs — they aren't playable in an iframe. Bounce the
+  // user back to the detail page where the big button triggers a download.
+  if (g.platform?.includes('android')) {
+    router.replace(`/games/${route.params.id}`)
+  }
 })
 
 function goBack() {
@@ -69,25 +80,26 @@ function goBack() {
     </div>
 
     <!-- Game iframe -->
-    <div class="game-play__frame-wrap" role="region" aria-label="Game canvas">
+    <div class="game-play__frame-wrap" role="region" :aria-label="t('games.canvasLabel')">
       <iframe
+        v-if="game.playUrl"
         :src="game.playUrl"
-        :title="`Play ${game.title}`"
+        :title="t('games.playLabel', { title: game.title })"
         class="game-play__iframe"
         allowfullscreen
-        sandbox="allow-scripts allow-same-origin allow-forms"
+        allow="autoplay; fullscreen; gamepad; pointer-lock"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-orientation-lock"
       ></iframe>
 
-      <!-- Placeholder overlay (shown when iframe can't load external content in dev) -->
-      <div class="game-play__placeholder" aria-hidden="true">
+      <!-- Fallback shown only when the game has no playable URL -->
+      <div v-else class="game-play__placeholder" aria-hidden="true">
         <img :src="game.thumbnail" :alt="game.title" class="game-play__placeholder-img" />
         <div class="game-play__placeholder-overlay"></div>
         <div class="game-play__placeholder-content">
           <div class="game-play__launch-icon">
             <AppIcon name="play" :size="32" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
           </div>
-          <p class="game-play__launch-text">Game launches in full build</p>
-          <p class="game-play__launch-sub">{{ game.playUrl }}</p>
+          <p class="game-play__launch-text">{{ t('games.playUrlMissing') }}</p>
         </div>
       </div>
     </div>
@@ -96,7 +108,7 @@ function goBack() {
     <div class="game-play__hud game-play__hud--bottom">
       <div class="game-play__stats" aria-label="Game stats">
         <span><AppIcon name="star" :size="13" stroke="var(--color-accent)" /> {{ game.rating }}</span>
-        <span>{{ game.plays }} plays</span>
+        <span>{{ t('games.playsCount', { count: game.plays }) }}</span>
         <span v-if="game.duration !== '—'">
           <AppIcon name="clock" :size="13" /> {{ game.duration }}
         </span>
@@ -271,7 +283,7 @@ function goBack() {
   border: none;
   width: 100%;
   min-height: 400px;
-  display: none; /* hidden in dev since playUrl is a placeholder */
+  background: #000;
 }
 
 .game-play__placeholder {

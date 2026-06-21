@@ -17,6 +17,7 @@ const brandStore = useBrandStore()
 
 const game = computed(() => store.getById(route.params.id))
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
+const isAndroid = computed(() => game.value?.platform?.includes('android'))
 
 const related = computed(() =>
   store.all.filter(g => g.id !== game.value?.id && g.category === game.value?.category).slice(0, 4)
@@ -60,11 +61,24 @@ const leaderboard = [
             />
             <div class="gd-hero__screenshot-overlay" aria-hidden="true"></div>
 
-            <!-- Play button -->
+            <!-- Play / Download button — APK files (Android) trigger a browser
+                 download instead of opening the iframe player. -->
+            <a
+              v-if="isAndroid"
+              :href="game.playUrl"
+              :download="`${game.title}.apk`"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="gd-hero__play-btn"
+              :aria-label="t('games.downloadLabel', { title: game.title })"
+            >
+              <AppIcon name="android" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
+            </a>
             <RouterLink
+              v-else
               :to="`/games/${game.id}/play`"
               class="gd-hero__play-btn"
-              :aria-label="`Play ${game.title}`"
+              :aria-label="t('games.playLabel', { title: game.title })"
             >
               <AppIcon name="play" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
             </RouterLink>
@@ -73,7 +87,7 @@ const leaderboard = [
             <div class="gd-hero__screenshot-bottom" aria-hidden="true">
               <div class="gd-hero__trending">
                 <AppIcon name="fire" :size="14" stroke="var(--color-secondary)" />
-                <span>Trending #1 today</span>
+                <span>{{ t('games.trendingToday') }}</span>
               </div>
             </div>
           </div>
@@ -82,7 +96,7 @@ const leaderboard = [
           <div class="gd-hero__info">
             <div class="gd-hero__eyebrow">
               <span class="gd-hero__eyebrow-bar" aria-hidden="true" v-if="!isF2"></span>
-              {{ game.category }} · Single player
+              {{ game.category }} · {{ t('games.singlePlayer') }}
             </div>
 
             <h1 id="game-title" class="gd-hero__title">{{ game.title }}</h1>
@@ -108,7 +122,19 @@ const leaderboard = [
             <p class="gd-hero__description">{{ game.description }}</p>
 
             <div class="gd-hero__actions">
+              <a
+                v-if="isAndroid"
+                :href="game.playUrl"
+                :download="`${game.title}.apk`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="gd-hero__cta-play"
+              >
+                <AppIcon name="android" :size="18" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
+                {{ t('games.download') }}
+              </a>
               <RouterLink
+                v-else
                 :to="`/games/${game.id}/play`"
                 class="gd-hero__cta-play"
               >
@@ -145,8 +171,8 @@ const leaderboard = [
           </ul>
         </div>
 
-        <aside class="gd-aside" aria-label="Leaderboard">
-          <div class="gd-aside__heading">Leaderboard · Today</div>
+        <aside class="gd-aside" :aria-label="t('games.leaderboard')">
+          <div class="gd-aside__heading">{{ t('games.leaderboardToday') }}</div>
           <ol class="gd-leaderboard">
             <li
               v-for="entry in leaderboard"
@@ -168,9 +194,9 @@ const leaderboard = [
     <section v-if="related.length" class="gd-related" aria-labelledby="related-games-heading">
       <div class="gd-related__inner">
         <SectionHeader
-          eyebrow="More to play"
+          :eyebrow="t('games.moreToPlay')"
           :title="t('games.relatedGames')"
-          link="See all"
+          :link="t('games.seeAll')"
           link-to="/games"
           id="related-games-heading"
         />

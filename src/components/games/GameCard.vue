@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import PlatformBadge from '@/components/shared/PlatformBadge.vue'
@@ -9,6 +10,7 @@ const props = defineProps({
   game: { type: Object, required: true },
 })
 
+const { t } = useI18n()
 const brandStore = useBrandStore()
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 </script>
@@ -63,18 +65,18 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
       <!-- F1: category + plays row -->
       <div v-if="!isF2" class="game-card__meta">
         <span class="game-card__category">{{ game.category }}</span>
-        <span class="game-card__plays">{{ game.plays }} plays</span>
+        <span class="game-card__plays">{{ t('games.playsCount', { count: game.plays }) }}</span>
       </div>
 
       <!-- F2: plays + play button -->
       <div v-if="isF2" class="game-card__f2-footer">
-        <span class="game-card__plays-f2">{{ game.plays }} plays</span>
+        <span class="game-card__plays-f2">{{ t('games.playsCount', { count: game.plays }) }}</span>
         <AuthLink
           :to="`/games/${game.id}`"
           class="game-card__play-btn"
-          :aria-label="`Play ${game.title}`"
+          :aria-label="t('games.playLabel', { title: game.title })"
         >
-          Play <AppIcon name="play" :size="11" stroke="currentColor" />
+          {{ t('games.play') }} <AppIcon name="play" :size="11" stroke="currentColor" />
         </AuthLink>
       </div>
     </div>

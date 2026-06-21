@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useVideosStore } from '@/stores/videos'
@@ -8,7 +8,7 @@ import VideoCard from '@/components/videos/VideoCard.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const store = useVideosStore()
@@ -16,6 +16,16 @@ const brandStore = useBrandStore()
 
 const video = computed(() => store.getById(route.params.id))
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
+
+// Click-to-load player: show thumbnail + play button until user clicks,
+// then swap in a native <video> with autoplay. Saves bandwidth and avoids
+// requesting the MP4 before the user actually wants it.
+const isPlaying = ref(false)
+function startPlayback() {
+  if (video.value?.videoUrl) isPlaying.value = true
+}
+// Reset playback state when navigating between videos
+watch(() => route.params.id, () => { isPlaying.value = false })
 
 const related = computed(() =>
   store.all
@@ -28,9 +38,11 @@ onMounted(async () => {
   if (!store.getById(route.params.id)) router.replace('/videos')
 })
 
+const LOCALE_BCP47 = { en: 'en-GB', ro: 'ro-RO', cz: 'cs-CZ', sk: 'sk-SK', pl: 'pl-PL' }
 function formatDate(iso) {
   if (!iso) return ''
-  return new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' })
+  const bcp47 = LOCALE_BCP47[String(locale.value || 'en').toLowerCase()] || 'en-GB'
+  return new Date(iso).toLocaleDateString(bcp47, { day: 'numeric', month: 'long', year: 'numeric' })
 }
 </script>
 
@@ -52,27 +64,45 @@ function formatDate(iso) {
           <!-- Player -->
           <div class="vd-player-main">
             <div class="vd-player" :class="{ 'vd-player--f2': isF2 }">
-              <img
-                :src="video.thumbnail"
-                :alt="`${video.title} video thumbnail`"
-                class="vd-player__thumb"
-              />
-              <div class="vd-player__overlay" aria-hidden="true"></div>
-              <div class="vd-player__center">
-                <button class="vd-player__play" :aria-label="`Play ${video.title}`">
-                  <AppIcon name="play" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
-                </button>
-              </div>
-              <div class="vd-player__cat-label">{{ video.category }}</div>
-              <div class="vd-player__duration">{{ video.duration }}</div>
+              <video
+                v-if="isPlaying"
+                :src="video.videoUrl"
+                :poster="video.thumbnail"
+                class="vd-player__video"
+                controls
+                autoplay
+                playsinline
+              ></video>
+              <template v-else>
+                <img
+                  :src="video.thumbnail"
+                  :alt="video.title"
+                  class="vd-player__thumb"
+                />
+                <div class="vd-player__overlay" aria-hidden="true"></div>
+                <div class="vd-player__center">
+                  <button
+                    class="vd-player__play"
+                    :aria-label="t('videos.playLabel', { title: video.title })"
+                    :disabled="!video.videoUrl"
+                    @click="startPlayback"
+                  >
+                    <AppIcon name="play" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
+                  </button>
+                </div>
+                <div class="vd-player__cat-label">{{ video.category }}</div>
+                <div v-if="video.duration" class="vd-player__duration">{{ video.duration }}</div>
+              </template>
             </div>
 
             <!-- Title + meta -->
             <h1 class="vd-title">{{ video.title }}</h1>
             <div class="vd-meta">
-              <span>{{ video.views }} views</span>
-              <span class="vd-meta__sep" aria-hidden="true">·</span>
-              <span>{{ formatDate(video.publishedAt) }}</span>
+              <span>{{ t('videos.viewsCount', { count: video.views }) }}</span>
+              <template v-if="video.publishedAt">
+                <span class="vd-meta__sep" aria-hidden="true">·</span>
+                <span>{{ formatDate(video.publishedAt) }}</span>
+              </template>
               <span class="vd-meta__sep" aria-hidden="true">·</span>
               <span class="vd-meta__cat">{{ video.category }}</span>
             </div>
@@ -80,8 +110,8 @@ function formatDate(iso) {
           </div>
 
           <!-- Sidebar: related in same category -->
-          <aside class="vd-sidebar" aria-label="More in this category">
-            <h2 class="vd-sidebar__heading">More {{ video.category }}</h2>
+          <aside class="vd-sidebar" :aria-label="t('videos.moreInCategory', { category: video.category })">
+            <h2 class="vd-sidebar__heading">{{ t('videos.moreInCategory', { category: video.category }) }}</h2>
             <div class="vd-sidebar__list">
               <VideoCard
                 v-for="v in store.all.filter(v2 => v2.id !== video.id && v2.category === video.category).slice(0, 4)"
@@ -99,9 +129,9 @@ function formatDate(iso) {
     <section v-if="related.length" class="vd-related" aria-labelledby="related-videos-heading">
       <div class="vd-related__inner">
         <SectionHeader
-          eyebrow="Watch more"
+          :eyebrow="t('videos.watchMore')"
           :title="t('videos.relatedVideos')"
-          link="All videos"
+          :link="t('videos.allVideos')"
           link-to="/videos"
           id="related-videos-heading"
         />
@@ -169,6 +199,14 @@ function formatDate(iso) {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.vd-player__video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+  object-fit: contain;
 }
 
 .vd-player__overlay {
