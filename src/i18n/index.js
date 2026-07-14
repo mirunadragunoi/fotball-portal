@@ -6,6 +6,7 @@ import baseRo from '@/i18n/locales/ro.json'
 import baseCz from '@/i18n/locales/cz.json'
 import baseSk from '@/i18n/locales/sk.json'
 import basePl from '@/i18n/locales/pl.json'
+import baseFr from '@/i18n/locales/fr.json'
 
 // Brand overrides — only keys that differ from base
 import f1En from '@/brands/football1/i18n/locales/en.json'
@@ -19,6 +20,7 @@ import f2Ro from '@/brands/football2/i18n/locales/ro.json'
 import f2Cz from '@/brands/football2/i18n/locales/cz.json'
 import f2Sk from '@/brands/football2/i18n/locales/sk.json'
 import f2Pl from '@/brands/football2/i18n/locales/pl.json'
+import f2Fr from '@/brands/football2/i18n/locales/fr.json'
 
 import { getBrandConfig, getBrandKey, getCountry, getCountryKey } from '@/config/brand'
 import { getCookie, setCookie } from '@/utils/cookies'
@@ -42,7 +44,7 @@ function mergeMessages(base, override) {
 
 const BRAND_LOCALES = {
   football1: { en: f1En, ro: f1Ro, cz: f1Cz, sk: f1Sk, pl: f1Pl },
-  football2: { en: f2En, ro: f2Ro, cz: f2Cz, sk: f2Sk, pl: f2Pl },
+  football2: { en: f2En, ro: f2Ro, cz: f2Cz, sk: f2Sk, pl: f2Pl, fr: f2Fr },
 }
 
 const BASE_LOCALES = {
@@ -51,6 +53,7 @@ const BASE_LOCALES = {
   cz: baseCz,
   sk: baseSk,
   pl: basePl,
+  fr: baseFr,
 }
 
 const brand      = getBrandConfig()
@@ -110,6 +113,7 @@ export const LOCALE_LABELS = {
   cz: 'Čeština',
   sk: 'Slovenčina',
   pl: 'Polski',
+  fr: 'Français',
 }
 
 export const availableLocales = (country?.languages || ['en']).map(code => ({

@@ -23,9 +23,10 @@ const COUNTRY_TZ = {
   CZ: 'Europe/Prague',
   SK: 'Europe/Bratislava',
   PL: 'Europe/Warsaw',
+  FR: 'Europe/Paris',
 }
 
-const LOCALE_BCP47 = { en: 'en-GB', ro: 'ro-RO', cz: 'cs-CZ', sk: 'sk-SK', pl: 'pl-PL' }
+const LOCALE_BCP47 = { en: 'en-GB', ro: 'ro-RO', cz: 'cs-CZ', sk: 'sk-SK', pl: 'pl-PL', fr: 'fr-FR' }
 
 export function getCountryTimezone() {
   return COUNTRY_TZ[getCountryKey()] || 'UTC'

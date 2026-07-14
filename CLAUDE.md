@@ -101,8 +101,15 @@ Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos.
 *(unchanged — see earlier entry above)*
 
 ### i18n parity + formatting
-- All 5 locales (`en/ro/cz/sk/pl`) are now key-identical (`node` script checks `Object.keys` flat across files). JSON files are auto-formatted: when every value in an object is a primitive, keys are vertically aligned; otherwise one-space-after-colon. Don't fight the formatter — run any merge through it.
-- `timeAgo(dateString, { t, locale })` (`src/utils/timeAgo.js`) is fully i18n-driven via `time.justNow / minutesAgo / hoursAgo / yesterday`. The BCP-47 fallback map (`en→en-GB`, `ro→ro-RO`, `cz→cs-CZ`, `sk→sk-SK`, `pl→pl-PL`) is used for `toLocaleDateString` on older entries.
+- All 6 locales (`en/ro/cz/sk/pl/fr`) are now key-identical (`node` script checks `Object.keys` flat across files). JSON files are auto-formatted: when every value in an object is a primitive, keys are vertically aligned; otherwise one-space-after-colon. Don't fight the formatter — run any merge through it.
+- `timeAgo(dateString, { t, locale })` (`src/utils/timeAgo.js`) is fully i18n-driven via `time.justNow / minutesAgo / hoursAgo / yesterday`. The BCP-47 fallback map (`en→en-GB`, `ro→ro-RO`, `cz→cs-CZ`, `sk→sk-SK`, `pl→pl-PL`, `fr→fr-FR`) is used for `toLocaleDateString` on older entries.
+
+### French locale + FR market (Goal Plaza) — added 2026-07-14
+- Added a 6th locale `fr` (`src/i18n/locales/fr.json` base + `src/brands/football2/i18n/locales/fr.json` Goal Plaza override). Key-identical to `en` (parity check passes).
+- Uses the generic **"Tournoi 2026"** for the tournament (no "Coupe du Monde" / FIFA in user-facing copy). Internal `worldcup.*` keys kept as elsewhere.
+- New country **FR** (France) in `src/config/countries.js`: `defaultLanguage: 'fr'`, `languages: ['fr']`, subdomain `fr.` → `FR`. Added to `football2.countries` (`UK, RO, CZ, FR`). Not on `football1`.
+- `fr` wired into `src/i18n/index.js` (base + brand imports, `LOCALE_LABELS.fr = 'Français'`), plus `fr→fr-FR` / `FR→Europe/Paris` in `src/utils/timeAgo.js` and `src/utils/liveScoreFormat.js` so dates/kickoffs render in French/Paris time.
+- **Not yet wired:** no carrier landing for Goal Plaza × FR in `src/config/landingUrls.js`, so the subscribe CTA falls back to the internal `/signup` phone form. Add a `SUBSCRIBE_LANDING_URLS` line when a French carrier is available.
 
 ---
 

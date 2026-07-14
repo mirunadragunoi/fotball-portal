@@ -12,6 +12,7 @@ const LOCALE_BCP47 = {
   cz: 'cs-CZ',
   sk: 'sk-SK',
   pl: 'pl-PL',
+  fr: 'fr-FR',
 }
 
 const EN_FALLBACK = {

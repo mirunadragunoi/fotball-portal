@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Goal Plaza",
+    "tagline": "Le football, version fun."
+  },
+  "games": {
+    "title": "Jouez.",
+    "subtitle": "Marquez des buts dans le lobby. Mini-jeux, défis quotidiens et tournois — le tout au même endroit."
+  },
+  "videos": {
+    "title": "Regardez.",
+    "subtitle": "Les moments les plus fous du jour de match, des gestes qui défient la physique et des clips à partager à votre groupe."
+  },
+  "footer": {
+    "copy": "© 2026 Goal Plaza — football générique, sans affiliation officielle."
+  }
+}

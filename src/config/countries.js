@@ -11,6 +11,7 @@ export const COUNTRIES = {
   CZ: { code: 'CZ', defaultLanguage: 'cz', languages: ['cz'] },
   SK: { code: 'SK', defaultLanguage: 'sk', languages: ['sk'] },
   PL: { code: 'PL', defaultLanguage: 'pl', languages: ['pl'] },
+  FR: { code: 'FR', defaultLanguage: 'fr', languages: ['fr'] },
 }
 
 /**
@@ -23,6 +24,7 @@ const SUBDOMAIN_COUNTRY = {
   cz:    'CZ',
   sk:    'SK',
   pl:    'PL',
+  fr:    'FR',
 }
 
 export function subdomainToCountry(subdomain) {
