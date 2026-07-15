@@ -104,6 +104,13 @@ Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos.
 - All 6 locales (`en/ro/cz/sk/pl/fr`) are now key-identical (`node` script checks `Object.keys` flat across files). JSON files are auto-formatted: when every value in an object is a primitive, keys are vertically aligned; otherwise one-space-after-colon. Don't fight the formatter — run any merge through it.
 - `timeAgo(dateString, { t, locale })` (`src/utils/timeAgo.js`) is fully i18n-driven via `time.justNow / minutesAgo / hoursAgo / yesterday`. The BCP-47 fallback map (`en→en-GB`, `ro→ro-RO`, `cz→cs-CZ`, `sk→sk-SK`, `pl→pl-PL`, `fr→fr-FR`) is used for `toLocaleDateString` on older entries.
 
+### User action logging — backend event log (added 2026-07-15)
+- New fire-and-forget helper `logEvent({ event_type, product, page, duration_seconds })` in `src/services/footballApi.js`. POSTs to `/football/logEvent` with `portal_name + country + event_type` (+ optional `access_code` read straight from `localStorage[\`${storagePrefix}_access_code\`]` to avoid a circular import on the Pinia auth store). **Never throws** — any network/parse error is swallowed so logging can't break the UI.
+- Event types: **601** login (logged server-side inside `/football/auth/login`, no frontend call), **602** launch, **603** page_view, **604** consumption.
+- **603 page_view**: single global `router.afterEach` hook in `src/router/index.js` — fires on every navigation (incl. public/legal pages). Only `GameDetail` / `GamePlay` / `VideoDetail` routes attach `product = to.params.id` (that `:id` IS the product id); other `:id`-like params (matchId, teamId) are intentionally omitted.
+- **602 launch**: `GameDetailView.vue` logs on every play/download CTA click (`logLaunch`); `VideoDetailView.vue` logs when native playback starts (`startPlayback`).
+- **604 consumption** (`VideoDetailView.vue`, native `<video>` only): sums wall-clock time between play↔pause/ended (seeks/pauses excluded), flushed **once per session** on `ended`, `beforeunload`, or route-param change (component is reused, not unmounted, between videos, so `onBeforeUnmount` won't fire on nav). Min 1s guard; a fresh play after a flush starts a new session.
+
 ### French locale + FR market (Goal Plaza) — added 2026-07-14
 - Added a 6th locale `fr` (`src/i18n/locales/fr.json` base + `src/brands/football2/i18n/locales/fr.json` Goal Plaza override). Key-identical to `en` (parity check passes).
 - Uses the generic **"Tournoi 2026"** for the tournament (no "Coupe du Monde" / FIFA in user-facing copy). Internal `worldcup.*` keys kept as elsewhere.
