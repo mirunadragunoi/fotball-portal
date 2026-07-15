@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { setupAuthGuard } from './guards'
-import { setUnauthorizedHandler } from '@/services/footballApi'
+import { setUnauthorizedHandler, logEvent } from '@/services/footballApi'
 import { useAuthStore } from '@/stores/auth'
 import { useGamesStore } from '@/stores/games'
 import { useVideosStore } from '@/stores/videos'
@@ -184,6 +184,16 @@ const router = createRouter({
 })
 
 setupAuthGuard(router)
+
+// Page view logging (603) — single global hook, catches every navigation
+// (including public/legal pages). For product pages the route :id param IS the
+// store.product.id, so attach it; other :id-like params (matchId, teamId) are
+// NOT product ids and are intentionally omitted.
+const PRODUCT_ROUTE_NAMES = new Set(['GameDetail', 'GamePlay', 'VideoDetail'])
+router.afterEach((to) => {
+  const product = PRODUCT_ROUTE_NAMES.has(to.name) ? to.params.id : undefined
+  logEvent({ event_type: 603, page: to.name || to.path, product })
+})
 
 setUnauthorizedHandler(() => {
   const auth = useAuthStore()

@@ -8,6 +8,7 @@ import PlatformBadge from '@/components/shared/PlatformBadge.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import GameCard from '@/components/games/GameCard.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
+import { logEvent } from '@/services/footballApi'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -16,6 +17,11 @@ const store = useGamesStore()
 const brandStore = useBrandStore()
 
 const game = computed(() => store.getById(route.params.id))
+
+// 602 launch — user started the product (play in browser, or APK download).
+function logLaunch() {
+  logEvent({ event_type: 602, product: game.value?.id })
+}
 const isF2 = computed(() => brandStore.activeBrand === 'football2')
 const isAndroid = computed(() => game.value?.platform?.includes('android'))
 
@@ -71,6 +77,7 @@ const leaderboard = [
               rel="noopener noreferrer"
               class="gd-hero__play-btn"
               :aria-label="t('games.downloadLabel', { title: game.title })"
+              @click="logLaunch"
             >
               <AppIcon name="android" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
             </a>
@@ -79,6 +86,7 @@ const leaderboard = [
               :to="`/games/${game.id}/play`"
               class="gd-hero__play-btn"
               :aria-label="t('games.playLabel', { title: game.title })"
+              @click="logLaunch"
             >
               <AppIcon name="play" :size="28" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
             </RouterLink>
@@ -129,6 +137,7 @@ const leaderboard = [
                 target="_blank"
                 rel="noopener noreferrer"
                 class="gd-hero__cta-play"
+                @click="logLaunch"
               >
                 <AppIcon name="android" :size="18" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
                 {{ t('games.download') }}
@@ -137,6 +146,7 @@ const leaderboard = [
                 v-else
                 :to="`/games/${game.id}/play`"
                 class="gd-hero__cta-play"
+                @click="logLaunch"
               >
                 <AppIcon name="play" :size="18" :stroke="isF2 ? 'var(--color-text)' : '#1a1500'" />
                 {{ t('games.playInBrowser') }}

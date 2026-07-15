@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useVideosStore } from '@/stores/videos'
@@ -7,6 +7,7 @@ import { useBrandStore } from '@/stores/brand'
 import VideoCard from '@/components/videos/VideoCard.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
+import { logEvent } from '@/services/footballApi'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -22,10 +23,79 @@ const isF2 = computed(() => brandStore.activeBrand === 'football2')
 // requesting the MP4 before the user actually wants it.
 const isPlaying = ref(false)
 function startPlayback() {
-  if (video.value?.videoUrl) isPlaying.value = true
+  if (video.value?.videoUrl) {
+    isPlaying.value = true
+    // 602 launch — user started the video product.
+    logEvent({ event_type: 602, product: video.value?.id })
+  }
 }
-// Reset playback state when navigating between videos
-watch(() => route.params.id, () => { isPlaying.value = false })
+
+// ─── Consumption tracking (604) — native <video> only ────────────────────────
+// Sum only the wall-clock time actually spent between play and pause/ended
+// (pauses and seeks are not counted). Flush once per viewing session on ended,
+// tab close (beforeunload), or navigation away — never on a plain pause (the
+// user is expected to resume).
+let watchedSeconds = 0
+let playStartTs = null
+let loggedConsumption = false
+let playingProductId = null
+
+function onVideoPlay() {
+  // A fresh play after a completed/flushed session starts a new session.
+  if (loggedConsumption) {
+    watchedSeconds = 0
+    loggedConsumption = false
+  }
+  playStartTs = Date.now()
+  playingProductId = video.value?.id ?? playingProductId
+}
+
+function accumulate() {
+  if (playStartTs != null) {
+    watchedSeconds += (Date.now() - playStartTs) / 1000
+    playStartTs = null
+  }
+}
+
+function onVideoPause() {
+  accumulate()
+}
+
+function flushConsumption() {
+  accumulate()
+  const seconds = Math.round(watchedSeconds)
+  if (!loggedConsumption && seconds >= 1 && playingProductId != null) {
+    logEvent({ event_type: 604, product: playingProductId, duration_seconds: seconds })
+    loggedConsumption = true
+  }
+}
+
+function onVideoEnded() {
+  flushConsumption()
+}
+
+function resetConsumption() {
+  watchedSeconds = 0
+  playStartTs = null
+  loggedConsumption = false
+  playingProductId = null
+}
+
+// Reset playback state when navigating between videos — flush the previous
+// video's consumption first (this component is reused, not unmounted, on param
+// change, so onBeforeUnmount won't fire between videos).
+watch(() => route.params.id, () => {
+  flushConsumption()
+  resetConsumption()
+  isPlaying.value = false
+})
+
+const onBeforeUnload = () => flushConsumption()
+onMounted(() => window.addEventListener('beforeunload', onBeforeUnload))
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', onBeforeUnload)
+  flushConsumption()
+})
 
 const related = computed(() =>
   store.all
@@ -72,6 +142,9 @@ function formatDate(iso) {
                 controls
                 autoplay
                 playsinline
+                @play="onVideoPlay"
+                @pause="onVideoPause"
+                @ended="onVideoEnded"
               ></video>
               <template v-else>
                 <img

@@ -1,5 +1,5 @@
 import { getApiBaseUrl, getPortalName } from '@/config/api'
-import { getCountry, getCountryKey } from '@/config/brand'
+import { getCountry, getCountryKey, getBrandConfig } from '@/config/brand'
 
 export class ApiError extends Error {
   constructor(message, data = null, status = 0) {
@@ -210,6 +210,55 @@ export async function getLegalUnsubscribe({ language } = {}) {
     return unwrapData(data)?.content ?? null
   } catch {
     return null
+  }
+}
+
+// ─── User action logging (store.portal_event_log) ────────────────────────────
+// Fire-and-forget: logging must never block the UI or surface an error to the
+// user. Event types: 602 launch, 603 page_view, 604 consumption (601 login is
+// logged server-side inside /football/auth/login).
+
+/** Read the current access code without coupling to the Pinia auth store
+ *  (keeps this module free of circular imports). Mirrors the auth store's
+ *  localStorage key: `${storagePrefix}_access_code`. */
+function currentAccessCode() {
+  try {
+    const prefix = getBrandConfig()?.storagePrefix || 'portal'
+    return localStorage.getItem(`${prefix}_access_code`) || ''
+  } catch {
+    return ''
+  }
+}
+
+/**
+ * Log a user action to the backend. Never throws.
+ * @param {object}  opts
+ * @param {number}  opts.event_type        602 / 603 / 604
+ * @param {number} [opts.product]          store.product id (omit when N/A)
+ * @param {string} [opts.page]             route name (page_view / 603)
+ * @param {number} [opts.duration_seconds] seconds (consumption / 604 only)
+ */
+export function logEvent({ event_type, product, page, duration_seconds } = {}) {
+  try {
+    const body = {
+      portal_name: getPortalName(),
+      country: getCountryKey(),
+      event_type,
+    }
+    const accessCode = currentAccessCode()
+    if (accessCode) body.access_code = accessCode
+    if (product !== undefined && product !== null && product !== '') {
+      body.product = Number(product)
+    }
+    if (page !== undefined && page !== null && page !== '') body.page = String(page)
+    if (duration_seconds !== undefined && duration_seconds !== null) {
+      body.duration_seconds = Number(duration_seconds)
+    }
+
+    // fire-and-forget — swallow any network/parse error silently
+    request('/football/logEvent', { method: 'POST', body }).catch(() => {})
+  } catch {
+    /* never let logging break a caller */
   }
 }
 
