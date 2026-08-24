@@ -358,6 +358,10 @@
   "standings": {
     "live": "LIVE"
   },
+  "tournament": {
+    "tabsBracket":  "Phase finale",
+    "emptyBracket": "La phase finale n'est pas encore disponible."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Été 2026",
     "title":               "Tournoi 2026",

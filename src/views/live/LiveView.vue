@@ -4,8 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL } from '@/config/livescore'
-import { EUROPEAN_COMPETITIONS } from '@/config/europeanCompetitions'
+import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { EUROPEAN_COMPETITIONS, getCompetitionRouteById } from '@/config/europeanCompetitions'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
@@ -61,7 +61,9 @@ function onMatchSelect(match) {
 }
 
 function onCompetitionSelect(competitionId) {
-  if (competitionId) router.push({ name: 'CompetitionDetail', params: { competitionId } })
+  if (competitionId) {
+    router.push(getCompetitionRouteById(competitionId, { worldCupId: WC_2026_COMPETITION_ID }))
+  }
 }
 
 // Quick-filter chips for the biggest competitions (client-side; data is already

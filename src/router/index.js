@@ -71,6 +71,20 @@ const routes = [
     component: () => import('@/views/live/TeamSquadView.vue'),
     props: true,
   },
+  // Generic tournament view for club cups (UCL/UEL/UECL/Club WC). The World
+  // Cup keeps its dedicated rich page, so /tournament/362 redirects there.
+  {
+    path: '/tournament/:competitionId(\\d+)',
+    name: 'TournamentView',
+    component: () => import('@/views/live/TournamentView.vue'),
+    beforeEnter: (to) => (String(to.params.competitionId) === '362' ? { name: 'Tournament' } : true),
+  },
+  {
+    path: '/tournament/:competitionId(\\d+)/team/:teamId',
+    name: 'TournamentViewTeamSquad',
+    component: () => import('@/views/live/TeamSquadView.vue'),
+    props: true,
+  },
   // Legacy redirects — old /world-cup links keep working
   { path: '/world-cup',                redirect: '/tournament' },
   { path: '/world-cup/team/:teamId',   redirect: to => `/tournament/team/${to.params.teamId}` },

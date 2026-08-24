@@ -78,6 +78,34 @@ export function getCompetitionIdsCsv(brand = null) {
     .join(',')
 }
 
+// A "tournament" competition has a group phase + knockout bracket (UCL, UEL,
+// UECL, Club World Cup) and gets the rich TournamentView. Pure leagues (and
+// one-off finals like the Super Cup) use the simpler CompetitionDetailView.
+export function isTournamentCompetition(comp) {
+  return Boolean(comp && comp.isCup && comp.hasGroups)
+}
+
+// Router target for a competition object. Cup+groups -> TournamentView,
+// everything else -> CompetitionDetail. Data-driven; no hardcoded id lists.
+export function getCompetitionRoute(comp) {
+  if (!comp) return { name: 'Competitions' }
+  return isTournamentCompetition(comp)
+    ? { name: 'TournamentView', params: { competitionId: comp.id } }
+    : { name: 'CompetitionDetail', params: { competitionId: comp.id } }
+}
+
+// Router target resolved from a bare competition id (e.g. from a match row).
+// Falls back to CompetitionDetail for uncurated ids; the World Cup (362) has
+// its own dedicated /tournament page.
+export function getCompetitionRouteById(id, { worldCupId } = {}) {
+  if (worldCupId != null && String(id) === String(worldCupId)) {
+    return { name: 'Tournament' }
+  }
+  const comp = getCompetitionById(id)
+  if (comp) return getCompetitionRoute(comp)
+  return { name: 'CompetitionDetail', params: { competitionId: id } }
+}
+
 // Backwards-compatible alias.
 export function getAllCompetitionIds(brand = null) {
   return getCompetitionIdsCsv(brand)

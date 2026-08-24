@@ -3,7 +3,8 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL } from '@/config/livescore'
+import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { getCompetitionRouteById } from '@/config/europeanCompetitions'
 import { parseScoreString, matchMinuteLabel, isLiveStatus, isFinishedStatus } from '@/utils/liveScoreFormat'
 
 const route  = useRoute()
@@ -420,7 +421,7 @@ watch(matchId, async (id) => {
               <div v-if="match?.competition?.name" class="vplayer__meta-line">
                 <RouterLink
                   v-if="match?.competition?.id"
-                  :to="`/live/competition/${match.competition.id}`"
+                  :to="getCompetitionRouteById(match.competition.id, { worldCupId: WC_2026_COMPETITION_ID })"
                   class="vplayer__meta-comp"
                 >{{ match.competition.name }}</RouterLink>
                 <span v-else>{{ match.competition.name }}</span>

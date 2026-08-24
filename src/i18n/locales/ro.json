@@ -358,6 +358,10 @@
   "standings": {
     "live": "LIVE"
   },
+  "tournament": {
+    "tabsBracket":  "Eliminatoriu",
+    "emptyBracket": "Faza eliminatorie nu este disponibilă încă."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Vara 2026",
     "title":               "Turneul 2026",

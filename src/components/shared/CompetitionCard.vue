@@ -2,12 +2,17 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
+import { getCompetitionRoute } from '@/config/europeanCompetitions'
 
 const props = defineProps({
   competition: { type: Object, required: true },
 })
 
 const { t } = useI18n()
+
+// Cup competitions with groups (UCL/UEL/UECL/Club WC) go to the rich
+// TournamentView; leagues go to CompetitionDetail.
+const target = computed(() => getCompetitionRoute(props.competition))
 
 // Two-letter monogram used as a lightweight crest stand-in (no logo assets).
 const monogram = computed(() => {
@@ -26,7 +31,7 @@ const subtitle = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/live/competition/${competition.id}`" class="comp-card">
+  <RouterLink :to="target" class="comp-card">
     <span class="comp-card__crest" aria-hidden="true">{{ monogram }}</span>
     <span class="comp-card__text">
       <span class="comp-card__name">{{ competition.name }}</span>

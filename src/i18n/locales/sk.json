@@ -371,6 +371,10 @@
   "standings": {
     "live": "LIVE"
   },
+  "tournament": {
+    "tabsBracket":  "Vyraďovacia časť",
+    "emptyBracket": "Vyraďovacia fáza zatiaľ nie je k dispozícii."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Leto 2026",
     "title":               "Turnaj 2026",
