@@ -183,7 +183,9 @@
     "readMore":   "Číst článek",
     "source":     "Zdroj",
     "allSources": "Všechny zdroje",
-    "seeAll":     "Zobrazit všechny zprávy"
+    "seeAll":     "Zobrazit všechny zprávy",
+    "language":     "Jazyk",
+    "allLanguages": "Vše"
   },
   "trivia": {
     "title": "Sportovní kvíz",

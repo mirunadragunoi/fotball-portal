@@ -434,7 +434,9 @@
     "readMore":   "Citește articolul",
     "source":     "Sursă",
     "allSources": "Toate Sursele",
-    "seeAll":     "Vezi toate știrile"
+    "seeAll":     "Vezi toate știrile",
+    "language":     "Limbă",
+    "allLanguages": "Toate"
   },
   "time": {
     "justNow":    "Acum",

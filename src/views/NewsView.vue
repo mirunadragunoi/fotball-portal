@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useNews } from '@/composables/useNews'
@@ -9,9 +10,30 @@ import NewsCardSkeleton from '@/components/news/NewsCardSkeleton.vue'
 import NewsSourceFilter from '@/components/news/NewsSourceFilter.vue'
 import NewsEmpty from '@/components/news/NewsEmpty.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const brandStore = useBrandStore()
 const store = useNews({ autoRefresh: true })
+
+// Feed languages offered by the active brand (feed codes; Czech = 'cs').
+const brandLanguages = computed(() => brandStore.config?.newsLanguages || ['en'])
+
+// Native language names (shown in their own language, locale-independent).
+const NATIVE_NAME = { en: 'English', ro: 'Română', pl: 'Polski', sk: 'Slovenčina', cs: 'Čeština', fr: 'Français' }
+function langName(code) {
+  return NATIVE_NAME[code] || String(code).toUpperCase()
+}
+
+// Map the vue-i18n UI locale to a feed language code ('cz' -> 'cs').
+const LOCALE_TO_FEED = { cz: 'cs' }
+function toFeedLang(loc) {
+  return LOCALE_TO_FEED[loc] || loc
+}
+
+// Pre-select the user's UI language on first load (falls back to All).
+if (!store.articles.length && store.language == null) {
+  const ui = toFeedLang(locale.value)
+  store.language = brandLanguages.value.includes(ui) ? ui : null
+}
 </script>
 
 <template>
@@ -45,6 +67,24 @@ const store = useNews({ autoRefresh: true })
     <!-- Latest articles list -->
     <section class="news-page__list-section" :aria-label="t('news.latest')">
       <h2 class="news-page__section-title">{{ t('news.latest') }}</h2>
+
+      <!-- Language filter -->
+      <div v-if="brandLanguages.length > 1" class="news-page__langs" role="group" :aria-label="t('news.language')">
+        <button
+          type="button"
+          class="news-page__lang"
+          :class="{ 'news-page__lang--active': !store.language }"
+          @click="store.setLanguage(null)"
+        >{{ t('news.allLanguages') }}</button>
+        <button
+          v-for="code in brandLanguages"
+          :key="code"
+          type="button"
+          class="news-page__lang"
+          :class="{ 'news-page__lang--active': store.language === code }"
+          @click="store.setLanguage(code)"
+        >{{ langName(code) }}</button>
+      </div>
 
       <NewsSourceFilter
         v-if="store.sources.length > 1"
@@ -134,6 +174,38 @@ const store = useNews({ autoRefresh: true })
   margin: 0 0 16px;
   padding-bottom: 10px;
   border-bottom: 2px solid var(--color-line);
+}
+
+/* Language filter chips */
+.news-page__langs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.news-page__lang {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.news-page__lang:hover:not(.news-page__lang--active) {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
+}
+
+.news-page__lang--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
 }
 
 .news-page__loading-more { margin-top: 8px; }

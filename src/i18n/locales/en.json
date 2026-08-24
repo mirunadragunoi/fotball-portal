@@ -434,7 +434,9 @@
     "readMore":   "Read article",
     "source":     "Source",
     "allSources": "All Sources",
-    "seeAll":     "See all news"
+    "seeAll":     "See all news",
+    "language":     "Language",
+    "allLanguages": "All"
   },
   "time": {
     "justNow":    "Just now",

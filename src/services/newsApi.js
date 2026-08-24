@@ -29,7 +29,7 @@ function normalize(article) {
   }
 }
 
-export async function getNews(_creds, { limit = 20, page = 1, source } = {}) {
+export async function getNews(_creds, { limit = 20, page = 1, source, langs } = {}) {
   const query = {
     portal_name: getPortalName(),
     country:     getCountryKey(),
@@ -38,6 +38,9 @@ export async function getNews(_creds, { limit = 20, page = 1, source } = {}) {
     page,
   }
   if (source) query.source = source
+  // `langs` (CSV of feed languages, e.g. "en,pl,sk") filters server-side and
+  // also pulls the matching local feeds; omit for the default (all) view.
+  if (langs) query.langs = langs
 
   const data = await request('/football/news', { query })
   const payload = unwrapData(data)

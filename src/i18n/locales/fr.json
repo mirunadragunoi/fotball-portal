@@ -434,7 +434,9 @@
     "readMore":   "Lire l'article",
     "source":     "Source",
     "allSources": "Toutes les sources",
-    "seeAll":     "Voir toutes les actus"
+    "seeAll":     "Voir toutes les actus",
+    "language":     "Langue",
+    "allLanguages": "Tout"
   },
   "time": {
     "justNow":    "À l'instant",

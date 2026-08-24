@@ -35,6 +35,7 @@ function open() {
       <p v-if="article.description" class="nc__desc">{{ article.description }}</p>
       <footer class="nc__meta">
         <span class="nc__source">{{ article.source?.name }}</span>
+        <span v-if="article.source?.lang" class="nc__lang">{{ article.source.lang.toUpperCase() }}</span>
         <span class="nc__sep" aria-hidden="true">·</span>
         <time class="nc__time" :datetime="article.publishedAt">
           {{ timeAgo(article.publishedAt, { t, locale: locale }) }}
@@ -140,6 +141,15 @@ function open() {
 }
 
 .nc__source { font-weight: 700; color: var(--color-primary); }
+.nc__lang {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
 .nc__sep { opacity: 0.4; }
 .nc__read-more { margin-left: auto; font-weight: 600; color: var(--color-primary); opacity: 0.8; }
 

@@ -13,6 +13,7 @@ export const useNewsStore = defineStore('news', () => {
   const error       = ref(null)
   const lastFetched = ref(null)
   const sourceFilter = ref(null)   // null = all, 'bbc' | 'sky' | 'espn'
+  const language = ref(null)       // null = all feed languages; else 'en'|'ro'|'pl'|'sk'|'cs'
 
   const authStore = useAuthStore()
   const creds = computed(() => authStore.getAuthQuery() || {})
@@ -43,7 +44,7 @@ export const useNewsStore = defineStore('news', () => {
       const result = await getNews(creds.value, {
         limit: limit.value,
         page: options.page || 1,
-        category: options.category || null,
+        langs: language.value || undefined,
       })
 
       if ((options.page || 1) > 1) {
@@ -71,6 +72,15 @@ export const useNewsStore = defineStore('news', () => {
     sourceFilter.value = slug || null
   }
 
+  // Switching feed language re-queries the backend (server-side filter + fetch).
+  async function setLanguage(lang) {
+    const next = lang || null
+    if (next === language.value) return
+    language.value = next
+    sourceFilter.value = null
+    await fetchNews({ page: 1 })
+  }
+
   return {
     articles,
     featuredArticles,
@@ -84,8 +94,10 @@ export const useNewsStore = defineStore('news', () => {
     error,
     lastFetched,
     sourceFilter,
+    language,
     fetchNews,
     loadMore,
     setSource,
+    setLanguage,
   }
 })

@@ -183,7 +183,9 @@
     "readMore":   "Czytaj artykuł",
     "source":     "Źródło",
     "allSources": "Wszystkie źródła",
-    "seeAll":     "Zobacz wszystkie wiadomości"
+    "seeAll":     "Zobacz wszystkie wiadomości",
+    "language":     "Język",
+    "allLanguages": "Wszystkie"
   },
   "trivia": {
     "title": "Quiz sportowy",
