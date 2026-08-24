@@ -59,6 +59,20 @@ Follow-up work on the same branch. All frontend-only; both brands build clean; a
   - **Live standings** — switches to `LiveStandingsTable` (with ▲/▼ position arrows) when the competition has a match in play; polls 30s, visibility-gated, falls back to static. Keys: `competition.liveStandings`, `standings.live`, `competition.disciplinary/form/badge*/noDisciplinary`.
   - **Bug fixes** — goalscorers table was passed `:rows` but expects `:scorers` (rendered empty) → fixed; `GroupStageGrid` was passed an always-empty `:live-match-ids` → now gets real `:live-matches` for the competition.
 
+### Large improvements — tournament generalization, club squads, local news (2026-08-24, round 3)
+
+Frontend on `feature/european-competitions-extension`; backend (RVDPlatform) on `feature/football-news-club-sync`.
+
+- **Generic `TournamentView`** (`views/live/TournamentView.vue`, replacing the dead legacy file) — competition-driven at `/tournament/:competitionId(\d+)`: Groups / Knockout / Fixtures / Teams / Top Scorers, tabs auto-shown by data. New `TournamentBracket.vue` + `utils/bracket.js` derive knockout rounds from fixture round labels. **World Cup unchanged** — `WorldCupView` still owns `/tournament`, and `/tournament/362` redirects there.
+  - `getCompetitionRoute(comp)` / `getCompetitionRouteById(id, {worldCupId})` in `europeanCompetitions.js` route cup+groups competitions (UCL 244, UEL 245, UECL 446, Club WC 372) to `TournamentView` and leagues to `CompetitionDetail`. Wired into `CompetitionCard`, LiveView + MatchDetailView competition links. i18n: `tournament.tabsBracket/emptyBracket`.
+- **Commentary** — re-verified generic after the refactor: every match-click path (LiveView, WorldCupView, TournamentView, CompetitionDetailView, TeamDetailView, LiveNowWidget) converges on `/live/match/:id` (`MatchDetailView`), which loads commentary by `match_id` with an empty state. Removed the now-orphaned side-panel trio `MatchDetail.vue`/`CommentaryTimeline.vue`/`CommentaryEvent.vue`.
+- **Club squads & player photos** (top-5 leagues):
+  - **Backend** `scripts/sync_club_squads.py` (new; WC `sync_apifootball.py` untouched) — resumable, rate-limited (`--max-requests`, default 90/run; progress manifest; `--league`), writes `public/data/leagues/<slug>-<season>.json`, reuses the WC image layout. Full 5-league sync ≈105 api-football requests (~2 days on the free 100/day tier).
+  - **Frontend** `stores/clubTeams.js` loads those league JSONs and resolves a live-score-api team to its api-football squad **by normalized name** (the two providers use different team ids — mirrors the WC name-match). `TeamDetailView` renders the club squad with `PlayerPositionGroup`/`PlayerPaniniCard` + `PlayerDetailModal`, falling back gracefully (live-score-api squad, then recent matches) when no roster JSON matches. Team names in standings + match rows now link to `/live/team/:id`.
+- **Local-language news** (RO/PL/CZ/SK):
+  - **Backend** `RssFeedManager` — expanded feed catalogue (all URLs verified live): RO +Digi Sport/ProSport, PL +Sportowe Fakty/Przegląd Sportowy/Weszło, CZ +Sport.cz, SK +Sportnet. `get_news` gains a `langs` filter (CSV) that also pulls brand-scoped feeds; `/football/news?langs=…`.
+  - **Frontend** — News page language chips driven by brand config `newsLanguages` (football1 en/pl/sk, football2 en/ro/cs), UI language pre-selected; per-article language tag on cards. i18n: `news.language/allLanguages`.
+
 ---
 
 ## RECENT UPDATES (2026-06-08)
