@@ -136,7 +136,9 @@ const routes = [
   {
     path: '/live/team/:teamId',
     name: 'TeamDetail',
-    component: () => import('@/views/live/TeamDetailView.vue'),
+    // Unified squad view (club mode for /live/team; tournament mode for the
+    // /tournament* team routes below).
+    component: () => import('@/views/live/TeamSquadView.vue'),
   },
   {
     path: '/live/tournament/team/:teamId',
