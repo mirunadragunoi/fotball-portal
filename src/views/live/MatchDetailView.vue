@@ -418,7 +418,12 @@ watch(matchId, async (id) => {
 
               <!-- Competition / venue line -->
               <div v-if="match?.competition?.name" class="vplayer__meta-line">
-                <span>{{ match.competition.name }}</span>
+                <RouterLink
+                  v-if="match?.competition?.id"
+                  :to="`/live/competition/${match.competition.id}`"
+                  class="vplayer__meta-comp"
+                >{{ match.competition.name }}</RouterLink>
+                <span v-else>{{ match.competition.name }}</span>
                 <span v-if="match?.venue">· {{ match.venue }}</span>
                 <span v-if="match?.round">· {{ match.round }}</span>
               </div>
@@ -1123,6 +1128,20 @@ watch(matchId, async (id) => {
   margin-bottom: 6px;
   display: flex;
   gap: 4px;
+}
+
+.vplayer__meta-comp {
+  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.vplayer__meta-comp:hover,
+.vplayer__meta-comp:focus-visible {
+  color: var(--color-primary, #69f0ae);
+  text-decoration: underline;
+  outline: none;
 }
 
 /* Timeline */
