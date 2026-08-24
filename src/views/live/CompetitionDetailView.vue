@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useCompetitionStore } from '@/stores/competition'
 import { useLiveScoreStore } from '@/stores/livescore'
 import { formatKickoff, isLiveStatus } from '@/utils/liveScoreFormat'
+import { currentSeasonStartYear } from '@/utils/season'
 import { getCompetitionById } from '@/config/europeanCompetitions'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 import LiveStandingsTable from '@/components/livescore/LiveStandingsTable.vue'
@@ -65,18 +66,43 @@ const tab     = ref('standings')
 // Only the standings endpoint accepts a season_id (fixtures/goalscorers do not
 // at the backend level), so the selector re-loads standings for the chosen
 // season while the other tabs stay on the current season.
-// live-score-api season_id 57 == 2026/2027 — anchor the label math to that.
-const SEASON_ANCHOR_ID = 57
-const SEASON_ANCHOR_START = 2026
+//
+// Season options + labels come from /livescore/seasons (loaded once, cached in
+// the store). No hardcoded "current" year: labels prefer the API's own season
+// name, and any fallback anchor is derived from today's date.
+const selectedSeasonId = ref(null)
+
 function seasonLabel(id) {
-  const start = SEASON_ANCHOR_START + (Number(id) - SEASON_ANCHOR_ID)
+  // Prefer the season's own name from the API.
+  const s = compStore.seasons.find((x) => String(x.id) === String(id))
+  const name = s?.name || s?.season || s?.year
+  if (name) return String(name)
+  // Fallback: anchor id↔year on the competition's known current season, itself
+  // pinned to today's date (no literal year in code).
+  const anchorId = competition.value?.seasonId
+  if (anchorId == null) return String(id)
+  const start = currentSeasonStartYear() + (Number(id) - Number(anchorId))
   return `${start}/${start + 1}`
 }
-const selectedSeasonId = ref(null)
+
+// Recent selectable seasons for this competition.
 const seasons = computed(() => {
   const cur = competition.value?.seasonId
-  if (!cur) return []
-  return [0, 1, 2].map((off) => ({ id: cur - off, label: seasonLabel(cur - off) }))
+  const apiIds = (compStore.seasons || [])
+    .map((s) => Number(s.id))
+    .filter((n) => !Number.isNaN(n))
+    .sort((a, b) => b - a)
+  let ids
+  if (apiIds.length) {
+    const set = new Set(apiIds.slice(0, 4))
+    if (cur != null) set.add(Number(cur))
+    ids = [...set].sort((a, b) => b - a).slice(0, 4)
+  } else if (cur != null) {
+    ids = [0, 1, 2].map((off) => cur - off)   // offset fallback if the endpoint is unavailable
+  } else {
+    ids = []
+  }
+  return ids.map((id) => ({ id, label: seasonLabel(id) }))
 })
 
 async function loadStandingsForSeason() {
@@ -147,6 +173,7 @@ onMounted(async () => {
       compStore.loadDisciplinary(competitionId.value),
       compStore.loadGroups(competitionId.value),
       compStore.loadFixtures(competitionId.value),
+      compStore.loadSeasons(),
       liveStore.loadLive(),
     ])
   } catch (e) {

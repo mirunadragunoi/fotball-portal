@@ -10,6 +10,7 @@ import {
   fetchDisciplinary,
   fetchFixtures,
   fetchRosters,
+  fetchSeasons,
 } from '@/services/livescoreApi'
 
 export const useCompetitionStore = defineStore('competition', () => {
@@ -22,11 +23,24 @@ export const useCompetitionStore = defineStore('competition', () => {
   const topDisciplinary = ref([])
   const fixtures = ref([])
   const rosters = ref({})
+  const seasons = ref([])          // global seasons list from /livescore/seasons
   const loading = ref(false)
   const error = ref(null)
 
   const authStore = useAuthStore()
   const creds = computed(() => authStore.getAuthQuery() || {})
+
+  // Seasons are static reference data (backend caches 24h); load once per session.
+  let seasonsLoaded = false
+  async function loadSeasons() {
+    if (seasonsLoaded) return
+    try {
+      seasons.value = await fetchSeasons(creds.value)
+      seasonsLoaded = true
+    } catch {
+      seasons.value = []
+    }
+  }
 
   async function loadCompetitions({ countryId, federationId } = {}) {
     try {
@@ -123,6 +137,7 @@ export const useCompetitionStore = defineStore('competition', () => {
     topDisciplinary,
     fixtures,
     rosters,
+    seasons,
     loading,
     error,
     loadCompetitions,
@@ -134,5 +149,6 @@ export const useCompetitionStore = defineStore('competition', () => {
     loadDisciplinary,
     loadFixtures,
     loadRosters,
+    loadSeasons,
   }
 })

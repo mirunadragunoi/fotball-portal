@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useRostersStore } from '@/stores/rosters'
 import { useTeamsStore } from '@/stores/teams'
 import { formatKickoff } from '@/utils/liveScoreFormat'
+import { currentSeason } from '@/utils/season'
 import TeamBanner from '@/components/livescore/TeamBanner.vue'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
 import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
@@ -40,7 +41,7 @@ function kickoffStr(m) {
 
 async function load() {
   loading.value = true
-  const season = route.query.season || '2026'
+  const season = route.query.season || currentSeason()
   await Promise.all([
     rosters.loadTeams(),
     rosters.loadLeagueRosters(season),

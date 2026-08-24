@@ -5,6 +5,7 @@ import { fetchPlayerDetails } from '@/services/apiFootballService'
 import { fetchFantasy } from '@/services/livescoreApi'
 import { WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { getCompetitionsByTier } from '@/config/europeanCompetitions'
+import { currentSeason } from '@/utils/season'
 
 const DIACRITICS = /[̀-ͯ]/g
 function normName(s) {
@@ -241,7 +242,7 @@ export const useRostersStore = defineStore('rosters', () => {
   const leagueSlugsToLoad = () =>
     getCompetitionsByTier('top5').map((c) => LEAGUE_SLUGS[c.id]).filter(Boolean)
 
-  async function loadLeagueRosters(season = '2026') {
+  async function loadLeagueRosters(season = currentSeason()) {
     if (clubLoaded.value || clubLoading.value) return
     clubLoading.value = true
     try {
