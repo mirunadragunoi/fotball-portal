@@ -51,7 +51,7 @@ onMounted(() => {
           <p class="f2-hero__body">{{ t('hero.f2.body') }}</p>
 
           <div class="f2-hero__ctas">
-            <AuthLink to="/tournament" class="f2-hero__cta-primary">
+            <AuthLink to="/competitions" class="f2-hero__cta-primary">
               <AppIcon name="trophy" :size="14" stroke="var(--color-text)" />
               {{ t('hero.f2.ctaPrimary') }}
             </AuthLink>

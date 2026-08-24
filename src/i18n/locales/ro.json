@@ -24,28 +24,28 @@
     },
     "eyebrowGeneric": "Fotbal live · Scoruri, clasamente și altele",
     "f1": {
-      "headline1":      "Turneul 2026.",
-      "headlineAccent": "Fiecare meci,",
-      "headline2":      "fiecare șut.",
-      "body":           "Toate cele 48 de echipe, fiecare grupă, scoruri live și comentariu minut cu minut. Plus istoricul turneelor, trivia zilnică, mini-jocuri și cele mai mari momente din fotbal — toate într-un singur loc.",
-      "ctaPrimary":     "Deschide Turneul 2026",
-      "ctaSecondary":   "Scoruri live",
-      "liveLabel":      "Live acum · Faza grupelor",
+      "headline1":      "Casa ta pentru",
+      "headlineAccent": "fotbalul",
+      "headline2":      "european.",
+      "body":           "Scoruri live, clasamente și rezumate din fiecare ligă și cupă importantă din Europa — plus jocuri, video și trivia, toate într-un singur loc.",
+      "ctaPrimary":     "Explorează competițiile",
+      "ctaSecondary":   "Vezi live",
+      "liveLabel":      "Live acum · Ligi de top",
       "seeFixtures":    "Vezi toate meciurile",
-      "tickerLabel":    "● TURNEU",
-      "tickerItem1":    "Grupa A începe pe 11 iunie la Ciudad de México",
-      "tickerItem2":    "104 meciuri în 16 orașe gazdă",
-      "tickerItem3":    "Finala pe 19 iulie în New Jersey"
+      "tickerLabel":    "● LIVE",
+      "tickerItem1":    "Serile de Champions League, în fiecare etapă",
+      "tickerItem2":    "Top 5 ligi — Premier League, La Liga, Serie A, Bundesliga, Ligue 1",
+      "tickerItem3":    "Scoruri live, clasamente și comentariu în timp real"
     },
     "f2": {
-      "headline1":      "Turneul 2026,",
-      "headlineAccent": "și restul fotbalului.",
-      "body":           "48 de echipe, fiecare meci în direct, fiecare gol pe care l-ai ratat. Plus trivia, mini-jocuri, video și o privire detaliată asupra fiecărui turneu din 1930 până acum.",
-      "ctaPrimary":     "Deschide turneul",
-      "ctaSecondary":   "Vezi scorurile live",
-      "statTeams":      "echipe",
-      "statMatches":    "meciuri",
-      "statGroups":     "grupe"
+      "headline1":      "Fotbal european,",
+      "headlineAccent": "totul într-un loc.",
+      "body":           "Urmărește fiecare gol, fiecare ligă, fiecare etapă — scoruri live, clasamente, statistici și altele.",
+      "ctaPrimary":     "Explorează competițiile",
+      "ctaSecondary":   "Vezi live",
+      "statTeams":      "competiții",
+      "statMatches":    "ligi de top",
+      "statGroups":     "cupe UEFA"
     }
   },
   "home": {

@@ -24,28 +24,28 @@
     },
     "eyebrowGeneric": "Piłka na żywo · Wyniki, tabele i więcej",
     "f1": {
-      "headline1":      "Turniej 2026.",
-      "headlineAccent": "Każdy mecz,",
-      "headline2":      "każde kopnięcie.",
-      "body":           "Wszystkie 48 drużyn, każda grupa, wyniki na żywo i komentarz minuta po minucie. Do tego historia turniejów, codzienne quizy, mini-gry i największe momenty futbolu — wszystko w jednym miejscu.",
-      "ctaPrimary":     "Otwórz Turniej 2026",
-      "ctaSecondary":   "Wyniki na żywo",
-      "liveLabel":      "Na żywo · Faza grupowa",
+      "headline1":      "Twój dom dla",
+      "headlineAccent": "europejskiej",
+      "headline2":      "piłki.",
+      "body":           "Wyniki na żywo, tabele i skróty z każdej ważnej ligi i pucharu w Europie — plus gry, filmy i quizy, wszystko w jednym miejscu.",
+      "ctaPrimary":     "Odkryj rozgrywki",
+      "ctaSecondary":   "Oglądaj na żywo",
+      "liveLabel":      "Na żywo · Czołowe ligi",
       "seeFixtures":    "Zobacz wszystkie mecze",
-      "tickerLabel":    "● TURNIEJ",
-      "tickerItem1":    "Grupa A startuje 11 czerwca w Mexico City",
-      "tickerItem2":    "104 mecze w 16 miastach gospodarzach",
-      "tickerItem3":    "Finał 19 lipca w New Jersey"
+      "tickerLabel":    "● NA ŻYWO",
+      "tickerItem1":    "Wieczory Ligi Mistrzów, w każdej kolejce",
+      "tickerItem2":    "Top 5 lig — Premier League, La Liga, Serie A, Bundesliga, Ligue 1",
+      "tickerItem3":    "Wyniki na żywo, tabele i komentarz w czasie rzeczywistym"
     },
     "f2": {
-      "headline1":      "Turniej 2026,",
-      "headlineAccent": "i cała reszta futbolu.",
-      "body":           "48 drużyn, każdy mecz na żywo, każdy gol, który Cię ominął. Plus quizy, mini-gry, filmy i głębokie spojrzenie na każdy turniej od 1930 roku.",
-      "ctaPrimary":     "Otwórz turniej",
-      "ctaSecondary":   "Zobacz wyniki na żywo",
-      "statTeams":      "drużyn",
-      "statMatches":    "meczów",
-      "statGroups":     "grup"
+      "headline1":      "Europejska piłka,",
+      "headlineAccent": "wszystko w jednym miejscu.",
+      "body":           "Śledź każdy gol, każdą ligę, każdą kolejkę — wyniki na żywo, tabele, statystyki i więcej.",
+      "ctaPrimary":     "Odkryj rozgrywki",
+      "ctaSecondary":   "Oglądaj na żywo",
+      "statTeams":      "rozgrywek",
+      "statMatches":    "czołowych lig",
+      "statGroups":     "pucharów UEFA"
     }
   },
   "home": {

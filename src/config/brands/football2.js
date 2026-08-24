@@ -52,9 +52,9 @@ export default {
     ctaPrimary: 'Start playing',
     ctaSecondary: 'How it works',
     stats: [
-      { value: '48',  labelKey: 'hero.f2.statTeams' },
-      { value: '104', labelKey: 'hero.f2.statMatches' },
-      { value: '12',  labelKey: 'hero.f2.statGroups' },
+      { value: '17', labelKey: 'hero.f2.statTeams' },
+      { value: '5',  labelKey: 'hero.f2.statMatches' },
+      { value: '3',  labelKey: 'hero.f2.statGroups' },
     ],
   },
 

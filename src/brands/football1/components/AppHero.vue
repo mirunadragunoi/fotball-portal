@@ -66,7 +66,7 @@ watch(
         <p class="f1-hero__body">{{ t('hero.f1.body') }}</p>
 
         <div class="f1-hero__ctas">
-          <AuthLink to="/tournament" class="f1-hero__cta-primary">
+          <AuthLink to="/competitions" class="f1-hero__cta-primary">
             <AppIcon name="trophy" :size="16" stroke="#1a1500" />
             {{ t('hero.f1.ctaPrimary') }}
           </AuthLink>

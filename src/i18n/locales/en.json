@@ -24,28 +24,28 @@
     },
     "eyebrowGeneric": "Live Football · Scores, standings & more",
     "f1": {
-      "headline1":      "Tournament 2026.",
-      "headlineAccent": "Every match,",
-      "headline2":      "every kick.",
-      "body":           "All 48 teams, every group, live scores and minute-by-minute commentary. Plus tournament history, daily trivia, mini-games and football's biggest moments — all in one place.",
-      "ctaPrimary":     "Open Tournament 2026",
-      "ctaSecondary":   "Live scores",
-      "liveLabel":      "Live now · Group stage",
+      "headline1":      "Your home for",
+      "headlineAccent": "European",
+      "headline2":      "football.",
+      "body":           "Live scores, standings and highlights from every major league and cup across Europe — plus games, videos and trivia, all in one place.",
+      "ctaPrimary":     "Explore competitions",
+      "ctaSecondary":   "Watch live",
+      "liveLabel":      "Live now · Top leagues",
       "seeFixtures":    "See all fixtures",
-      "tickerLabel":    "● TOURNAMENT",
-      "tickerItem1":    "Group A kicks off June 11 in Mexico City",
-      "tickerItem2":    "104 matches across 16 host cities",
-      "tickerItem3":    "Final on July 19 in New Jersey"
+      "tickerLabel":    "● LIVE",
+      "tickerItem1":    "Champions League nights, every matchweek",
+      "tickerItem2":    "Top 5 leagues — Premier League, La Liga, Serie A, Bundesliga, Ligue 1",
+      "tickerItem3":    "Live scores, standings and commentary in real time"
     },
     "f2": {
-      "headline1":      "Tournament 2026,",
-      "headlineAccent": "and the rest of football.",
-      "body":           "48 teams, every match live, every goal you didn't see. Plus trivia, mini-games, videos, and a deep dive into every tournament since 1930.",
-      "ctaPrimary":     "Open the tournament",
-      "ctaSecondary":   "See live scores",
-      "statTeams":      "teams",
-      "statMatches":    "matches",
-      "statGroups":     "groups"
+      "headline1":      "European football,",
+      "headlineAccent": "all in one place.",
+      "body":           "Follow every goal, every league, every matchday — live scores, standings, stats and more.",
+      "ctaPrimary":     "Explore competitions",
+      "ctaSecondary":   "Watch live",
+      "statTeams":      "competitions",
+      "statMatches":    "top leagues",
+      "statGroups":     "UEFA cups"
     }
   },
   "home": {

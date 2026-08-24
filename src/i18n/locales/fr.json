@@ -24,28 +24,28 @@
     },
     "eyebrowGeneric": "Football en direct · Scores, classements et plus",
     "f1": {
-      "headline1":      "Tournoi 2026.",
-      "headlineAccent": "Chaque match,",
-      "headline2":      "chaque frappe.",
-      "body":           "Les 48 équipes, tous les groupes, les scores en direct et un commentaire minute par minute. Plus l'histoire du tournoi, un quiz quotidien, des mini-jeux et les plus grands moments du football — le tout au même endroit.",
-      "ctaPrimary":     "Ouvrir le Tournoi 2026",
-      "ctaSecondary":   "Scores en direct",
-      "liveLabel":      "En direct · Phase de groupes",
+      "headline1":      "Votre repaire du",
+      "headlineAccent": "football",
+      "headline2":      "européen.",
+      "body":           "Scores en direct, classements et résumés de chaque grand championnat et coupe d'Europe — plus des jeux, des vidéos et des quiz, le tout au même endroit.",
+      "ctaPrimary":     "Explorer les compétitions",
+      "ctaSecondary":   "Regarder en direct",
+      "liveLabel":      "En direct · Grands championnats",
       "seeFixtures":    "Voir tout le calendrier",
-      "tickerLabel":    "● TOURNOI",
-      "tickerItem1":    "Le groupe A débute le 11 juin à Mexico",
-      "tickerItem2":    "104 matchs dans 16 villes hôtes",
-      "tickerItem3":    "Finale le 19 juillet dans le New Jersey"
+      "tickerLabel":    "● DIRECT",
+      "tickerItem1":    "Les soirées de Ligue des champions, à chaque journée",
+      "tickerItem2":    "Top 5 des championnats — Premier League, La Liga, Serie A, Bundesliga, Ligue 1",
+      "tickerItem3":    "Scores en direct, classements et commentaire en temps réel"
     },
     "f2": {
-      "headline1":      "Tournoi 2026,",
-      "headlineAccent": "et tout le reste du football.",
-      "body":           "48 équipes, chaque match en direct, chaque but que vous avez manqué. Plus des quiz, des mini-jeux, des vidéos et une plongée dans chaque tournoi depuis 1930.",
-      "ctaPrimary":     "Ouvrir le tournoi",
-      "ctaSecondary":   "Voir les scores en direct",
-      "statTeams":      "équipes",
-      "statMatches":    "matchs",
-      "statGroups":     "groupes"
+      "headline1":      "Le football européen,",
+      "headlineAccent": "réuni au même endroit.",
+      "body":           "Suivez chaque but, chaque championnat, chaque journée — scores en direct, classements, stats et plus.",
+      "ctaPrimary":     "Explorer les compétitions",
+      "ctaSecondary":   "Regarder en direct",
+      "statTeams":      "compétitions",
+      "statMatches":    "grands championnats",
+      "statGroups":     "coupes UEFA"
     }
   },
   "home": {

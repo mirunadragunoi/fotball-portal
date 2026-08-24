@@ -24,28 +24,28 @@
     },
     "eyebrowGeneric": "Živý futbal · Skóre, tabuľky a ďalšie",
     "f1": {
-      "headline1":      "Turnaj 2026.",
-      "headlineAccent": "Každý zápas,",
-      "headline2":      "každý kop.",
-      "body":           "Všetkých 48 tímov, každá skupina, živé skóre a komentár po minútach. K tomu história turnajov, denné kvízy, mini-hry a najväčšie futbalové momenty — všetko na jednom mieste.",
-      "ctaPrimary":     "Otvoriť Turnaj 2026",
-      "ctaSecondary":   "Živé skóre",
-      "liveLabel":      "Naživo · Skupinová fáza",
+      "headline1":      "Tvoj domov pre",
+      "headlineAccent": "európsky",
+      "headline2":      "futbal.",
+      "body":           "Živé skóre, tabuľky a zostrihy z každej významnej ligy a pohára v Európe — k tomu hry, videá a kvízy, všetko na jednom mieste.",
+      "ctaPrimary":     "Preskúmať súťaže",
+      "ctaSecondary":   "Sledovať naživo",
+      "liveLabel":      "Naživo · Top ligy",
       "seeFixtures":    "Zobraziť všetky zápasy",
-      "tickerLabel":    "● TURNAJ",
-      "tickerItem1":    "Skupina A štartuje 11. júna v Mexico City",
-      "tickerItem2":    "104 zápasov v 16 hostiteľských mestách",
-      "tickerItem3":    "Finále 19. júla v New Jersey"
+      "tickerLabel":    "● NAŽIVO",
+      "tickerItem1":    "Večery Ligy majstrov, každé kolo",
+      "tickerItem2":    "Top 5 líg — Premier League, La Liga, Serie A, Bundesliga, Ligue 1",
+      "tickerItem3":    "Živé skóre, tabuľky a komentár v reálnom čase"
     },
     "f2": {
-      "headline1":      "Turnaj 2026,",
-      "headlineAccent": "a celý futbalový svet.",
-      "body":           "48 tímov, každý zápas naživo, každý gól, ktorý ste prepásli. K tomu kvízy, mini-hry, videá a podrobný pohľad na každý turnaj od roku 1930.",
-      "ctaPrimary":     "Otvoriť turnaj",
-      "ctaSecondary":   "Zobraziť živé skóre",
-      "statTeams":      "tímov",
-      "statMatches":    "zápasov",
-      "statGroups":     "skupín"
+      "headline1":      "Európsky futbal,",
+      "headlineAccent": "všetko na jednom mieste.",
+      "body":           "Sleduj každý gól, každú ligu, každé kolo — živé skóre, tabuľky, štatistiky a ďalšie.",
+      "ctaPrimary":     "Preskúmať súťaže",
+      "ctaSecondary":   "Sledovať naživo",
+      "statTeams":      "súťaží",
+      "statMatches":    "top líg",
+      "statGroups":     "pohárov UEFA"
     }
   },
   "home": {
