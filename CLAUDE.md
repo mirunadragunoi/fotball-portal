@@ -73,6 +73,15 @@ Frontend on `feature/european-competitions-extension`; backend (RVDPlatform) on 
   - **Backend** `RssFeedManager` — expanded feed catalogue (all URLs verified live): RO +Digi Sport/ProSport, PL +Sportowe Fakty/Przegląd Sportowy/Weszło, CZ +Sport.cz, SK +Sportnet. `get_news` gains a `langs` filter (CSV) that also pulls brand-scoped feeds; `/football/news?langs=…`.
   - **Frontend** — News page language chips driven by brand config `newsLanguages` (football1 en/pl/sk, football2 en/ro/cs), UI language pre-selected; per-article language tag on cards. i18n: `news.language/allLanguages`.
 
+### Technical cleanup & consolidation (2026-08-25, round 4)
+
+Refactor-only round (zero behaviour change). Frontend on `feature/european-competitions-extension`; backend on `feature/football-news-club-sync`.
+
+- **Unified rosters store** — `worldcupTeams.js` + `clubTeams.js` merged into **`src/stores/rosters.js`** (`useRostersStore`, with `useWorldCupTeamsStore` kept as a back-compat alias per the branding note). WC and club rosters live in separate collections with separate name matchers (they never cross-match); player-details / fantasy / selection are shared. Club API: `loadLeagueRosters(season)`, `getClubTeamByName`, `getClubTeamById`. `clubTeams.js` deleted. Note: `src/stores/teams.js` is a **different** store (live-score-api team reference: last matches / squad).
+- **Unified squad view** — `TeamSquadView.vue` is now the single squad page with two preserved render modes: WC/tournament (TeamBanner + Panini, gated to tournament routes) and club/generic (header + recent matches + Panini + fallback, resolved by name). `/live/team/:id` points at it (route name `TeamDetail` kept); `TeamDetailView.vue` deleted. The previously-broken `/tournament/:cid/team/:id` now renders club mode.
+- **Dynamic seasons** — `CompetitionDetailView` season options/labels come from `/livescore/seasons` (competition store `loadSeasons()`, cached). Removed the hardcoded `SEASON_ANCHOR_START = 2026`; any label fallback anchors on **today's date** via new **`src/utils/season.js`** (`currentSeasonStartYear` / `currentSeason`), which also replaces the `|| '2026'` roster-season defaults. Standings still default to the competition's config `seasonId`. **Backend:** `sync_club_squads.py --season` now defaults to the date-derived current season (manifest keys on season); `sync_apifootball.py` gained `--league/--season` args (defaults stay 1/2026 — the WC is a fixed edition).
+- **`.gitattributes`** added to both repos (`* text=auto eol=lf` + explicit types) to normalise to LF and silence Windows CRLF warnings. No bulk renormalisation was run.
+
 ---
 
 ## RECENT UPDATES (2026-06-08)
