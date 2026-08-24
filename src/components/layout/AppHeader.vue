@@ -40,14 +40,15 @@ function closeMobile() {
 const navItems = computed(() =>
   filterVisibleNav(
     (config.value?.nav || [
-      { key: 'home',     path: '/' },
-      { key: 'worldcup', path: '/tournament', highlight: true },
-      { key: 'live',     path: '/live' },
-      { key: 'news',     path: '/news' },
-      { key: 'history',  path: '/history' },
-      { key: 'trivia',   path: '/trivia' },
-      { key: 'games',    path: '/games' },
-      { key: 'videos',   path: '/videos' },
+      { key: 'home',         path: '/' },
+      { key: 'live',         path: '/live' },
+      { key: 'competitions', path: '/competitions' },
+      { key: 'worldcup',     path: '/tournament' },
+      { key: 'news',         path: '/news' },
+      { key: 'history',      path: '/history' },
+      { key: 'trivia',       path: '/trivia' },
+      { key: 'games',        path: '/games' },
+      { key: 'videos',       path: '/videos' },
     ]).map(item => ({ ...item, label: t(`nav.${item.key}`) }))
   )
 )

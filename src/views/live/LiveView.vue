@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { LIVESCORE_POLL } from '@/config/livescore'
+import { EUROPEAN_COMPETITIONS } from '@/config/europeanCompetitions'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
@@ -59,9 +60,21 @@ function onMatchSelect(match) {
   if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
-const wcLiveMatches = computed(() =>
-  store.liveMatches?.filter(m => String(m.competition?.id) === String(WC_2026_COMPETITION_ID)) || []
-)
+function onCompetitionSelect(competitionId) {
+  if (competitionId) router.push({ name: 'CompetitionDetail', params: { competitionId } })
+}
+
+// Quick-filter chips for the biggest competitions (client-side; data is already
+// loaded via the CSV competition filter).
+const QUICK_FILTER_KEYS = ['championsLeague', 'premierLeague', 'laLiga', 'serieA', 'bundesliga', 'ligue1']
+const QUICK_LABELS = { championsLeague: 'UCL' }
+const quickFilters = QUICK_FILTER_KEYS
+  .filter((k) => EUROPEAN_COMPETITIONS[k])
+  .map((k) => ({ id: EUROPEAN_COMPETITIONS[k].id, label: QUICK_LABELS[k] || EUROPEAN_COMPETITIONS[k].name }))
+
+function isQuickActive(id) {
+  return String(store.liveCompetitionId) === String(id)
+}
 </script>
 
 <template>
@@ -81,15 +94,6 @@ const wcLiveMatches = computed(() =>
           </span>
         </p>
       </div>
-
-      <!-- WC live banner — shown only when WC matches are live -->
-      <RouterLink v-if="wcLiveMatches.length" to="/tournament" class="live-page__wc-banner">
-        <span class="live-page__wc-dot" aria-hidden="true"></span>
-        <span class="live-page__wc-text">
-          <strong>{{ t('worldcup.title') }}</strong> — {{ t('worldcup.liveBannerCount', wcLiveMatches.length) }}
-        </span>
-        <span class="live-page__wc-arrow">{{ t('worldcup.liveBannerLink') }} →</span>
-      </RouterLink>
     </div>
 
     <div class="live-page__controls">
@@ -101,6 +105,33 @@ const wcLiveMatches = computed(() =>
         :title="store.filterEurope ? t('live.filterEuropeOff') : t('live.filterEuropeOn')"
       >
         🌍 {{ store.filterEurope ? t('live.filterEuropeOn') : t('live.filterEuropeOff') }}
+      </button>
+    </div>
+
+    <!-- Competition quick filters (live + fixtures) -->
+    <div
+      v-if="store.activeTab === 'live' || store.activeTab === 'fixtures'"
+      class="live-page__quickfilters"
+      role="group"
+      :aria-label="t('nav.competitions')"
+    >
+      <button
+        type="button"
+        class="live-page__chip"
+        :class="{ 'live-page__chip--active': !store.liveCompetitionId }"
+        @click="store.setLiveCompetitionFilter('')"
+      >
+        {{ t('live.quickAll') }}
+      </button>
+      <button
+        v-for="qf in quickFilters"
+        :key="qf.id"
+        type="button"
+        class="live-page__chip"
+        :class="{ 'live-page__chip--active': isQuickActive(qf.id) }"
+        @click="store.setLiveCompetitionFilter(qf.id)"
+      >
+        {{ qf.label }}
       </button>
     </div>
 
@@ -127,8 +158,8 @@ const wcLiveMatches = computed(() =>
                   v-for="match in groupMatches"
                   :key="match.id"
                   :match="match"
-
                   @select="onMatchSelect"
+                  @select-competition="onCompetitionSelect"
                 />
               </div>
             </div>
@@ -153,6 +184,7 @@ const wcLiveMatches = computed(() =>
               :key="match.id || match.fixture_id"
               :match="match"
               @select="onMatchSelect"
+              @select-competition="onCompetitionSelect"
             />
           </div>
           <template v-else-if="store.filterEurope && !store.filteredFixtures.length && store.fixtures.length">
@@ -174,6 +206,13 @@ const wcLiveMatches = computed(() =>
               </option>
             </select>
           </label>
+          <RouterLink
+            v-if="store.standingsCompetitionId"
+            :to="`/live/competition/${store.standingsCompetitionId}`"
+            class="live-page__view-comp"
+          >
+            {{ t('live.viewCompetition') }}
+          </RouterLink>
           <StandingsTable v-if="store.standings.length" :rows="store.standings" />
           <EmptyState v-else :message="t('live.emptyStandingsMessage')" :show-reset="false" />
         </template>
@@ -217,50 +256,6 @@ const wcLiveMatches = computed(() =>
 .live-page__count {
   color: var(--color-accent);
   font-weight: 700;
-}
-
-.live-page__wc-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  margin-top: 12px;
-  border-radius: var(--radius-button);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-  text-decoration: none;
-  font-size: 14px;
-  transition: var(--transition-default);
-}
-
-.live-page__wc-banner:hover {
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-}
-
-.live-page__wc-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #e53935;
-  flex-shrink: 0;
-  animation: wc-pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes wc-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-
-.live-page__wc-text {
-  flex: 1;
-  color: var(--color-text);
-}
-
-.live-page__wc-arrow {
-  color: var(--color-accent);
-  font-weight: 700;
-  font-size: 13px;
-  white-space: nowrap;
 }
 
 .live-page__error {
@@ -327,6 +322,56 @@ const wcLiveMatches = computed(() =>
 .live-page__europe-btn:hover:not(.live-page__europe-btn--active) {
   background: color-mix(in srgb, var(--color-text) 6%, transparent);
   color: var(--color-text);
+}
+
+/* Competition quick-filter chips */
+.live-page__quickfilters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.live-page__chip {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-default);
+  white-space: nowrap;
+}
+
+.live-page__chip:hover:not(.live-page__chip--active) {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
+}
+
+.live-page__chip--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.live-page--f2 .live-page__chip--active {
+  color: #10112a;
+}
+
+.live-page__view-comp {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.live-page__view-comp:hover {
+  text-decoration: underline;
 }
 
 .live-page__no-europe {

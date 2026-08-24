@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { LIVESCORE_TABS, LIVESCORE_POLL, EUROPE_COUNTRY_IDS, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { ALL_COMPETITION_ID_SET } from '@/config/europeanCompetitions'
 import { getCompetitionFilterForCountry } from '@/utils/liveScoreFormat'
 import {
   fetchLiveMatches,
@@ -42,6 +43,9 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   const fixtureDate = ref(todayIso())
   const standingsCompetitionId = ref('')
   const filterEurope = ref(true)
+  // Client-side quick filter: '' = all curated competitions, otherwise a single
+  // competition id to narrow live/fixtures to (data is already loaded via CSV).
+  const liveCompetitionId = ref('')
 
   // ─── Poll timers ──────────────────────────────────────────────────────────
   let livePollTimer = null
@@ -61,25 +65,46 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     return String(m?.competition?.id) === String(WC_2026_COMPETITION_ID)
   }
 
+  // One of our curated competitions (UEFA cups have no European country id, so
+  // they must be kept explicitly or the country-based Europe filter drops them).
+  function isCurated(m) {
+    return ALL_COMPETITION_ID_SET.has(Number(m?.competition?.id))
+  }
+
+  function matchesQuickFilter(m) {
+    if (!liveCompetitionId.value) return true
+    return String(m?.competition?.id) === String(liveCompetitionId.value)
+  }
+
   function toggleEuropeFilter() {
     filterEurope.value = !filterEurope.value
+  }
+
+  function setLiveCompetitionFilter(id) {
+    liveCompetitionId.value = id ? String(id) : ''
   }
 
   // ─── Getters ──────────────────────────────────────────────────────────────
   // When the "Europe" filter is on (default) we always include World Cup 2026
   // matches too — the host countries (US / MX / CA) aren't in EUROPE_COUNTRY_IDS
   // but the tournament should never be hidden behind the filter.
-  const filteredLiveMatches = computed(() =>
-    filterEurope.value
-      ? liveMatches.value.filter((m) => isWorldCup(m) || isEuropean(m))
-      : liveMatches.value
-  )
+  function passesEuropeFilter(m) {
+    return isWorldCup(m) || isCurated(m) || isEuropean(m)
+  }
 
-  const filteredFixtures = computed(() =>
-    filterEurope.value
-      ? fixtures.value.filter((m) => isWorldCup(m) || isEuropean(m))
+  const filteredLiveMatches = computed(() => {
+    const base = filterEurope.value
+      ? liveMatches.value.filter(passesEuropeFilter)
+      : liveMatches.value
+    return base.filter(matchesQuickFilter)
+  })
+
+  const filteredFixtures = computed(() => {
+    const base = filterEurope.value
+      ? fixtures.value.filter(passesEuropeFilter)
       : fixtures.value
-  )
+    return base.filter(matchesQuickFilter)
+  })
 
   // Group order matters: World Cup first, then everything else in arrival order.
   // JS object property iteration preserves insertion order, so we just insert
@@ -396,9 +421,11 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     fixtureDate,
     standingsCompetitionId,
     filterEurope,
+    liveCompetitionId,
     filteredLiveMatches,
     filteredFixtures,
     toggleEuropeFilter,
+    setLiveCompetitionFilter,
     matchesByCompetition,
     liveCount,
     inPlayMatches,

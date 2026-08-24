@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
 import { useLiveScores } from '@/composables/useLiveScores'
-import { useTournamentEyebrow } from '@/composables/useTournamentEyebrow'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { PHASE2_LIVE_HERO_ENABLED } from '@/config/navigation'
@@ -13,7 +12,6 @@ const { t } = useI18n()
 const brandStore = useBrandStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
-const { eyebrow } = useTournamentEyebrow()
 
 const showLiveWidget = computed(
   () => PHASE2_LIVE_HERO_ENABLED && brandStore.config?.featureFlags?.liveScores !== false,
@@ -55,9 +53,9 @@ watch(
     >
       <!-- Left: headline + CTA -->
       <div class="f1-hero__left">
-        <div class="f1-hero__eyebrow" aria-label="Tournament countdown">
+        <div class="f1-hero__eyebrow">
           <span class="f1-hero__eyebrow-bar" aria-hidden="true"></span>
-          {{ eyebrow }}
+          {{ t('hero.eyebrowGeneric') }}
         </div>
 
         <h1 class="f1-hero__headline">

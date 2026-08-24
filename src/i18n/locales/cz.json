@@ -8,6 +8,7 @@
     "games":    "Hry",
     "videos":   "Videa",
     "live":     "Živě",
+    "competitions": "Soutěže",
     "worldcup": "Turnaj 2026",
     "news":     "Zprávy",
     "trivia":   "Kvíz",
@@ -21,6 +22,7 @@
       "live":            "Turnaj 2026 · Právě probíhá",
       "concluded":       "Turnaj 2026 · Turnaj skončil"
     },
+    "eyebrowGeneric": "Živý fotbal · Skóre, tabulky a další",
     "f1": {
       "headline1":      "Turnaj 2026.",
       "headlineAccent": "Každý zápas,",
@@ -328,7 +330,20 @@
     "filterEuropeOn": "Evropa",
     "filterEuropeOff": "Všechny ligy",
     "noEuropeMatches": "Aktuálně žádné zápasy z evropských lig.",
-    "showAll": "Zobrazit všechny ligy"
+    "showAll": "Zobrazit všechny ligy",
+    "viewCompetition": "Zobrazit soutěž →",
+    "quickAll": "Vše"
+  },
+  "competitions": {
+    "eyebrow":         "Fotbal",
+    "title":           "Soutěže",
+    "subtitle":        "Všechny ligy a poháry, které sledujeme — tabulky, zápasy a střelci.",
+    "continental":     "Evropská soutěž",
+    "tierUefaCups":    "Klubové soutěže UEFA",
+    "tierTopLeagues":  "Top ligy",
+    "tierMoreLeagues": "Další ligy",
+    "tierLocal":       "Tvoje domácí liga",
+    "tierBonus":       "Poháry a další"
   },
   "worldcup": {
     "eyebrow":             "⚽ Léto 2026",

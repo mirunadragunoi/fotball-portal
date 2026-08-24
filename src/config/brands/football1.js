@@ -30,14 +30,15 @@ export default {
   },
 
   nav: [
-    { key: 'home',     label: 'Home',           path: '/' },
-    { key: 'worldcup', label: 'Tournament 2026', path: '/tournament', highlight: true },
-    { key: 'live',     label: 'Live',            path: '/live' },
-    { key: 'news',     label: 'News',            path: '/news' },
-    { key: 'history',  label: 'History',         path: '/history' },
-    { key: 'trivia',   label: 'Trivia',          path: '/trivia' },
-    { key: 'games',    label: 'Games',           path: '/games' },
-    { key: 'videos',   label: 'Videos',          path: '/videos' },
+    { key: 'home',         label: 'Home',            path: '/' },
+    { key: 'live',         label: 'Live',            path: '/live' },
+    { key: 'competitions', label: 'Competitions',    path: '/competitions' },
+    { key: 'worldcup',     label: 'Tournament 2026', path: '/tournament' },
+    { key: 'news',         label: 'News',            path: '/news' },
+    { key: 'history',      label: 'History',         path: '/history' },
+    { key: 'trivia',       label: 'Trivia',          path: '/trivia' },
+    { key: 'games',        label: 'Games',           path: '/games' },
+    { key: 'videos',       label: 'Videos',          path: '/videos' },
   ],
 
   hero: {

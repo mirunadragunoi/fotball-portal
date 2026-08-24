@@ -56,6 +56,11 @@ const routes = [
     component: () => import('@/views/VideoDetailView.vue'),
   },
   {
+    path: '/competitions',
+    name: 'Competitions',
+    component: () => import('@/views/CompetitionsHubView.vue'),
+  },
+  {
     path: '/tournament',
     name: 'Tournament',
     component: () => import('@/views/WorldCupView.vue'),

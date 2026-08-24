@@ -8,6 +8,7 @@
     "games":    "Gry",
     "videos":   "Filmy",
     "live":     "Na żywo",
+    "competitions": "Rozgrywki",
     "worldcup": "Turniej 2026",
     "news":     "Wiadomości",
     "trivia":   "Quiz",
@@ -21,6 +22,7 @@
       "live":            "Turniej 2026 · Trwa na żywo",
       "concluded":       "Turniej 2026 · Turniej zakończony"
     },
+    "eyebrowGeneric": "Piłka na żywo · Wyniki, tabele i więcej",
     "f1": {
       "headline1":      "Turniej 2026.",
       "headlineAccent": "Każdy mecz,",
@@ -328,7 +330,20 @@
     "filterEuropeOn": "Europa",
     "filterEuropeOff": "Wszystkie ligi",
     "noEuropeMatches": "Brak aktualnych meczów europejskich lig.",
-    "showAll": "Pokaż wszystkie ligi"
+    "showAll": "Pokaż wszystkie ligi",
+    "viewCompetition": "Zobacz rozgrywki →",
+    "quickAll": "Wszystkie"
+  },
+  "competitions": {
+    "eyebrow":         "Piłka nożna",
+    "title":           "Rozgrywki",
+    "subtitle":        "Wszystkie ligi i puchary, które pokazujemy — tabele, mecze i strzelcy.",
+    "continental":     "Rozgrywki europejskie",
+    "tierUefaCups":    "Klubowe rozgrywki UEFA",
+    "tierTopLeagues":  "Czołowe ligi",
+    "tierMoreLeagues": "Więcej lig",
+    "tierLocal":       "Twoja lokalna liga",
+    "tierBonus":       "Puchary i więcej"
   },
   "worldcup": {
     "eyebrow":             "⚽ Lato 2026",

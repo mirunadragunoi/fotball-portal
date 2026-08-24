@@ -8,6 +8,7 @@
     "games":    "Jocuri",
     "videos":   "Videoclipuri",
     "live":     "Live",
+    "competitions": "Competiții",
     "worldcup": "Turneul 2026",
     "news":     "Știri",
     "trivia":   "Trivial",
@@ -21,6 +22,7 @@
       "live":            "Turneul 2026 · În direct",
       "concluded":       "Turneul 2026 · Turneu încheiat"
     },
+    "eyebrowGeneric": "Fotbal live · Scoruri, clasamente și altele",
     "f1": {
       "headline1":      "Turneul 2026.",
       "headlineAccent": "Fiecare meci,",
@@ -315,7 +317,20 @@
     "filterEuropeOn": "Europa",
     "filterEuropeOff": "Toate ligile",
     "noEuropeMatches": "Nu există meciuri europene acum.",
-    "showAll": "Afișează toate ligile"
+    "showAll": "Afișează toate ligile",
+    "viewCompetition": "Vezi competiția →",
+    "quickAll": "Toate"
+  },
+  "competitions": {
+    "eyebrow":         "Fotbal",
+    "title":           "Competiții",
+    "subtitle":        "Toate ligile și cupele pe care le urmărim — clasamente, meciuri și marcatori.",
+    "continental":     "Competiție europeană",
+    "tierUefaCups":    "Competiții UEFA de club",
+    "tierTopLeagues":  "Ligi de top",
+    "tierMoreLeagues": "Alte ligi",
+    "tierLocal":       "Liga ta locală",
+    "tierBonus":       "Cupe și altele"
   },
   "worldcup": {
     "eyebrow":             "⚽ Vara 2026",

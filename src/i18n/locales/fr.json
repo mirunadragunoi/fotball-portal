@@ -8,6 +8,7 @@
     "games":    "Jeux",
     "videos":   "Vidéos",
     "live":     "En direct",
+    "competitions": "Compétitions",
     "worldcup": "Tournoi 2026",
     "news":     "Actus",
     "trivia":   "Quiz",
@@ -21,6 +22,7 @@
       "live":            "Tournoi 2026 · En direct",
       "concluded":       "Tournoi 2026 · Tournoi terminé"
     },
+    "eyebrowGeneric": "Football en direct · Scores, classements et plus",
     "f1": {
       "headline1":      "Tournoi 2026.",
       "headlineAccent": "Chaque match,",
@@ -315,7 +317,20 @@
     "filterEuropeOn": "Europe",
     "filterEuropeOff": "Toutes les compétitions",
     "noEuropeMatches": "Aucun match de compétition européenne pour le moment.",
-    "showAll": "Afficher toutes les compétitions"
+    "showAll": "Afficher toutes les compétitions",
+    "viewCompetition": "Voir la compétition →",
+    "quickAll": "Tout"
+  },
+  "competitions": {
+    "eyebrow":         "Football",
+    "title":           "Compétitions",
+    "subtitle":        "Toutes les ligues et coupes que nous couvrons — classements, matchs et buteurs.",
+    "continental":     "Compétition européenne",
+    "tierUefaCups":    "Compétitions UEFA de clubs",
+    "tierTopLeagues":  "Grands championnats",
+    "tierMoreLeagues": "Autres championnats",
+    "tierLocal":       "Votre championnat local",
+    "tierBonus":       "Coupes et plus"
   },
   "worldcup": {
     "eyebrow":             "⚽ Été 2026",

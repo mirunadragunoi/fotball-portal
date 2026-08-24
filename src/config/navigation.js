@@ -14,7 +14,7 @@ export const PHASE2_LIVE_HERO_ENABLED = PHASE2_FEATURES.live
 
 export const PHASE2_NAV_ENABLED = Object.values(PHASE2_FEATURES).some(Boolean)
 
-const BASE_NAV_KEYS = ['home', 'games', 'videos']
+const BASE_NAV_KEYS = ['home', 'games', 'videos', 'competitions']
 
 export function getVisibleNavKeys() {
   const keys = [...BASE_NAV_KEYS]

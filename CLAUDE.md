@@ -14,6 +14,34 @@ This is a **Vue 3 + Vite + JavaScript** portal for football content. The codebas
 
 ---
 
+## EUROPEAN COMPETITIONS EXTENSION (added 2026-08-24)
+
+The portal was extended from a World-Cup-first microsite toward a European football hub covering the UEFA club cups + top/secondary/local leagues. The live data layer (service + `competition`/`livescore` stores + `CompetitionDetailView`) was already generic and parameterised by `competition_id`; this round added the config, navigation and surfacing on top. **All frontend-only** — no backend, store/service, or auth changes.
+
+### `src/config/europeanCompetitions.js` — the central competitions config
+- **This is the single source of truth for which competitions the portal curates.** To add or remove a competition, edit `EUROPEAN_COMPETITIONS` here — nothing else needs touching.
+- Each entry: `{ id, name, country, countryId, isCup, isLeague, hasGroups, tier, seasonId, brand? }`. `tier` ∈ `european-cup | top5 | secondary | local | bonus`. `brand` scopes local leagues to one portal (`football1` = Ekstraklasa 60, Slovak Super League 63; `football2` = Liga I 61, Czech 1st League 72); entries with no `brand` show on both.
+- Confirmed live-score-api IDs: UCL **244**, UEL **245**, Conference **446**, Premier League **2**, La Liga **3**, Serie A **4**, Bundesliga **1**, Ligue 1 **5**, Eredivisie **196**, Primeira Liga **8**, Süper Lig **6**, UEFA Super Cup **349**, FIFA Club World Cup **372**. (`seasonId`: domestic 2026/27 = **57**, UEFA cups 2025/26 = **56**.) The World Cup keeps its own `WC_2026_COMPETITION_ID = 362` in `src/config/livescore.js` and is intentionally NOT in this map.
+- Helpers: `getCompetitionsForBrand(brand)`, `getCompetitionsByTier(tier, brand)`, `getCompetitionById(id)`, `getCompetitionIdsCsv(brand)`, plus `ALL_COMPETITION_ID_SET` and `COMPETITION_TIER_ORDER`.
+
+### Live/Fixtures CSV competition filter
+- `getCompetitionFilterForCountry()` (`src/utils/liveScoreFormat.js`) now returns a **CSV** of the brand's curated competition ids + WC `362` (was an empty string → all leagues). The `livescore` store passes it as `competition_id` on `loadLive`/`loadFixtures`, so the API only returns OUR competitions. The backend accepts CSV here (for `/live` it fetches all then filters by the id set; for `/fixtures` live-score-api accepts CSV natively).
+- The store's client-side Europe filter now also keeps any curated competition (`isCurated()` via `ALL_COMPETITION_ID_SET`) so UEFA cups (no European country id) are never dropped.
+- **Quick-filter chips** on the Live page (`[All] [UCL] [PL] [La Liga] [Serie A] [Bundesliga] [Ligue 1]`) narrow the already-loaded matches client-side via store `liveCompetitionId` + `setLiveCompetitionFilter()`.
+
+### Competitions hub + surfacing the (previously orphaned) competition page
+- New route `/competitions` → `src/views/CompetitionsHubView.vue`: static, brand-scoped cards grouped by tier, each linking to `/live/competition/:id`. No API call (pure config).
+- Nav key **`competitions`** added to both brand navs (after Live) + `getVisibleNavKeys()` in `src/config/navigation.js`. i18n `nav.competitions` + a full `competitions.*` block + `live.viewCompetition`/`live.quickAll` + `hero.eyebrowGeneric` added to **all 6 locales** (parity kept).
+- Competition names are now **clickable** on match rows: `LiveMatchRow` emits `select-competition` (keyboard-accessible, stops row-click propagation) → view routes to `/live/competition/:id`. Live standings tab also gained a "View competition →" link.
+- `CompetitionDetailView` now shows the real competition **name + country** (via `getCompetitionById`, falls back to generic label) instead of the hardcoded "Competition", and passes the config `seasonId` to standings.
+
+### World Cup de-emphasis
+- Nav: the `worldcup` entry **lost `highlight: true`** on both brands (normal nav item now); `competitions` sits before it.
+- Live page: the WC live banner was removed.
+- Home hero (`src/brands/<brand>/components/AppHero.vue`): the dynamic WC countdown eyebrow was replaced with a **static generic** `hero.eyebrowGeneric` string ("Live Football · …"). `src/composables/useTournamentEyebrow.js` is no longer referenced (kept in the tree, unused). The `/tournament` page itself is unchanged.
+
+---
+
 ## RECENT UPDATES (2026-06-08)
 
 Decisions and conventions added in this round of work — keep these in mind when editing.
@@ -46,11 +74,11 @@ Decisions and conventions added in this round of work — keep these in mind whe
 - Logo on mobile / tablet: `max-width: calc(100vw - 80px)`, `max-height: 40px`. SVG viewBoxes were tightened to remove empty padding so the wordmark fills the canvas — if the user re-exports a logo, retighten or the icon will look small again.
 
 ### Nav order (both brands)
-Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos. World Cup 2026 entry is `highlight: true` (accent color in nav).
+Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos, with `highlight: true` on the Tournament entry. **Superseded 2026-08-24** (see European Competitions Extension): a `competitions` entry was inserted after Live, order is now Home · Live · Competitions · Tournament 2026 · News · History · Trivia · Games · Videos, and the Tournament `highlight` was removed.
 
 ### Hero copy — Tournament-first
 - Headline, body, CTAs in `src/brands/<brand>/components/AppHero.vue` promote Tournament 2026. CTAs point to `/tournament` (primary) and `/live` (secondary). Body line acknowledges the rest of the portal (history / trivia / games / videos).
-- Eyebrow is **dynamic** via `src/composables/useTournamentEyebrow.js` — counts down to 2026-06-11, then shows "Live now", then "Tournament closed" after 2026-07-19. Refreshes hourly. Translations: `hero.eyebrow.{kickoff|kickoffToday|kickoffTomorrow|live|concluded}` in all 5 locales.
+- Eyebrow was **dynamic** via `src/composables/useTournamentEyebrow.js` — counted down to 2026-06-11, then "Live now", then "Tournament closed" after 2026-07-19. Translations: `hero.eyebrow.{kickoff|kickoffToday|kickoffTomorrow|live|concluded}`. **Superseded 2026-08-24**: the hero eyebrow now uses the static generic `hero.eyebrowGeneric` string; `useTournamentEyebrow.js` is no longer referenced.
 - Goal Plaza hero stats strip is now i18n-driven (`labelKey` per stat) — values `48 teams · 104 matches · 12 groups`.
 
 ### Backend API alignment (see `docs/FRONTEND_FOOTBALL_API.md`)

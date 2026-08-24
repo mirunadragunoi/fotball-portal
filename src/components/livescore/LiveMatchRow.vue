@@ -15,7 +15,7 @@ const props = defineProps({
   selected: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'select-competition'])
 
 const { t, locale } = useI18n()
 
@@ -52,6 +52,13 @@ const statusLabel = computed(() => {
 function onClick() {
   emit('select', props.match)
 }
+
+// Competition label is a secondary link — stop propagation so it doesn't also
+// trigger the row's match-detail navigation.
+function onCompetitionClick() {
+  const cid = props.match?.competition?.id
+  if (cid) emit('select-competition', cid)
+}
 </script>
 
 <template>
@@ -66,7 +73,15 @@ function onClick() {
     @click="onClick"
   >
     <div v-if="!compact" class="live-row__meta">
-      <span class="live-row__competition">{{ match.competition?.name }}</span>
+      <span
+        v-if="match.competition?.name"
+        class="live-row__competition"
+        :class="{ 'live-row__competition--link': match.competition?.id }"
+        :role="match.competition?.id ? 'link' : undefined"
+        :tabindex="match.competition?.id ? 0 : undefined"
+        @click.stop="onCompetitionClick"
+        @keydown.enter.stop.prevent="onCompetitionClick"
+      >{{ match.competition?.name }}</span>
       <span class="live-row__status" :class="{ 'live-row__status--live': live }">
         <span v-if="live" class="live-row__dot" aria-hidden="true"></span>
         <template v-if="scheduled && scheduledDate">{{ scheduledDate }}</template>
@@ -150,6 +165,18 @@ function onClick() {
   margin-bottom: 10px;
   font-size: 11px;
   color: var(--color-text-secondary);
+}
+
+.live-row__competition--link {
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.live-row__competition--link:hover,
+.live-row__competition--link:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+  outline: none;
 }
 
 .live-row__status {

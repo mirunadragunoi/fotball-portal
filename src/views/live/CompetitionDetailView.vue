@@ -4,6 +4,7 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCompetitionStore } from '@/stores/competition'
 import { formatKickoff } from '@/utils/liveScoreFormat'
+import { getCompetitionById } from '@/config/europeanCompetitions'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
@@ -19,14 +20,22 @@ const compStore = useCompetitionStore()
 
 const competitionId = computed(() => route.params.competitionId)
 
+// Curated competition metadata (name, country, season) — falls back to a
+// generic label + no season for any competition not in our config.
+const competition = computed(() => getCompetitionById(competitionId.value))
+const competitionName = computed(() =>
+  competition.value?.name || t('live.competition', 'Competition'),
+)
+
 const loading = ref(true)
 const error   = ref(null)
 const tab     = ref('standings')
 
 onMounted(async () => {
+  const seasonId = competition.value?.seasonId || undefined
   try {
     await Promise.allSettled([
-      compStore.loadStandings(competitionId.value),
+      compStore.loadStandings(competitionId.value, seasonId),
       compStore.loadGoalscorers(competitionId.value),
       compStore.loadGroups(competitionId.value),
       compStore.loadFixtures(competitionId.value),
@@ -57,7 +66,10 @@ const tabs = computed(() => [
       <button class="comp-view__back" @click="router.back()">← {{ t('common.back', 'Back') }}</button>
 
       <div class="comp-view__head">
-        <h1 class="comp-view__title">{{ t('live.competition', 'Competition') }}</h1>
+        <div class="comp-view__title-wrap">
+          <h1 class="comp-view__title">{{ competitionName }}</h1>
+          <span v-if="competition?.country" class="comp-view__country">{{ competition.country }}</span>
+        </div>
         <RouterLink :to="`/live/standings/${competitionId}`" class="comp-view__standings-link">
           {{ t('live.fullStandings', 'Full Standings') }} →
         </RouterLink>
@@ -159,12 +171,25 @@ const tabs = computed(() => [
   flex-wrap: wrap;
 }
 
+.comp-view__title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .comp-view__title {
   font-family: var(--font-heading);
   font-size: 28px;
   font-weight: 800;
   text-transform: uppercase;
   margin: 0;
+}
+
+.comp-view__country {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
 }
 
 .comp-view__standings-link {

@@ -3,7 +3,6 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrandStore } from '@/stores/brand'
 import { useLandingImages } from '@/composables/useLandingImages'
-import { useTournamentEyebrow } from '@/composables/useTournamentEyebrow'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useGamesStore } from '@/stores/games'
@@ -13,7 +12,6 @@ const brandStore = useBrandStore()
 const gamesStore = useGamesStore()
 const config = computed(() => brandStore.config)
 const { images: landing } = useLandingImages()
-const { eyebrow } = useTournamentEyebrow()
 const previewGames = computed(() => gamesStore.featured.slice(0, 4))
 
 onMounted(() => {
@@ -40,9 +38,9 @@ onMounted(() => {
       <div class="f2-hero__inner">
         <!-- Left: text + CTA -->
         <div class="f2-hero__left">
-          <span class="f2-hero__eyebrow" aria-label="Tournament countdown">
+          <span class="f2-hero__eyebrow">
             <span class="f2-hero__eyebrow-dot" aria-hidden="true"></span>
-            {{ eyebrow }}
+            {{ t('hero.eyebrowGeneric') }}
           </span>
 
           <h1 class="f2-hero__headline">

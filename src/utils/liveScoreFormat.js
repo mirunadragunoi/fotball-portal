@@ -1,16 +1,24 @@
 import { getLanguage } from '@/services/footballApi'
 import { getBrandKey, getCountryKey } from '@/config/brand'
-import { LIVESCORE_COMPETITION_IDS, LIVESCORE_LANG_MAP } from '@/config/livescore'
+import { LIVESCORE_LANG_MAP, WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { getCompetitionIdsCsv } from '@/config/europeanCompetitions'
 
 export function getLiveScoreLang() {
   const lang = getLanguage()
   return LIVESCORE_LANG_MAP[lang] ?? null
 }
 
+/**
+ * Competition filter passed as `competition_id` to /live and /fixtures.
+ * Returns a CSV of the curated European competitions for the active brand
+ * plus the World Cup id. The backend accepts a CSV here (for /live it fetches
+ * all then filters by the id set; for /fixtures live-score-api accepts CSV
+ * natively), so the portal only pulls matches from OUR competitions.
+ */
 export function getCompetitionFilterForCountry() {
   const brand = getBrandKey()
-  const country = getCountryKey()
-  return LIVESCORE_COMPETITION_IDS[brand]?.[country] || ''
+  const europeanCsv = getCompetitionIdsCsv(brand)
+  return europeanCsv ? `${europeanCsv},${WC_2026_COMPETITION_ID}` : String(WC_2026_COMPETITION_ID)
 }
 
 // ─── Match kickoff in visitor's country timezone ────────────────────────────
