@@ -38,7 +38,26 @@ The portal was extended from a World-Cup-first microsite toward a European footb
 ### World Cup de-emphasis
 - Nav: the `worldcup` entry **lost `highlight: true`** on both brands (normal nav item now); `competitions` sits before it.
 - Live page: the WC live banner was removed.
-- Home hero (`src/brands/<brand>/components/AppHero.vue`): the dynamic WC countdown eyebrow was replaced with a **static generic** `hero.eyebrowGeneric` string ("Live Football · …"). `src/composables/useTournamentEyebrow.js` is no longer referenced (kept in the tree, unused). The `/tournament` page itself is unchanged.
+- Home hero (`src/brands/<brand>/components/AppHero.vue`): the dynamic WC countdown eyebrow was replaced with a **static generic** `hero.eyebrowGeneric` string ("Live Football · …"). The `/tournament` page itself is unchanged.
+
+### Quick wins + medium improvements (2026-08-24, round 2)
+
+Follow-up work on the same branch. All frontend-only; both brands build clean; all 6 locales stay key-identical (now **433 keys** each).
+
+- **Generic hero copy** — `hero.f1.*` / `hero.f2.*` fully rewritten to European-football messaging across all locales (headline/body/CTAs/ticker); primary hero CTA now points to `/competitions` (label "Explore competitions"). Goal Plaza hero stats changed to `17 competitions · 5 top leagues · 3 UEFA cups` (values in `football2.js`; the `statTeams/statMatches/statGroups` label keys were repurposed).
+- **Dead code removed** — `src/composables/useTournamentEyebrow.js` deleted (unreferenced after the static eyebrow). Later, `LiveScoreWidget.vue` was also removed, superseded by the new Live Now widget.
+- **`CompetitionCard.vue`** (`components/shared/`) — extracted shared card (crest monogram + name + country) used by both the Competitions hub and the home Top Competitions section.
+- **`TopCompetitions.vue`** (`components/home/`) — home section listing UEFA cups + top-5 + the brand's local league(s), each linking to `/live/competition/:id`. Static config, no API. Keys: `home.topCompetitions`, `home.viewAllCompetitions`.
+- **`LiveNowWidget.vue`** (`components/home/`) — under the hero; shows up to 3 in-play matches from curated competitions, or the next 2 upcoming fixtures with a "Starts in Xh Ym" countdown. **Self-contained** (direct service calls, no coupling to the `/live` store), polls 30s **paused when the tab is hidden** (Page Visibility), clean teardown. Replaced the old `LiveScoreWidget` on home. Keys: `home.liveNow/noLiveMatches/nextMatch/startsIn`.
+- **Match detail** — the competition name on `/live/match/:id` is now a link to the competition page.
+- **Commentary** — verified there is **no** World-Cup/competition gating; commentary loads by `match_id` for any match. Additionally i18n'd the previously hardcoded commentary labels (`live.liveCommentary/matchCommentary/commentaryPlaceholder`).
+- **`CompetitionDetailView` upgrades:**
+  - **Season selector** (Standings tab) — current + prior 2 seasons, labels anchored to live-score-api `season_id 57 = 2026/2027`. Drives standings only (fixtures/goalscorers backends don't accept `season_id`). Keys: `competition.season/selectSeason/noSeasonData`.
+  - **Disciplinary tab** — new `DisciplinaryTable.vue` (YC/RC) from `loadDisciplinary`; auto-hidden when empty.
+  - **Team form** — `StandingsTable` gained opt-in `showForm`/`formLabel`, rendering last-5 W/D/L dots (data-driven; empty when the API omits form).
+  - **Richer header** — tier badge (UEFA / Top League / League / Local League / Cup).
+  - **Live standings** — switches to `LiveStandingsTable` (with ▲/▼ position arrows) when the competition has a match in play; polls 30s, visibility-gated, falls back to static. Keys: `competition.liveStandings`, `standings.live`, `competition.disciplinary/form/badge*/noDisciplinary`.
+  - **Bug fixes** — goalscorers table was passed `:rows` but expects `:scorers` (rendered empty) → fixed; `GroupStageGrid` was passed an always-empty `:live-match-ids` → now gets real `:live-matches` for the competition.
 
 ---
 
