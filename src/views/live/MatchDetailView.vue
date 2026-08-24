@@ -384,14 +384,14 @@ watch(matchId, async (id) => {
             <div class="vplayer__stream-wrap">
               <div class="vplayer__stream-label" aria-hidden="true">
                 <span v-if="live" class="vplayer__stream-dot"></span>
-                <span>{{ live ? 'Live Commentary' : 'Match Commentary' }}</span>
+                <span>{{ live ? t('live.liveCommentary') : t('live.matchCommentary') }}</span>
               </div>
 
               <div
                 class="vplayer__stream"
                 role="log"
                 aria-live="polite"
-                aria-label="Live commentary stream"
+                :aria-label="t('live.commentary')"
               >
                 <template v-if="commentaryDescending.length">
                   <div
@@ -405,7 +405,7 @@ watch(matchId, async (id) => {
                   </div>
                 </template>
                 <div v-else class="vplayer__stream-empty">
-                  <span>Commentary will appear here during the match</span>
+                  <span>{{ t('live.commentaryPlaceholder') }}</span>
                 </div>
               </div>
 
