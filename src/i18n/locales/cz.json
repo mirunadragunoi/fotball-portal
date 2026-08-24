@@ -354,6 +354,11 @@
     "tierLocal":       "Tvoje domácí liga",
     "tierBonus":       "Poháry a další"
   },
+  "competition": {
+    "season":       "Sezóna",
+    "selectSeason": "Vyber sezónu",
+    "noSeasonData": "Pro tuto sezónu zatím není tabulka."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Léto 2026",
     "title":               "Turnaj 2026",

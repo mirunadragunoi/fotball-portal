@@ -341,6 +341,11 @@
     "tierLocal":       "Your Local League",
     "tierBonus":       "Cups & More"
   },
+  "competition": {
+    "season":       "Season",
+    "selectSeason": "Select season",
+    "noSeasonData": "No standings for this season yet."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Summer 2026",
     "title":               "Tournament 2026",

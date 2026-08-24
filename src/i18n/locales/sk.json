@@ -354,6 +354,11 @@
     "tierLocal":       "Tvoja domáca liga",
     "tierBonus":       "Poháre a ďalšie"
   },
+  "competition": {
+    "season":       "Sezóna",
+    "selectSeason": "Vyber sezónu",
+    "noSeasonData": "Pre túto sezónu zatiaľ nie je tabuľka."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Leto 2026",
     "title":               "Turnaj 2026",

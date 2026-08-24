@@ -341,6 +341,11 @@
     "tierLocal":       "Liga ta locală",
     "tierBonus":       "Cupe și altele"
   },
+  "competition": {
+    "season":       "Sezon",
+    "selectSeason": "Alege sezonul",
+    "noSeasonData": "Nu există clasament pentru acest sezon."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Vara 2026",
     "title":               "Turneul 2026",

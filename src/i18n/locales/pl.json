@@ -354,6 +354,11 @@
     "tierLocal":       "Twoja lokalna liga",
     "tierBonus":       "Puchary i więcej"
   },
+  "competition": {
+    "season":       "Sezon",
+    "selectSeason": "Wybierz sezon",
+    "noSeasonData": "Brak tabeli dla tego sezonu."
+  },
   "worldcup": {
     "eyebrow":             "⚽ Lato 2026",
     "title":               "Turniej 2026",

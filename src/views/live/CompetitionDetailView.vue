@@ -28,14 +28,42 @@ const competitionName = computed(() =>
 )
 
 const loading = ref(true)
+const standingsLoading = ref(false)
 const error   = ref(null)
 const tab     = ref('standings')
 
+// ── Season selector ────────────────────────────────────────────────────────
+// Only the standings endpoint accepts a season_id (fixtures/goalscorers do not
+// at the backend level), so the selector re-loads standings for the chosen
+// season while the other tabs stay on the current season.
+// live-score-api season_id 57 == 2026/2027 — anchor the label math to that.
+const SEASON_ANCHOR_ID = 57
+const SEASON_ANCHOR_START = 2026
+function seasonLabel(id) {
+  const start = SEASON_ANCHOR_START + (Number(id) - SEASON_ANCHOR_ID)
+  return `${start}/${start + 1}`
+}
+const selectedSeasonId = ref(null)
+const seasons = computed(() => {
+  const cur = competition.value?.seasonId
+  if (!cur) return []
+  return [0, 1, 2].map((off) => ({ id: cur - off, label: seasonLabel(cur - off) }))
+})
+
+async function loadStandingsForSeason() {
+  standingsLoading.value = true
+  try {
+    await compStore.loadStandings(competitionId.value, selectedSeasonId.value || undefined)
+  } finally {
+    standingsLoading.value = false
+  }
+}
+
 onMounted(async () => {
-  const seasonId = competition.value?.seasonId || undefined
+  selectedSeasonId.value = competition.value?.seasonId || null
   try {
     await Promise.allSettled([
-      compStore.loadStandings(competitionId.value, seasonId),
+      compStore.loadStandings(competitionId.value, selectedSeasonId.value || undefined),
       compStore.loadGoalscorers(competitionId.value),
       compStore.loadGroups(competitionId.value),
       compStore.loadFixtures(competitionId.value),
@@ -97,7 +125,15 @@ const tabs = computed(() => [
 
       <template v-else>
         <div v-show="tab === 'standings'" role="tabpanel">
-          <StandingsTable :rows="standings" :show-goals="true" />
+          <label v-if="seasons.length" class="comp-view__season">
+            <span>{{ t('competition.season') }}</span>
+            <select v-model.number="selectedSeasonId" @change="loadStandingsForSeason">
+              <option v-for="s in seasons" :key="s.id" :value="s.id">{{ s.label }}</option>
+            </select>
+          </label>
+          <div v-if="standingsLoading" class="comp-view__empty">{{ t('live.loading', 'Loading…') }}</div>
+          <StandingsTable v-else-if="standings.length" :rows="standings" :show-goals="true" />
+          <div v-else class="comp-view__empty">{{ t('competition.noSeasonData') }}</div>
         </div>
 
         <div v-show="tab === 'fixtures'" role="tabpanel">
@@ -198,6 +234,26 @@ const tabs = computed(() => [
   color: var(--color-primary);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.comp-view__season {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.comp-view__season select {
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: var(--radius-button);
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 .comp-view__tabs {
