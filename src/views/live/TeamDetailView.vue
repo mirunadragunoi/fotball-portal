@@ -3,7 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTeamsStore } from '@/stores/teams'
+import { useClubTeamsStore } from '@/stores/clubTeams'
 import { formatKickoff } from '@/utils/liveScoreFormat'
+import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
+import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
 
 const route  = useRoute()
 const router = useRouter()
@@ -13,6 +16,7 @@ function kickoffStr(m) {
 }
 
 const teamsStore = useTeamsStore()
+const clubStore  = useClubTeamsStore()
 
 const teamId = computed(() => route.params.teamId)
 
@@ -23,9 +27,13 @@ onMounted(async () => {
   try {
     // selectTeam picks from already-loaded teams (may be empty for direct navigation)
     teamsStore.selectTeam(teamId.value)
-    await teamsStore.loadLastMatches(teamId.value)
-    // Squad requires competitionId AND season (backend mandates season as of 2026-06-07).
-    // Season hardcoded to 2026 for now — future: pull from /livescore/seasons per competition.
+    await Promise.all([
+      teamsStore.loadLastMatches(teamId.value),
+      // Club squads + photos for the top-5 leagues (name-matched to this team).
+      clubStore.loadAll(route.query.season || '2026'),
+    ])
+    // live-score-api squad (needs competitionId + season) — used only when the
+    // team has no club-squad JSON match.
     if (route.query.competitionId) {
       await teamsStore.loadSquad(
         route.query.competitionId,
@@ -44,17 +52,66 @@ const team        = computed(() => teamsStore.selectedTeam)
 const lastMatches = computed(() => teamsStore.teamLastMatches || [])
 const squad       = computed(() => teamsStore.teamSquad || [])
 
-function positionGroup(players) {
-  const groups = {}
+// Team name: from reference data if loaded, else derived from recent matches
+// (direct navigation to /live/team/:id has no preloaded team object).
+const teamName = computed(() => {
+  if (team.value?.name) return team.value.name
+  const m = lastMatches.value.find((x) =>
+    String(x.home_id ?? x.home?.id) === String(teamId.value) ||
+    String(x.away_id ?? x.away?.id) === String(teamId.value),
+  )
+  if (!m) return ''
+  return String(m.home_id ?? m.home?.id) === String(teamId.value)
+    ? (m.home_name || m.home?.name || '')
+    : (m.away_name || m.away?.name || '')
+})
+
+// Club squad (with photos) resolved by name from the synced league JSON.
+const clubTeam = computed(() => clubStore.getTeamByName(teamName.value))
+const teamLogo = computed(() => team.value?.logo || clubTeam.value?.logo || null)
+
+const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker']
+const POSITION_LABELS = computed(() => ({
+  Goalkeeper: t('worldcup.posGoalkeepers'),
+  Defender:   t('worldcup.posDefenders'),
+  Midfielder: t('worldcup.posMidfielders'),
+  Attacker:   t('worldcup.posAttackers'),
+}))
+
+const clubSquadGroups = computed(() => {
+  const players = clubTeam.value?.players || []
+  if (!players.length) return []
+  const map = {}
   for (const p of players) {
+    const pos = p.position || 'Other'
+    if (!map[pos]) map[pos] = []
+    map[pos].push(p)
+  }
+  for (const pos in map) map[pos].sort((a, b) => (a.number || 99) - (b.number || 99))
+  const ordered = POSITION_ORDER.filter((pos) => map[pos]?.length).map((pos) => ({
+    position: pos, label: POSITION_LABELS.value[pos] || pos, players: map[pos],
+  }))
+  const rest = Object.entries(map)
+    .filter(([pos]) => !POSITION_ORDER.includes(pos))
+    .map(([pos, players]) => ({ position: pos, label: pos, players }))
+  return ordered.concat(rest)
+})
+
+// Fallback: live-score-api squad grouped by position (no photos).
+const squadGroups = computed(() => {
+  const groups = {}
+  for (const p of squad.value) {
     const pos = p.position || p.pos || 'Other'
     if (!groups[pos]) groups[pos] = []
     groups[pos].push(p)
   }
   return groups
-}
+})
 
-const squadGroups = computed(() => positionGroup(squad.value))
+// Player detail modal (club squad only — players carry api-football ids).
+const activePlayer = ref(null)
+function openPlayer(p) { activePlayer.value = p }
+function closePlayer() { activePlayer.value = null }
 </script>
 
 <template>
@@ -73,17 +130,19 @@ const squadGroups = computed(() => positionGroup(squad.value))
         <!-- Team header -->
         <div class="team-view__head">
           <img
-            v-if="team?.logo"
-            :src="team.logo"
-            :alt="team?.name || ''"
+            v-if="teamLogo"
+            :src="teamLogo"
+            :alt="teamName || ''"
             width="72"
             height="72"
             class="team-view__logo"
             loading="lazy"
           />
           <div class="team-view__meta">
-            <h1 class="team-view__name">{{ team?.name || t('live.team', 'Team') }}</h1>
-            <div v-if="team?.country" class="team-view__country">{{ team.country }}</div>
+            <h1 class="team-view__name">{{ teamName || t('live.team', 'Team') }}</h1>
+            <div v-if="team?.country || clubTeam?.league?.name" class="team-view__country">
+              {{ team?.country || clubTeam?.league?.name }}
+            </div>
           </div>
         </div>
 
@@ -115,8 +174,21 @@ const squadGroups = computed(() => positionGroup(squad.value))
           </div>
         </section>
 
-        <!-- Squad (only when loaded) -->
-        <section v-if="squad.length" class="team-view__section">
+        <!-- Club squad (Panini cards + player modal) when a synced roster matches -->
+        <section v-if="clubSquadGroups.length" class="team-view__section">
+          <h2 class="team-view__section-title">{{ t('live.squad', 'Squad') }}</h2>
+          <PlayerPositionGroup
+            v-for="group in clubSquadGroups"
+            :key="group.position"
+            :position-label="group.label"
+            :players="group.players"
+            :team="clubTeam"
+            @select-player="openPlayer"
+          />
+        </section>
+
+        <!-- Fallback: live-score-api squad (no photos) when no club roster -->
+        <section v-else-if="squad.length" class="team-view__section">
           <h2 class="team-view__section-title">{{ t('live.squad', 'Squad') }}</h2>
           <div
             v-for="(players, pos) in squadGroups"
@@ -146,10 +218,18 @@ const squadGroups = computed(() => positionGroup(squad.value))
         </section>
 
         <!-- No data fallback -->
-        <div v-if="!lastMatches.length && !squad.length" class="team-view__empty">
+        <div v-if="!lastMatches.length && !squad.length && !clubSquadGroups.length" class="team-view__empty">
           {{ t('live.noTeamData', 'No data available for this team') }}
         </div>
       </template>
+
+      <!-- Player detail modal (club players) -->
+      <PlayerDetailModal
+        v-if="clubTeam"
+        :player="activePlayer"
+        :team="clubTeam"
+        @close="closePlayer"
+      />
     </div>
   </main>
 </template>

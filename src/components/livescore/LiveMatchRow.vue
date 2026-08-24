@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
   parseScoreString,
@@ -8,6 +9,8 @@ import {
   isFinishedStatus,
   formatKickoff,
 } from '@/utils/liveScoreFormat'
+
+const router = useRouter()
 
 const props = defineProps({
   match: { type: Object, required: true },
@@ -42,6 +45,14 @@ const awayName = computed(() =>
 )
 const homeLogo = computed(() => props.match?.home?.logo || props.match?.home_logo || null)
 const awayLogo = computed(() => props.match?.away?.logo || props.match?.away_logo || null)
+const homeId = computed(() => props.match?.home?.id ?? props.match?.home_id ?? null)
+const awayId = computed(() => props.match?.away?.id ?? props.match?.away_id ?? null)
+
+// Team names link to the team page; stop propagation so the row's match-detail
+// click doesn't also fire.
+function goTeam(id) {
+  if (id) router.push({ name: 'TeamDetail', params: { teamId: id } })
+}
 
 const statusLabel = computed(() => {
   if (live.value) return t('live.statusLive')
@@ -100,7 +111,14 @@ function onCompetitionClick() {
           width="24"
           height="24"
         />
-        <span class="live-row__name">{{ homeName }}</span>
+        <span
+          class="live-row__name"
+          :class="{ 'live-row__name--link': homeId }"
+          :role="homeId ? 'link' : undefined"
+          :tabindex="homeId ? 0 : undefined"
+          @click.stop="goTeam(homeId)"
+          @keydown.enter.stop.prevent="goTeam(homeId)"
+        >{{ homeName }}</span>
       </div>
 
       <div class="live-row__score-block" aria-label="Score">
@@ -124,7 +142,14 @@ function onCompetitionClick() {
           width="24"
           height="24"
         />
-        <span class="live-row__name">{{ awayName }}</span>
+        <span
+          class="live-row__name"
+          :class="{ 'live-row__name--link': awayId }"
+          :role="awayId ? 'link' : undefined"
+          :tabindex="awayId ? 0 : undefined"
+          @click.stop="goTeam(awayId)"
+          @keydown.enter.stop.prevent="goTeam(awayId)"
+        >{{ awayName }}</span>
       </div>
     </div>
 
@@ -240,6 +265,18 @@ function onCompetitionClick() {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.live-row__name--link {
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.live-row__name--link:hover,
+.live-row__name--link:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+  outline: none;
 }
 
 .live-row__score-block {

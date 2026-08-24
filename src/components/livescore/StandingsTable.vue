@@ -46,15 +46,21 @@ function formList(row) {
         >
           <td>{{ row.rank ?? row.position ?? i + 1 }}</td>
           <td class="standings__team">
-            <img
-              v-if="row.team_logo || row.logo"
-              :src="row.team_logo || row.logo"
-              alt=""
-              width="20"
-              height="20"
-              loading="lazy"
-            />
-            {{ row.team_name || row.name }}
+            <component
+              :is="(row.team_id || row.id) ? 'RouterLink' : 'span'"
+              :to="(row.team_id || row.id) ? `/live/team/${row.team_id || row.id}` : undefined"
+              class="standings__team-inner"
+            >
+              <img
+                v-if="row.team_logo || row.logo"
+                :src="row.team_logo || row.logo"
+                alt=""
+                width="20"
+                height="20"
+                loading="lazy"
+              />
+              {{ row.team_name || row.name }}
+            </component>
           </td>
           <td>{{ row.played ?? row.matches ?? '–' }}</td>
           <td>{{ row.won ?? '–' }}</td>
@@ -112,11 +118,21 @@ function formList(row) {
 }
 
 .standings__team {
+  font-weight: 600;
+  min-width: 140px;
+}
+
+.standings__team-inner {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 600;
-  min-width: 140px;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.standings__team-inner:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 
 .standings__pts {
