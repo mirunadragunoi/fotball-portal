@@ -51,6 +51,10 @@
   "home": {
     "topCompetitions":     "Grandes compétitions",
     "viewAllCompetitions": "Voir tout",
+    "liveNow":              "En direct maintenant",
+    "noLiveMatches":        "Aucun match en direct pour le moment",
+    "nextMatch":            "Prochain match",
+    "startsIn":             "Débute dans {time}",
     "featuredGames":        "Jeux à la une",
     "latestVideos":         "Dernières vidéos",
     "allGames":             "Tous les jeux",

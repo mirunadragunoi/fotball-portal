@@ -10,7 +10,7 @@ import TopCompetitions from '@/components/home/TopCompetitions.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useLandingImages } from '@/composables/useLandingImages'
-import LiveScoreWidget from '@/components/livescore/LiveScoreWidget.vue'
+import LiveNowWidget from '@/components/home/LiveNowWidget.vue'
 import NewsWidget from '@/components/news/NewsWidget.vue'
 
 const { t } = useI18n()
@@ -59,6 +59,9 @@ const leaderboard = [
     <!-- Dynamic brand hero -->
     <component :is="HeroComponent" v-if="HeroComponent" />
 
+    <!-- Live Now (live matches, or next upcoming from curated competitions) -->
+    <LiveNowWidget />
+
     <!-- F2: Quick category tiles -->
     <section v-if="isF2" class="home-tiles" aria-labelledby="home-tiles-heading">
       <div class="home-tiles__inner">
@@ -85,9 +88,6 @@ const leaderboard = [
 
     <!-- Top Competitions -->
     <TopCompetitions />
-
-    <!-- Live scores widget -->
-    <LiveScoreWidget />
 
     <FeaturedGames />
 

@@ -51,6 +51,10 @@
   "home": {
     "topCompetitions":     "Top Competitions",
     "viewAllCompetitions": "View all",
+    "liveNow":              "Live Now",
+    "noLiveMatches":        "No live matches right now",
+    "nextMatch":            "Next match",
+    "startsIn":             "Starts in {time}",
     "featuredGames":        "Featured games",
     "latestVideos":         "Latest videos",
     "allGames":             "All games",

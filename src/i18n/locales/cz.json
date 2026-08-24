@@ -51,6 +51,10 @@
   "home": {
     "topCompetitions":     "Top soutěže",
     "viewAllCompetitions": "Zobrazit vše",
+    "liveNow":              "Právě živě",
+    "noLiveMatches":        "Právě neprobíhají žádné zápasy",
+    "nextMatch":            "Další zápas",
+    "startsIn":             "Začíná za {time}",
     "featuredGames":        "Doporučené hry",
     "latestVideos":         "Nejnovější videa",
     "allGames":             "Všechny hry",

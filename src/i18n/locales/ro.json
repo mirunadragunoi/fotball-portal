@@ -51,6 +51,10 @@
   "home": {
     "topCompetitions":     "Competiții de top",
     "viewAllCompetitions": "Vezi toate",
+    "liveNow":              "Acum în direct",
+    "noLiveMatches":        "Niciun meci în direct acum",
+    "nextMatch":            "Următorul meci",
+    "startsIn":             "Începe în {time}",
     "featuredGames":        "Jocuri recomandate",
     "latestVideos":         "Ultimele videoclipuri",
     "allGames":             "Toate jocurile",
