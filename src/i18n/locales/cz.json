@@ -365,7 +365,11 @@
     "badgeLeague":    "Liga",
     "badgeLocal":     "Domácí liga",
     "badgeCup":       "Pohár",
-    "noDisciplinary": "Nejsou k dispozici disciplinární data."
+    "noDisciplinary": "Nejsou k dispozici disciplinární data.",
+    "liveStandings":  "Živá tabulka"
+  },
+  "standings": {
+    "live": "LIVE"
   },
   "worldcup": {
     "eyebrow":             "⚽ Léto 2026",

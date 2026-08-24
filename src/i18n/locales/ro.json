@@ -352,7 +352,11 @@
     "badgeLeague":    "Ligă",
     "badgeLocal":     "Ligă locală",
     "badgeCup":       "Cupă",
-    "noDisciplinary": "Nu există date disciplinare."
+    "noDisciplinary": "Nu există date disciplinare.",
+    "liveStandings":  "Clasament live"
+  },
+  "standings": {
+    "live": "LIVE"
   },
   "worldcup": {
     "eyebrow":             "⚽ Vara 2026",

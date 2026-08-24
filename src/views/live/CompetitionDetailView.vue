@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCompetitionStore } from '@/stores/competition'
 import { useLiveScoreStore } from '@/stores/livescore'
-import { formatKickoff } from '@/utils/liveScoreFormat'
+import { formatKickoff, isLiveStatus } from '@/utils/liveScoreFormat'
 import { getCompetitionById } from '@/config/europeanCompetitions'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
+import LiveStandingsTable from '@/components/livescore/LiveStandingsTable.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
 import DisciplinaryTable from '@/components/livescore/DisciplinaryTable.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
@@ -50,6 +51,11 @@ const liveMatchesForComp = computed(() =>
   ),
 )
 
+// True when any of this competition's matches is currently in play.
+const hasLiveMatches = computed(() =>
+  liveMatchesForComp.value.some((m) => isLiveStatus(m?.status)),
+)
+
 const loading = ref(true)
 const standingsLoading = ref(false)
 const error   = ref(null)
@@ -82,6 +88,56 @@ async function loadStandingsForSeason() {
   }
 }
 
+// ── Live standings (real-time during matches) ──────────────────────────────
+const LIVE_STANDINGS_POLL = 30_000
+const prevLiveRows = ref([])
+let liveStandingsTimer = null
+
+const liveStandings = computed(() => compStore.liveStandings || [])
+// Use the live table only on the Standings tab, when a match is in play and the
+// live endpoint actually returned rows — otherwise fall back to static.
+const showLiveStandings = computed(
+  () => tab.value === 'standings' && hasLiveMatches.value && liveStandings.value.length > 0,
+)
+
+async function refreshLiveStandings() {
+  // Snapshot current order for position-change arrows before refreshing.
+  prevLiveRows.value = [...(compStore.liveStandings || [])]
+  await Promise.allSettled([
+    liveStore.loadLive(),
+    compStore.loadLiveStandings(competitionId.value),
+  ])
+}
+
+function startLiveStandingsPolling() {
+  stopLiveStandingsPolling()
+  if (document.visibilityState !== 'visible') return
+  liveStandingsTimer = setInterval(() => {
+    if (document.visibilityState !== 'visible') return
+    if (tab.value === 'standings' && hasLiveMatches.value) refreshLiveStandings()
+  }, LIVE_STANDINGS_POLL)
+}
+
+function stopLiveStandingsPolling() {
+  if (liveStandingsTimer) {
+    clearInterval(liveStandingsTimer)
+    liveStandingsTimer = null
+  }
+}
+
+// Start/stop polling as the tab or live state changes.
+function syncLivePolling() {
+  if (tab.value === 'standings' && hasLiveMatches.value) startLiveStandingsPolling()
+  else stopLiveStandingsPolling()
+}
+
+watch([tab, hasLiveMatches], syncLivePolling)
+
+function onVisibility() {
+  if (document.visibilityState === 'visible') syncLivePolling()
+  else stopLiveStandingsPolling()
+}
+
 onMounted(async () => {
   selectedSeasonId.value = competition.value?.seasonId || null
   try {
@@ -98,6 +154,18 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+
+  // If matches are already in play, load live standings and begin polling.
+  if (hasLiveMatches.value) {
+    await refreshLiveStandings()
+    startLiveStandingsPolling()
+  }
+  document.addEventListener('visibilitychange', onVisibility)
+})
+
+onUnmounted(() => {
+  stopLiveStandingsPolling()
+  document.removeEventListener('visibilitychange', onVisibility)
 })
 
 const standings    = computed(() => compStore.standings || [])
@@ -153,13 +221,23 @@ const tabs = computed(() => [
 
       <template v-else>
         <div v-show="tab === 'standings'" role="tabpanel">
-          <label v-if="seasons.length" class="comp-view__season">
+          <label v-if="seasons.length && !showLiveStandings" class="comp-view__season">
             <span>{{ t('competition.season') }}</span>
             <select v-model.number="selectedSeasonId" @change="loadStandingsForSeason">
               <option v-for="s in seasons" :key="s.id" :value="s.id">{{ s.label }}</option>
             </select>
           </label>
-          <div v-if="standingsLoading" class="comp-view__empty">{{ t('live.loading', 'Loading…') }}</div>
+
+          <!-- Live standings while matches are in play -->
+          <template v-if="showLiveStandings">
+            <div class="comp-view__live-badge">
+              <span class="comp-view__live-dot" aria-hidden="true"></span>
+              {{ t('competition.liveStandings') }}
+            </div>
+            <LiveStandingsTable :rows="liveStandings" :prev-rows="prevLiveRows" :live-label="t('standings.live')" />
+          </template>
+
+          <div v-else-if="standingsLoading" class="comp-view__empty">{{ t('live.loading', 'Loading…') }}</div>
           <StandingsTable
             v-else-if="standings.length"
             :rows="standings"
@@ -284,6 +362,31 @@ const tabs = computed(() => [
   color: var(--color-primary);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.comp-view__live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+}
+
+.comp-view__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-red, #e53935);
+  animation: comp-live-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes comp-live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 .comp-view__season {

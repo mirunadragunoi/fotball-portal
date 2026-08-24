@@ -352,7 +352,11 @@
     "badgeLeague":    "League",
     "badgeLocal":     "Local League",
     "badgeCup":       "Cup",
-    "noDisciplinary": "No disciplinary data available."
+    "noDisciplinary": "No disciplinary data available.",
+    "liveStandings":  "Live standings"
+  },
+  "standings": {
+    "live": "LIVE"
   },
   "worldcup": {
     "eyebrow":             "⚽ Summer 2026",

@@ -4,6 +4,7 @@ import { computed } from 'vue'
 const props = defineProps({
   rows:       { type: Array, default: () => [] },
   prevRows:   { type: Array, default: () => [] }, // previous snapshot for arrows
+  liveLabel:  { type: String, default: 'Live' },
 })
 
 function posChange(row, i) {
@@ -33,7 +34,7 @@ function posChange(row, i) {
           <th scope="col" title="Goals Against">GA</th>
           <th scope="col" title="Goal Difference">GD</th>
           <th scope="col" title="Points">Pts</th>
-          <th scope="col" title="Live">Live</th>
+          <th scope="col" :title="liveLabel">{{ liveLabel }}</th>
         </tr>
       </thead>
       <tbody>

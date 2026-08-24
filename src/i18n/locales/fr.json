@@ -352,7 +352,11 @@
     "badgeLeague":    "Championnat",
     "badgeLocal":     "Championnat local",
     "badgeCup":       "Coupe",
-    "noDisciplinary": "Aucune donnée disciplinaire."
+    "noDisciplinary": "Aucune donnée disciplinaire.",
+    "liveStandings":  "Classement en direct"
+  },
+  "standings": {
+    "live": "LIVE"
   },
   "worldcup": {
     "eyebrow":             "⚽ Été 2026",
