@@ -344,7 +344,15 @@
   "competition": {
     "season":       "Season",
     "selectSeason": "Select season",
-    "noSeasonData": "No standings for this season yet."
+    "noSeasonData": "No standings for this season yet.",
+    "disciplinary":   "Discipline",
+    "form":           "Form",
+    "badgeUefa":      "UEFA",
+    "badgeTop":       "Top League",
+    "badgeLeague":    "League",
+    "badgeLocal":     "Local League",
+    "badgeCup":       "Cup",
+    "noDisciplinary": "No disciplinary data available."
   },
   "worldcup": {
     "eyebrow":             "⚽ Summer 2026",

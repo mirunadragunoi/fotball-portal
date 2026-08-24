@@ -357,7 +357,15 @@
   "competition": {
     "season":       "Sezon",
     "selectSeason": "Wybierz sezon",
-    "noSeasonData": "Brak tabeli dla tego sezonu."
+    "noSeasonData": "Brak tabeli dla tego sezonu.",
+    "disciplinary":   "Dyscyplina",
+    "form":           "Forma",
+    "badgeUefa":      "UEFA",
+    "badgeTop":       "Czołowa liga",
+    "badgeLeague":    "Liga",
+    "badgeLocal":     "Liga lokalna",
+    "badgeCup":       "Puchar",
+    "noDisciplinary": "Brak danych dyscyplinarnych."
   },
   "worldcup": {
     "eyebrow":             "⚽ Lato 2026",

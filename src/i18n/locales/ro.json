@@ -344,7 +344,15 @@
   "competition": {
     "season":       "Sezon",
     "selectSeason": "Alege sezonul",
-    "noSeasonData": "Nu există clasament pentru acest sezon."
+    "noSeasonData": "Nu există clasament pentru acest sezon.",
+    "disciplinary":   "Disciplină",
+    "form":           "Formă",
+    "badgeUefa":      "UEFA",
+    "badgeTop":       "Ligă de top",
+    "badgeLeague":    "Ligă",
+    "badgeLocal":     "Ligă locală",
+    "badgeCup":       "Cupă",
+    "noDisciplinary": "Nu există date disciplinare."
   },
   "worldcup": {
     "eyebrow":             "⚽ Vara 2026",

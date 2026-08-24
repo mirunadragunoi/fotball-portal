@@ -357,7 +357,15 @@
   "competition": {
     "season":       "Sezóna",
     "selectSeason": "Vyber sezónu",
-    "noSeasonData": "Pro tuto sezónu zatím není tabulka."
+    "noSeasonData": "Pro tuto sezónu zatím není tabulka.",
+    "disciplinary":   "Disciplína",
+    "form":           "Forma",
+    "badgeUefa":      "UEFA",
+    "badgeTop":       "Top liga",
+    "badgeLeague":    "Liga",
+    "badgeLocal":     "Domácí liga",
+    "badgeCup":       "Pohár",
+    "noDisciplinary": "Nejsou k dispozici disciplinární data."
   },
   "worldcup": {
     "eyebrow":             "⚽ Léto 2026",

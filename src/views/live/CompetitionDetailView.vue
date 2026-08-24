@@ -3,10 +3,12 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCompetitionStore } from '@/stores/competition'
+import { useLiveScoreStore } from '@/stores/livescore'
 import { formatKickoff } from '@/utils/liveScoreFormat'
 import { getCompetitionById } from '@/config/europeanCompetitions'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 import GoalscorersTable from '@/components/livescore/GoalscorersTable.vue'
+import DisciplinaryTable from '@/components/livescore/DisciplinaryTable.vue'
 import GroupStageGrid from '@/components/livescore/GroupStageGrid.vue'
 
 const route  = useRoute()
@@ -17,6 +19,7 @@ function kickoffStr(m) {
 }
 
 const compStore = useCompetitionStore()
+const liveStore = useLiveScoreStore()
 
 const competitionId = computed(() => route.params.competitionId)
 
@@ -25,6 +28,26 @@ const competitionId = computed(() => route.params.competitionId)
 const competition = computed(() => getCompetitionById(competitionId.value))
 const competitionName = computed(() =>
   competition.value?.name || t('live.competition', 'Competition'),
+)
+
+// Tier badge (UEFA / Top League / League / Local League / Cup).
+const TIER_BADGE_KEY = {
+  'european-cup': 'competition.badgeUefa',
+  top5:           'competition.badgeTop',
+  secondary:      'competition.badgeLeague',
+  local:          'competition.badgeLocal',
+  bonus:          'competition.badgeCup',
+}
+const tierBadge = computed(() => {
+  const key = TIER_BADGE_KEY[competition.value?.tier]
+  return key ? t(key) : ''
+})
+
+// Live matches for this competition (used to highlight live games in groups).
+const liveMatchesForComp = computed(() =>
+  (liveStore.liveMatches || []).filter(
+    (m) => String(m?.competition?.id) === String(competitionId.value),
+  ),
 )
 
 const loading = ref(true)
@@ -65,8 +88,10 @@ onMounted(async () => {
     await Promise.allSettled([
       compStore.loadStandings(competitionId.value, selectedSeasonId.value || undefined),
       compStore.loadGoalscorers(competitionId.value),
+      compStore.loadDisciplinary(competitionId.value),
       compStore.loadGroups(competitionId.value),
       compStore.loadFixtures(competitionId.value),
+      liveStore.loadLive(),
     ])
   } catch (e) {
     error.value = e?.message || 'Failed to load competition data'
@@ -75,16 +100,18 @@ onMounted(async () => {
   }
 })
 
-const standings   = computed(() => compStore.standings || [])
-const goalscorers = computed(() => compStore.topGoalscorers || [])
-const groups      = computed(() => compStore.groups || [])
-const fixtures    = computed(() => compStore.fixtures || [])
+const standings    = computed(() => compStore.standings || [])
+const goalscorers  = computed(() => compStore.topGoalscorers || [])
+const disciplinary = computed(() => compStore.topDisciplinary || [])
+const groups       = computed(() => compStore.groups || [])
+const fixtures     = computed(() => compStore.fixtures || [])
 
 const tabs = computed(() => [
   { key: 'standings',   label: t('live.standings',   'Standings') },
   { key: 'fixtures',    label: t('live.fixtures',    'Fixtures') },
   { key: 'groups',      label: t('live.groups',      'Groups'),     hide: !groups.value.length },
   { key: 'goalscorers', label: t('live.goalscorers', 'Goalscorers') },
+  { key: 'disciplinary', label: t('competition.disciplinary', 'Discipline'), hide: !disciplinary.value.length },
 ].filter(x => !x.hide))
 </script>
 
@@ -96,6 +123,7 @@ const tabs = computed(() => [
       <div class="comp-view__head">
         <div class="comp-view__title-wrap">
           <h1 class="comp-view__title">{{ competitionName }}</h1>
+          <span v-if="tierBadge" class="comp-view__badge">{{ tierBadge }}</span>
           <span v-if="competition?.country" class="comp-view__country">{{ competition.country }}</span>
         </div>
         <RouterLink :to="`/live/standings/${competitionId}`" class="comp-view__standings-link">
@@ -132,7 +160,13 @@ const tabs = computed(() => [
             </select>
           </label>
           <div v-if="standingsLoading" class="comp-view__empty">{{ t('live.loading', 'Loading…') }}</div>
-          <StandingsTable v-else-if="standings.length" :rows="standings" :show-goals="true" />
+          <StandingsTable
+            v-else-if="standings.length"
+            :rows="standings"
+            :show-goals="true"
+            :show-form="true"
+            :form-label="t('competition.form')"
+          />
           <div v-else class="comp-view__empty">{{ t('competition.noSeasonData') }}</div>
         </div>
 
@@ -158,14 +192,19 @@ const tabs = computed(() => [
             v-if="groups.length"
             :groups="groups"
             :competition-id="competitionId"
-            :live-match-ids="[]"
+            :live-matches="liveMatchesForComp"
           />
           <div v-else class="comp-view__empty">{{ t('live.noGroups', 'No group data available') }}</div>
         </div>
 
         <div v-show="tab === 'goalscorers'" role="tabpanel">
-          <GoalscorersTable v-if="goalscorers.length" :rows="goalscorers" />
+          <GoalscorersTable v-if="goalscorers.length" :scorers="goalscorers" />
           <div v-else class="comp-view__empty">{{ t('live.noGoalscorers', 'No goalscorer data available') }}</div>
+        </div>
+
+        <div v-show="tab === 'disciplinary'" role="tabpanel">
+          <DisciplinaryTable v-if="disciplinary.length" :players="disciplinary" />
+          <div v-else class="comp-view__empty">{{ t('competition.noDisciplinary') }}</div>
         </div>
       </template>
     </div>
@@ -220,6 +259,17 @@ const tabs = computed(() => [
   font-weight: 800;
   text-transform: uppercase;
   margin: 0;
+}
+
+.comp-view__badge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  padding: 3px 8px;
+  border-radius: 999px;
 }
 
 .comp-view__country {

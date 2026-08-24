@@ -2,8 +2,20 @@
 defineProps({
   rows:        { type: Array,   default: () => [] },
   showGoals:   { type: Boolean, default: true },
+  showForm:    { type: Boolean, default: false },
+  formLabel:   { type: String,  default: 'Form' },
   highlightId: { type: [String, Number], default: null },
 })
+
+// Last 5 results (W/D/L) from whatever field the API provides. Returns [] when
+// the standings response carries no form data (column then renders empty).
+function formList(row) {
+  const f = row.form ?? row.recent_form ?? row.last_5 ?? ''
+  const arr = Array.isArray(f)
+    ? f
+    : String(f).replace(/[^WDLwdl]/g, '').split('')
+  return arr.map((c) => String(c).toUpperCase()).slice(-5)
+}
 </script>
 
 <template>
@@ -23,6 +35,7 @@ defineProps({
             <th scope="col" title="Goal Difference">GD</th>
           </template>
           <th scope="col" title="Points">Pts</th>
+          <th v-if="showForm" scope="col" class="standings__th-form">{{ formLabel }}</th>
         </tr>
       </thead>
       <tbody>
@@ -53,6 +66,15 @@ defineProps({
             <td>{{ row.goal_diff != null ? (row.goal_diff > 0 ? '+' : '') + row.goal_diff : (row.gd != null ? (row.gd > 0 ? '+' : '') + row.gd : '–') }}</td>
           </template>
           <td class="standings__pts">{{ row.points ?? row.pts ?? '–' }}</td>
+          <td v-if="showForm" class="standings__form">
+            <span
+              v-for="(r, fi) in formList(row)"
+              :key="fi"
+              class="standings__form-dot"
+              :class="`standings__form-dot--${r.toLowerCase()}`"
+              :title="r"
+            >{{ r }}</span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -106,4 +128,27 @@ defineProps({
   background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   font-weight: 700;
 }
+
+.standings__form {
+  white-space: nowrap;
+}
+
+.standings__form-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0 1px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.standings__form-dot--w { background: #16a34a; }
+.standings__form-dot--d { background: #9ca3af; }
+.standings__form-dot--l { background: var(--color-red, #e53935); }
+
 </style>
