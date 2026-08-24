@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
+import { useWorldCupTeamsStore } from '@/stores/rosters'
 import TeamBanner from '@/components/livescore/TeamBanner.vue'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
 import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'

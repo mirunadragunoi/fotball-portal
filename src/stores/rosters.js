@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 import { fetchPlayerDetails } from '@/services/apiFootballService'
 import { fetchFantasy } from '@/services/livescoreApi'
 import { WC_2026_COMPETITION_ID } from '@/config/livescore'
+import { getCompetitionsByTier } from '@/config/europeanCompetitions'
 
 const DIACRITICS = /[̀-ͯ]/g
 function normName(s) {
@@ -21,11 +22,42 @@ const FANTASY_METRICS = [
   'fouls', 'ball_touches',
 ]
 
-export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
+// ── Club roster helpers (top-5 leagues) ─────────────────────────────────────
+// live-score-api and api-football use different team ids, so club teams are
+// resolved by NAME (like the WC flow). Kept separate from the WC name matcher
+// so the two never cross-match.
+const LEAGUE_SLUGS = { 2: 'premier-league', 3: 'la-liga', 4: 'serie-a', 1: 'bundesliga', 5: 'ligue-1' }
+const CLUB_NOISE = /\b(fc|cf|afc|sc|ac|ss|us|rc|cd|ud|sd|club|calcio|as|rcd|be)\b/g
+function normClubName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(DIACRITICS, '')
+    .replace(/&/g, 'and')
+    .replace(CLUB_NOISE, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
+}
+
+/**
+ * Unified rosters store: World Cup national-team squads (wc2026-teams.json) and
+ * top-5 league club squads (public/data/leagues/*.json). WC and club rosters are
+ * kept in separate collections with separate name matchers; player details,
+ * fantasy and selection state are shared. Exported as useRostersStore, with
+ * useWorldCupTeamsStore kept as a back-compat alias (see CLAUDE.md branding note).
+ */
+export const useRostersStore = defineStore('rosters', () => {
   const teams       = ref([])
   const lastSync    = ref(null)
   const loaded      = ref(false)
   const loading     = ref(false)
+
+  // ── Club league rosters ───────────────────────────────────────────────
+  const clubTeams      = ref([])
+  const clubByName     = ref(new Map())
+  const clubLoaded     = ref(false)
+  const clubLoading    = ref(false)
 
   const selectedTeam   = ref(null)
   const selectedPlayer = ref(null)
@@ -204,11 +236,66 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     teams.value.reduce((sum, t) => sum + (t.players?.length || 0), 0)
   )
 
+  // ── Club league rosters (top-5) ─────────────────────────────────────────
+
+  const leagueSlugsToLoad = () =>
+    getCompetitionsByTier('top5').map((c) => LEAGUE_SLUGS[c.id]).filter(Boolean)
+
+  async function loadLeagueRosters(season = '2026') {
+    if (clubLoaded.value || clubLoading.value) return
+    clubLoading.value = true
+    try {
+      const slugs = [...new Set(leagueSlugsToLoad())]
+      const results = await Promise.allSettled(
+        slugs.map(async (slug) => {
+          const res = await fetch(`/data/leagues/${slug}-${season}.json`)
+          if (!res.ok) return null            // sync not run yet for this league
+          return res.json()
+        }),
+      )
+      const all = []
+      for (const r of results) {
+        if (r.status !== 'fulfilled' || !r.value?.teams) continue
+        for (const t of r.value.teams) all.push({ ...t, league: r.value.league })
+      }
+      clubTeams.value = all
+      const idx = new Map()
+      for (const t of all) {
+        const key = normClubName(t.name)
+        if (key && !idx.has(key)) idx.set(key, t)
+      }
+      clubByName.value = idx
+      clubLoaded.value = true
+    } catch (e) {
+      console.warn('rosters: club load failed', e?.message)
+    } finally {
+      clubLoading.value = false
+    }
+  }
+
+  // Resolve a live-score-api team (by name) to its api-football club squad.
+  const getClubTeamById = (id) =>
+    clubTeams.value.find((t) => String(t.id) === String(id)) || null
+
+  function getClubTeamByName(name) {
+    const q = normClubName(name)
+    if (!q) return null
+    const idx = clubByName.value
+    if (idx.has(q)) return idx.get(q)
+    for (const [key, team] of idx) {
+      if (key.length >= 4 && (key.includes(q) || q.includes(key))) return team
+    }
+    return null
+  }
+
   return {
     teams,
     lastSync,
     loaded,
     loading,
+    clubTeams,
+    clubLoaded,
+    clubLoading,
     selectedTeam,
     selectedPlayer,
     playerDetails,
@@ -222,6 +309,9 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     getTeamByLsaId,
     getTeamByName,
     totalPlayers,
+    loadLeagueRosters,
+    getClubTeamById,
+    getClubTeamByName,
     loadTeams,
     loadPlayerDetails,
     loadPlayerFantasy,
@@ -230,3 +320,7 @@ export const useWorldCupTeamsStore = defineStore('worldcupTeams', () => {
     clearSelection,
   }
 })
+
+// Back-compat alias — internal 'worldcup' naming is kept intentionally
+// (see CLAUDE.md branding note). Both names return the same store.
+export const useWorldCupTeamsStore = useRostersStore

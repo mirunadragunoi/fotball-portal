@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
-import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
+import { useWorldCupTeamsStore } from '@/stores/rosters'
 import { fetchStandings, fetchLiveStandings } from '@/services/livescoreApi'
 
 const props = defineProps({

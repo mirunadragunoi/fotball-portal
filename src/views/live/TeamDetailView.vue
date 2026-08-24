@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTeamsStore } from '@/stores/teams'
-import { useClubTeamsStore } from '@/stores/clubTeams'
+import { useRostersStore } from '@/stores/rosters'
 import { formatKickoff } from '@/utils/liveScoreFormat'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
 import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
@@ -16,7 +16,7 @@ function kickoffStr(m) {
 }
 
 const teamsStore = useTeamsStore()
-const clubStore  = useClubTeamsStore()
+const clubStore  = useRostersStore()
 
 const teamId = computed(() => route.params.teamId)
 
@@ -30,7 +30,7 @@ onMounted(async () => {
     await Promise.all([
       teamsStore.loadLastMatches(teamId.value),
       // Club squads + photos for the top-5 leagues (name-matched to this team).
-      clubStore.loadAll(route.query.season || '2026'),
+      clubStore.loadLeagueRosters(route.query.season || '2026'),
     ])
     // live-score-api squad (needs competitionId + season) — used only when the
     // team has no club-squad JSON match.
@@ -67,7 +67,7 @@ const teamName = computed(() => {
 })
 
 // Club squad (with photos) resolved by name from the synced league JSON.
-const clubTeam = computed(() => clubStore.getTeamByName(teamName.value))
+const clubTeam = computed(() => clubStore.getClubTeamByName(teamName.value))
 const teamLogo = computed(() => team.value?.logo || clubTeam.value?.logo || null)
 
 const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker']

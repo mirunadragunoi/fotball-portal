@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
+import { useWorldCupTeamsStore } from '@/stores/rosters'
 import GroupFilterTabs from './GroupFilterTabs.vue'
 import TeamFlagCard from './TeamFlagCard.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'

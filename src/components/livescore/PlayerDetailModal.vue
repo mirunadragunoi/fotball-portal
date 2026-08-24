@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useWorldCupTeamsStore } from '@/stores/worldcupTeams'
+import { useWorldCupTeamsStore } from '@/stores/rosters'
 
 const props = defineProps({
   player: { type: Object, default: null },
