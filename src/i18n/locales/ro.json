@@ -49,6 +49,8 @@
     }
   },
   "home": {
+    "topCompetitions":     "Competiții de top",
+    "viewAllCompetitions": "Vezi toate",
     "featuredGames":        "Jocuri recomandate",
     "latestVideos":         "Ultimele videoclipuri",
     "allGames":             "Toate jocurile",

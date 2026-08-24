@@ -49,6 +49,8 @@
     }
   },
   "home": {
+    "topCompetitions":     "Top soutěže",
+    "viewAllCompetitions": "Zobrazit vše",
     "featuredGames":        "Doporučené hry",
     "latestVideos":         "Nejnovější videa",
     "allGames":             "Všechny hry",

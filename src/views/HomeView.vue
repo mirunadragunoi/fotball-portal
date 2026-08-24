@@ -6,6 +6,7 @@ import AppIcon from '@/components/shared/AppIcon.vue'
 import FeaturedGames from '@/components/home/FeaturedGames.vue'
 import FeaturedVideos from '@/components/home/FeaturedVideos.vue'
 import HomeShowcase from '@/components/home/HomeShowcase.vue'
+import TopCompetitions from '@/components/home/TopCompetitions.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import AuthLink from '@/components/shared/AuthLink.vue'
 import { useLandingImages } from '@/composables/useLandingImages'
@@ -81,6 +82,9 @@ const leaderboard = [
         </div>
       </div>
     </section>
+
+    <!-- Top Competitions -->
+    <TopCompetitions />
 
     <!-- Live scores widget -->
     <LiveScoreWidget />

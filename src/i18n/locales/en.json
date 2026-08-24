@@ -49,6 +49,8 @@
     }
   },
   "home": {
+    "topCompetitions":     "Top Competitions",
+    "viewAllCompetitions": "View all",
     "featuredGames":        "Featured games",
     "latestVideos":         "Latest videos",
     "allGames":             "All games",

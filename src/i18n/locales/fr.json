@@ -49,6 +49,8 @@
     }
   },
   "home": {
+    "topCompetitions":     "Grandes compétitions",
+    "viewAllCompetitions": "Voir tout",
     "featuredGames":        "Jeux à la une",
     "latestVideos":         "Dernières vidéos",
     "allGames":             "Tous les jeux",

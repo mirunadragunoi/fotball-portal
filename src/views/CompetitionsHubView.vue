@@ -1,13 +1,13 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { RouterLink } from 'vue-router'
 import { useBrandStore } from '@/stores/brand'
 import {
   getCompetitionsForBrand,
   COMPETITION_TIER_ORDER,
 } from '@/config/europeanCompetitions'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
+import CompetitionCard from '@/components/shared/CompetitionCard.vue'
 
 const { t } = useI18n()
 const brandStore = useBrandStore()
@@ -32,19 +32,6 @@ const tiers = computed(() => {
     }))
     .filter((group) => group.items.length > 0)
 })
-
-// Two-letter monogram used as a lightweight crest stand-in.
-function monogram(name) {
-  const words = String(name || '').trim().split(/\s+/)
-  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
-  return String(name || '?').slice(0, 2).toUpperCase()
-}
-
-function subtitle(comp) {
-  if (comp.country) return comp.country
-  if (comp.isCup) return t('competitions.continental', 'European competition')
-  return ''
-}
 </script>
 
 <template>
@@ -65,19 +52,11 @@ function subtitle(comp) {
       >
         <h2 class="hub__group-title">{{ t(group.labelKey) }}</h2>
         <div class="hub__grid">
-          <RouterLink
+          <CompetitionCard
             v-for="comp in group.items"
             :key="comp.id"
-            :to="`/live/competition/${comp.id}`"
-            class="hub-card"
-          >
-            <span class="hub-card__crest" aria-hidden="true">{{ monogram(comp.name) }}</span>
-            <span class="hub-card__text">
-              <span class="hub-card__name">{{ comp.name }}</span>
-              <span v-if="subtitle(comp)" class="hub-card__sub">{{ subtitle(comp) }}</span>
-            </span>
-            <span class="hub-card__arrow" aria-hidden="true">→</span>
-          </RouterLink>
+            :competition="comp"
+          />
         </div>
       </section>
     </div>
@@ -121,81 +100,6 @@ function subtitle(comp) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 14px;
-}
-
-.hub-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border-radius: var(--radius-card);
-  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
-  background: var(--color-surface);
-  color: var(--color-text);
-  text-decoration: none;
-  box-shadow: var(--shadow-card);
-  transition: var(--transition-default);
-  min-height: 44px;
-}
-
-.hub-card:hover {
-  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-2px);
-}
-
-.hub-card__crest {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-}
-
-.hub-card__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
-}
-
-.hub-card__name {
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hub--f2 .hub-card__name {
-  font-family: var(--font-body);
-}
-
-.hub-card__sub {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-}
-
-.hub-card__arrow {
-  flex-shrink: 0;
-  color: var(--color-text-secondary);
-  font-weight: 700;
-  transition: var(--transition-default);
-}
-
-.hub-card:hover .hub-card__arrow {
-  color: var(--color-primary);
-  transform: translateX(2px);
 }
 
 @media (max-width: 767px) {

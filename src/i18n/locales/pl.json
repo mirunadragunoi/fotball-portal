@@ -49,6 +49,8 @@
     }
   },
   "home": {
+    "topCompetitions":     "Najważniejsze rozgrywki",
+    "viewAllCompetitions": "Zobacz wszystkie",
     "featuredGames":        "Polecane gry",
     "latestVideos":         "Najnowsze filmy",
     "allGames":             "Wszystkie gry",
