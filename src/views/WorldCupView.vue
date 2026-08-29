@@ -6,6 +6,7 @@ import { useLiveScoreStore } from '@/stores/livescore'
 import { useCompetitionStore } from '@/stores/competition'
 import { useBrandStore } from '@/stores/brand'
 import { WC_2026_COMPETITION_ID, LIVESCORE_POLL } from '@/config/livescore'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
@@ -43,7 +44,9 @@ function setTab(key) {
 // view used to render is no longer needed.
 function onMatchClick(m) {
   const id = m?.id ?? m?.match_id ?? m?.fixture_id
-  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
+  if (!id) return
+  rememberSelectedMatch(m)
+  router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 // ── Per-tab loading states (compStore.loading only covers loadFixtures) ──

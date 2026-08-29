@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 import { LIVESCORE_TABS, LIVESCORE_POLL, EUROPE_COUNTRY_IDS, WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { ALL_COMPETITION_ID_SET } from '@/config/europeanCompetitions'
 import { getCompetitionFilterForCountry } from '@/utils/liveScoreFormat'
+import { rememberSelectedMatch, readSelectedSnapshot } from '@/utils/selectedMatch'
 import {
   fetchLiveMatches,
   fetchFixtures,
@@ -32,7 +33,14 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   const lastUpdated = ref(null)
 
   // ─── Selected match detail ────────────────────────────────────────────────
-  const selectedMatch = ref(null)
+  // The core match record (teams, score, status, competition) is NOT re-fetched
+  // on the detail page — live-score-api has no single-match-by-id endpoint that
+  // returns the scoreboard. Instead every match-row click carries the full match
+  // object here via setSelectedMatch(), and we mirror a compact snapshot into
+  // sessionStorage so a reload / in-session direct navigation can recover it
+  // (matchById only ever finds *in-play* matches, so finished + upcoming matches
+  // would otherwise render a blank header). See @/utils/selectedMatch.
+  const selectedMatch = ref(readSelectedSnapshot() || null)
   const selectedMatchEvents = ref([])
   const selectedMatchCommentary = ref([])
   const selectedMatchStats = ref([])
@@ -144,6 +152,35 @@ export const useLiveScoreStore = defineStore('livescore', () => {
 
   function matchById(id) {
     return liveMatches.value.find((m) => String(m.id) === String(id)) || null
+  }
+
+  // ─── Selected-match carry-through (fixes blank match-detail header) ──────────
+  // Remember a clicked match so the detail page can render its scoreboard
+  // regardless of whether the match is still in the live feed.
+  function setSelectedMatch(match) {
+    selectedMatch.value = match || null
+    rememberSelectedMatch(match)
+  }
+
+  // Core match record for the detail page: prefer the live feed (freshest
+  // score), then the in-memory selection, then the persisted snapshot.
+  function coreMatchById(id) {
+    return (
+      matchById(id) ||
+      (selectedMatch.value && String(selectedMatch.value.id) === String(id)
+        ? selectedMatch.value
+        : null) ||
+      readSelectedSnapshot(id)
+    )
+  }
+
+  // Populate the in-memory selection for the detail page (drives polling +
+  // refreshMatchDetail). Recovers from the live feed / snapshot after the
+  // leaving view cleared the ref.
+  function ensureSelectedMatch(id) {
+    if (selectedMatch.value && String(selectedMatch.value.id) === String(id)) return
+    const core = coreMatchById(id)
+    if (core) selectedMatch.value = core
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -430,6 +467,9 @@ export const useLiveScoreStore = defineStore('livescore', () => {
     liveCount,
     inPlayMatches,
     matchById,
+    coreMatchById,
+    setSelectedMatch,
+    ensureSelectedMatch,
     setTab,
     loadLive,
     loadFixtures,

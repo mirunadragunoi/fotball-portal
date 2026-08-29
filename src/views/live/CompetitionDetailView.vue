@@ -6,6 +6,7 @@ import { useCompetitionStore } from '@/stores/competition'
 import { useLiveScoreStore } from '@/stores/livescore'
 import { formatKickoff, isLiveStatus } from '@/utils/liveScoreFormat'
 import { currentSeasonStartYear } from '@/utils/season'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import { getCompetitionById } from '@/config/europeanCompetitions'
 import StandingsTable from '@/components/livescore/StandingsTable.vue'
 import LiveStandingsTable from '@/components/livescore/LiveStandingsTable.vue'
@@ -282,6 +283,7 @@ const tabs = computed(() => [
               :key="m.id || i"
               :to="`/live/match/${m.id}`"
               class="comp-view__fixture"
+              @click="rememberSelectedMatch(m)"
             >
               <span class="comp-view__fx-date">{{ kickoffStr(m) }}</span>
               <span class="comp-view__fx-home">{{ m.home_name || m.home?.name || '—' }}</span>

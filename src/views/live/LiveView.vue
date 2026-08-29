@@ -6,6 +6,7 @@ import { useBrandStore } from '@/stores/brand'
 import { useLiveScoreStore } from '@/stores/livescore'
 import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { EUROPEAN_COMPETITIONS, getCompetitionRouteById } from '@/config/europeanCompetitions'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
@@ -57,7 +58,11 @@ watch(() => store.standingsCompetitionId, () => {
 
 function onMatchSelect(match) {
   const id = match.id ?? match.match_id ?? match.fixture_id
-  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
+  if (!id) return
+  // Carry the match record so the detail page can render its scoreboard even
+  // when the match isn't in the (in-play-only) live feed.
+  rememberSelectedMatch(match)
+  router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 function onCompetitionSelect(competitionId) {

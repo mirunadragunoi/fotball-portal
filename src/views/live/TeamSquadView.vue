@@ -6,6 +6,7 @@ import { useRostersStore } from '@/stores/rosters'
 import { useTeamsStore } from '@/stores/teams'
 import { formatKickoff } from '@/utils/liveScoreFormat'
 import { currentSeason } from '@/utils/season'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import TeamBanner from '@/components/livescore/TeamBanner.vue'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
 import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
@@ -195,6 +196,7 @@ function goBack() {
               :key="m.id || i"
               :to="`/live/match/${m.id}`"
               class="team-view__match"
+              @click="rememberSelectedMatch(m)"
             >
               <span class="team-view__match-date">{{ kickoffStr(m) }}</span>
               <span class="team-view__match-home" :class="{ 'team-view__match-name--bold': String(m.home_id || m.home?.id) === String(teamId) }">

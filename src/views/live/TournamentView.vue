@@ -8,6 +8,7 @@ import { useBrandStore } from '@/stores/brand'
 import { LIVESCORE_POLL } from '@/config/livescore'
 import { getCompetitionById } from '@/config/europeanCompetitions'
 import { hasKnockoutFixtures } from '@/utils/bracket'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
@@ -104,7 +105,9 @@ function setTab(key) {
 // ── Navigation ─────────────────────────────────────────────────────────────
 function onMatchClick(m) {
   const id = m?.id ?? m?.match_id ?? m?.fixture_id
-  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
+  if (!id) return
+  rememberSelectedMatch(m)
+  router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 // ── Load ───────────────────────────────────────────────────────────────────

@@ -9,6 +9,7 @@ import {
   isLiveStatus,
   formatKickoff,
 } from '@/utils/liveScoreFormat'
+import { rememberSelectedMatch } from '@/utils/selectedMatch'
 import LiveMatchRow from '@/components/livescore/LiveMatchRow.vue'
 
 const { t, locale } = useI18n()
@@ -104,7 +105,9 @@ function kickoffLabel(m) {
 
 function goToMatch(m) {
   const id = m?.id ?? m?.match_id ?? m?.fixture_id
-  if (id) router.push({ name: 'MatchDetail', params: { matchId: id } })
+  if (!id) return
+  rememberSelectedMatch(m)
+  router.push({ name: 'MatchDetail', params: { matchId: id } })
 }
 
 function goToCompetition(competitionId) {

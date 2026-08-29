@@ -13,11 +13,33 @@ const { t }  = useI18n()
 const store  = useLiveScoreStore()
 
 const matchId = computed(() => route.params.matchId)
-const match   = computed(() => store.matchById(matchId.value) || store.selectedMatch)
+// Core match record (teams, score, status, competition) resolved from the live
+// feed → in-memory selection → persisted snapshot, so finished/upcoming matches
+// and reloads still render a full scoreboard (see note in the livescore store).
+const match   = computed(() => store.coreMatchById(matchId.value))
 
 const isPlaying = ref(true)
 
-const score    = computed(() => parseScoreString(match.value?.scores?.score))
+// Team + score accessors tolerant of both match shapes we carry into this page:
+//  • live-score-api nested shape  → { home: { name, logo, id }, scores: { score } }
+//  • competition/fixtures flat shape → { home_name, home_id, score/ft_score }
+function teamOf(side) {
+  const m = match.value || {}
+  const nested = m[side] || {}
+  return {
+    name: nested.name || m[`${side}_name`] || '',
+    logo: nested.logo || nested.image || m[`${side}_logo`] || m[`${side}_image`] || '',
+    id:   nested.id ?? m[`${side}_id`] ?? null,
+  }
+}
+const homeTeam = computed(() => teamOf('home'))
+const awayTeam = computed(() => teamOf('away'))
+
+const score    = computed(() =>
+  parseScoreString(
+    match.value?.scores?.score ?? match.value?.score ?? match.value?.ft_score ?? '',
+  ),
+)
 const minute   = computed(() => matchMinuteLabel(match.value))
 const live     = computed(() => isLiveStatus(match.value?.status))
 const finished = computed(() => isFinishedStatus(match.value?.status))
@@ -217,7 +239,11 @@ function lineupsPlayerNumber(p) {
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
 onMounted(async () => {
+  // Recover the scoreboard (from live feed / carried snapshot) before rendering,
+  // then load events/stats/lineups. Populating the selection also arms polling.
+  store.ensureSelectedMatch(matchId.value)
   await store.loadLive()
+  store.ensureSelectedMatch(matchId.value)
   await store.fetchMatchDetail(matchId.value)
   store.setupVisibilityPolling(LIVESCORE_POLL.live)
   store.startDetailPolling()
@@ -230,6 +256,7 @@ onUnmounted(() => {
 
 watch(matchId, async (id) => {
   store.stopDetailPolling()
+  store.ensureSelectedMatch(id)
   await store.fetchMatchDetail(id)
   store.startDetailPolling()
 })
@@ -306,25 +333,25 @@ watch(matchId, async (id) => {
             <div
               class="vplayer__board"
               role="region"
-              :aria-label="`${match?.home?.name} vs ${match?.away?.name}`"
+              :aria-label="`${homeTeam.name} vs ${awayTeam.name}`"
             >
               <!-- Home side -->
               <div class="vplayer__side vplayer__side--home">
                 <div class="vplayer__logo-wrap">
                   <img
-                    v-if="match?.home?.logo"
-                    :src="match.home.logo"
-                    :alt="match.home.name"
+                    v-if="homeTeam.logo"
+                    :src="homeTeam.logo"
+                    :alt="homeTeam.name"
                     class="vplayer__logo"
                     width="64"
                     height="64"
                     loading="eager"
                   />
                   <div v-else class="vplayer__logo-ph" aria-hidden="true">
-                    {{ (match?.home?.name || '?')[0] }}
+                    {{ (homeTeam.name || '?')[0] }}
                   </div>
                 </div>
-                <span class="vplayer__team-name">{{ match?.home?.name || '—' }}</span>
+                <span class="vplayer__team-name">{{ homeTeam.name || '—' }}</span>
                 <!-- Show home goals only when we can attribute by side -->
                 <ul v-if="hasSidedGoals && homeGoals.length" class="vplayer__goals" aria-label="Home goals">
                   <li v-for="(g, i) in homeGoals" :key="g.id || i" class="vplayer__goal">
@@ -357,19 +384,19 @@ watch(matchId, async (id) => {
               <div class="vplayer__side vplayer__side--away">
                 <div class="vplayer__logo-wrap">
                   <img
-                    v-if="match?.away?.logo"
-                    :src="match.away.logo"
-                    :alt="match.away.name"
+                    v-if="awayTeam.logo"
+                    :src="awayTeam.logo"
+                    :alt="awayTeam.name"
                     class="vplayer__logo"
                     width="64"
                     height="64"
                     loading="eager"
                   />
                   <div v-else class="vplayer__logo-ph" aria-hidden="true">
-                    {{ (match?.away?.name || '?')[0] }}
+                    {{ (awayTeam.name || '?')[0] }}
                   </div>
                 </div>
-                <span class="vplayer__team-name">{{ match?.away?.name || '—' }}</span>
+                <span class="vplayer__team-name">{{ awayTeam.name || '—' }}</span>
                 <!-- Show away goals only when we can attribute by side -->
                 <ul v-if="hasSidedGoals && awayGoals.length" class="vplayer__goals vplayer__goals--away" aria-label="Away goals">
                   <li v-for="(g, i) in awayGoals" :key="g.id || i" class="vplayer__goal">
@@ -577,8 +604,8 @@ watch(matchId, async (id) => {
               <p v-if="!statsNormalized.length" class="ds__hint">{{ t('live.noStats', 'Statistics not available.') }}</p>
               <div v-else class="stats-grid">
                 <div class="stats-grid__teams">
-                  <span>{{ match?.home?.name }}</span>
-                  <span>{{ match?.away?.name }}</span>
+                  <span>{{ homeTeam.name }}</span>
+                  <span>{{ awayTeam.name }}</span>
                 </div>
                 <div v-for="s in statsNormalized" :key="s.type" class="stat-row">
                   <span class="stat-row__val">{{ s.homeVal }}</span>
