@@ -384,6 +384,15 @@
     "tierBonus":       "Poháre a ďalšie"
   },
   "competition": {
+    "topAssists": "Najlepší asistenti",
+    "topCards":   "Karty",
+    "injuries":   "Zranenia",
+    "player":     "Hráč",
+    "team":       "Tím",
+    "assistsCol": "Asist.",
+    "appsCol":    "Záp.",
+    "noAfData":   "Pre túto súťaž nie sú dáta.",
+    "noInjuries": "Žiadne hlásené zranenia.",
     "season":       "Sezóna",
     "selectSeason": "Vyber sezónu",
     "noSeasonData": "Pre túto sezónu zatiaľ nie je tabuľka.",

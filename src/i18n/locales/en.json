@@ -369,6 +369,15 @@
     "tierBonus":       "Cups & More"
   },
   "competition": {
+    "topAssists": "Top Assists",
+    "topCards":   "Cards",
+    "injuries":   "Injuries",
+    "player":     "Player",
+    "team":       "Team",
+    "assistsCol": "Assists",
+    "appsCol":    "Apps",
+    "noAfData":   "No data available for this competition.",
+    "noInjuries": "No injuries reported.",
     "season":       "Season",
     "selectSeason": "Select season",
     "noSeasonData": "No standings for this season yet.",

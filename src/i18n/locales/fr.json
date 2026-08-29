@@ -369,6 +369,15 @@
     "tierBonus":       "Coupes et plus"
   },
   "competition": {
+    "topAssists": "Meilleures passes",
+    "topCards":   "Cartons",
+    "injuries":   "Blessures",
+    "player":     "Joueur",
+    "team":       "Équipe",
+    "assistsCol": "Passes",
+    "appsCol":    "Matchs",
+    "noAfData":   "Aucune donnée pour cette compétition.",
+    "noInjuries": "Aucune blessure signalée.",
     "season":       "Saison",
     "selectSeason": "Choisir la saison",
     "noSeasonData": "Aucun classement pour cette saison.",

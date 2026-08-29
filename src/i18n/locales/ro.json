@@ -369,6 +369,15 @@
     "tierBonus":       "Cupe și altele"
   },
   "competition": {
+    "topAssists": "Pase decisive",
+    "topCards":   "Cartonașe",
+    "injuries":   "Accidentări",
+    "player":     "Jucător",
+    "team":       "Echipă",
+    "assistsCol": "Pase",
+    "appsCol":    "Meciuri",
+    "noAfData":   "Nu există date pentru această competiție.",
+    "noInjuries": "Nicio accidentare raportată.",
     "season":       "Sezon",
     "selectSeason": "Alege sezonul",
     "noSeasonData": "Nu există clasament pentru acest sezon.",

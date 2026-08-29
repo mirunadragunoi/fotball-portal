@@ -384,6 +384,15 @@
     "tierBonus":       "Poháry a další"
   },
   "competition": {
+    "topAssists": "Nejlepší asistenti",
+    "topCards":   "Karty",
+    "injuries":   "Zranění",
+    "player":     "Hráč",
+    "team":       "Tým",
+    "assistsCol": "Asist.",
+    "appsCol":    "Záp.",
+    "noAfData":   "Pro tuto soutěž nejsou data.",
+    "noInjuries": "Žádná hlášená zranění.",
     "season":       "Sezóna",
     "selectSeason": "Vyber sezónu",
     "noSeasonData": "Pro tuto sezónu zatím není tabulka.",

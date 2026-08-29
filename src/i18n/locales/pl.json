@@ -384,6 +384,15 @@
     "tierBonus":       "Puchary i więcej"
   },
   "competition": {
+    "topAssists": "Najwięcej asyst",
+    "topCards":   "Kartki",
+    "injuries":   "Kontuzje",
+    "player":     "Zawodnik",
+    "team":       "Drużyna",
+    "assistsCol": "Asysty",
+    "appsCol":    "Mecze",
+    "noAfData":   "Brak danych dla tych rozgrywek.",
+    "noInjuries": "Brak zgłoszonych kontuzji.",
     "season":       "Sezon",
     "selectSeason": "Wybierz sezon",
     "noSeasonData": "Brak tabeli dla tego sezonu.",
