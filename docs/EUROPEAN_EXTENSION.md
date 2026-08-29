@@ -312,4 +312,122 @@ Nothing else needs touching — the hub, live filter, competition/tournament rou
 
 ---
 
+## 13. API-Football integration + match-detail fix (2026-08-29)
+
+Round adding the PRO API-Football plan (7,500 req/day). Frontend on
+`feature/european-competitions-extension`; backend (RVDPlatform) on
+`feature/football-news-club-sync`.
+
+### Match-detail bug — root cause & fix (Phase 0)
+
+**Symptom:** clicking a match opened `/live/match/:id` with no team names and
+no score.
+
+**Root cause:** `MatchDetailView` derived the whole scoreboard from
+`store.matchById(id) || store.selectedMatch`. `matchById()` searches only the
+live feed, which live-score-api populates with **in-play matches only**, and
+`selectedMatch` was never set — every view navigated with a bare
+`router.push({ name: 'MatchDetail', … })`. So only a currently in-play match
+ever rendered teams/score; finished matches, upcoming fixtures, reloads and
+direct links all showed a blank header. `fetchMatchDetail()` loads
+events/commentary/stats/lineups but never the core match record.
+
+**Fix (frontend):** live-score-api has no single-match-by-id endpoint that
+returns the scoreboard, and its match ids don't map cleanly to API-Football
+fixture ids, so the match object is now **carried through navigation**:
+- `src/utils/selectedMatch.js` — every match-row click stashes the full match
+  object, mirrored into `sessionStorage` so in-session reloads / direct
+  navigation recover the scoreboard.
+- livescore store: `setSelectedMatch` / `coreMatchById` / `ensureSelectedMatch`
+  (live feed → in-memory selection → persisted snapshot); `selectedMatch`
+  hydrates from the snapshot and is re-armed on the detail page so polling
+  survives the leaving view's `clearSelection()`.
+- All click paths updated: LiveView, TournamentView, WorldCupView,
+  CompetitionDetailView, TeamSquadView, LiveNowWidget.
+- MatchDetailView scoreboard reads normalized team/score accessors tolerant of
+  both the live-score-api nested shape and the flat competition/fixtures shape.
+
+**Fix (backend):** new `GET /football/apifootball/fixture/<fixtureId>` returns a
+normalized single fixture — `{ id, status, minute, kickoff, competition, home,
+away, score{home,away,ht,ft,et,pen} }` (null when unknown). This is the
+match-detail source/fallback keyed by the **API-Football fixture id (the master
+key)** for the future match center.
+
+### Match-id strategy (decision)
+
+- **Live-score-api match ids stay the source** for the live list, and the match
+  object is carried through navigation (above). This fixes the visible bug with
+  no cross-provider id mapping.
+- **The API-Football fixture id is the master key** for the enriched
+  match-center sub-endpoints (events/stats/lineups/players/predictions). The
+  live-score-api → API-Football fixture-id resolution (by date + league + team
+  name, mirroring the existing WC/club name matcher) is the **main remaining
+  work** before those tabs can hang off the current match page. Recommended
+  follow-up: add the API-Football `league id` (stable, hardcode-safe — PL 39,
+  La Liga 140, Serie A 135, Bundesliga 78, Ligue 1 61, UCL 2, UEL 3,
+  Conference 848, …) to each `EUROPEAN_COMPETITIONS` entry so competition/team
+  surfaces resolve by static config (no runtime name match), then resolve the
+  fixture id per match via `/fixtures?date=&league=` + team-name match.
+
+### Backend proxy endpoints (Phase 1)
+
+All under `/football/apifootball/*`, key injected server-side, cached in the
+shared `ApiFootballManager` cache (now with per-key request coalescing and
+rate-limit-header logging — warns under 500/day remaining). TTLs mirror
+api-football update rates:
+
+| Endpoint | Cache TTL |
+|---|---|
+| `/fixture/<id>` (normalized) | 15s |
+| `/fixtures` | 15s live / 15min dated |
+| `/fixtures/rounds` | 6h |
+| `/fixtures/headtohead` | 30min |
+| `/fixtures/<id>/statistics` · `/events` · `/players` | 60s |
+| `/fixtures/<id>/lineups` | 5min |
+| `/standings` · `/predictions/<id>` | 1h |
+| `/teams/<id>/statistics` | 12h |
+| `/topscorers` · `/topassists` · `/topcards/{yellow,red}` | 1h |
+| `/players` (paginated server-side) | 6h |
+| `/players/<id>/{transfers,trophies}` | 24h |
+| `/players/<id>/sidelined` | 12h |
+| `/coachs` | 24h |
+| `/injuries` | 4h |
+| `/odds` | 3h · `/odds/live` 15s · bet catalogues 7d |
+| `/venues` · `/leagues/seasons` | 7d · `/leagues` 24h |
+
+Implemented via a thin `FootballWorker._apifootball_proxy()` over
+`ApiFootballManager.proxy()` / `proxy_paginated()`. Routes live in both
+`webservices/{prod,dev}/store_webapi.py`; mandatory-fields in `ConstantValue`.
+
+### Frontend surfaces (Phase 2)
+
+- **Service layer** — `apiFootballService.js` gained a function per new endpoint
+  (fixtures family, standings, team stats, top scorers/assists/cards, injuries,
+  predictions, transfers/trophies/sidelined, leagues) plus `fetchLeagueCoverage`
+  for coverage-gating.
+- **Player profile** (`PlayerDetailModal`) — transfers timeline, trophies
+  cabinet, and injury history, from the API-Football player id the modal already
+  holds (no id remapping). i18n `player.*` added to all 6 locales.
+
+### Coverage & quota (Phase 3)
+
+- `fetchLeagueCoverage(leagueId, season)` returns a season's `coverage` object;
+  gate per-competition features (predictions/injuries/odds) before rendering.
+- TTLs match update frequencies (table above); reference data cached daily/7d.
+- Rate-limit headers logged per call; daily quota warning under 500 remaining.
+- Logos/photos continue to be served from our storage (synced), never hotlinked.
+
+### Remaining work (not done this round)
+
+- **Fixture-id resolution** (above) — prerequisite for the match-center tabs
+  (events/stats/lineups/player-ratings/prediction from API-Football) on the
+  existing `/live/match/:id` page.
+- **Competition page** enrichment (top assists/cards, injuries) — needs the
+  API-Football league id per `EUROPEAN_COMPETITIONS` entry (config-only mapping).
+- **Team page** enrichment (team statistics, next/last fixtures, injuries) —
+  needs the live-score-api → API-Football team-id mapping (by name).
+- Odds surfaces (endpoints exist; no UI yet).
+
+---
+
 *End of document.*
