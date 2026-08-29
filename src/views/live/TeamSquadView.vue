@@ -154,6 +154,14 @@ function afKickoff(f) {
   } catch { return iso.slice(0, 10) }
 }
 
+// Non-scheduled statuses (postponed / cancelled / suspended / TBD) get a badge
+// instead of being hidden.
+const SPECIAL_STATUS = new Set(['PST', 'CANC', 'SUSP', 'ABD', 'TBD', 'INT'])
+function fxSpecialStatus(f) {
+  const s = f?.fixture?.status?.short
+  return SPECIAL_STATUS.has(s) ? s : ''
+}
+
 watch(afTeamId, (id) => { if (id) loadTeamEnrichment() })
 
 // ── Squad grouping (shared) ─────────────────────────────────────────────────
@@ -281,8 +289,11 @@ function goBack() {
         <section v-if="upcoming.length" class="team-view__section">
           <h2 class="team-view__section-title">{{ t('team.upcoming') }}</h2>
           <ul class="team-view__fixtures">
-            <li v-for="(f, i) in upcoming" :key="f.fixture?.id || i" class="team-view__fixture">
-              <span class="team-view__fx-date">{{ afKickoff(f) }}</span>
+            <li v-for="(f, i) in upcoming" :key="f.fixture?.id || i" class="team-view__fixture" :class="{ 'team-view__fixture--off': fxSpecialStatus(f) }">
+              <span class="team-view__fx-date">
+                {{ afKickoff(f) }}
+                <span v-if="fxSpecialStatus(f)" class="team-view__fx-status">{{ fxSpecialStatus(f) }}</span>
+              </span>
               <span class="team-view__fx-home">{{ f.teams?.home?.name }}</span>
               <span class="team-view__fx-vs">–</span>
               <span class="team-view__fx-away">{{ f.teams?.away?.name }}</span>
@@ -503,7 +514,9 @@ function goBack() {
   padding: 8px 12px; border-radius: 7px; font-size: 13px;
   background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
 }
-.team-view__fx-date { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; }
+.team-view__fx-date { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+.team-view__fx-status { font-size: 9px; font-weight: 800; letter-spacing: 0.04em; color: var(--color-accent, #dc2626); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; }
+.team-view__fixture--off { opacity: 0.7; }
 .team-view__fx-home { text-align: right; font-weight: 600; }
 .team-view__fx-vs { color: var(--color-text-secondary); }
 .team-view__fx-away { font-weight: 600; }
