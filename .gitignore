@@ -53,6 +53,9 @@ public/images/venues/
 
 # Generated dataset (populated by scripts/sync_apifootball.py)
 public/data/wc2026-teams.json
+# Generated dataset (populated by scripts/sync_club_squads.py) -- one file per
+# league, ~1.8 MB in total, rebuilt from api-football and shipped by the deploy.
+public/data/leagues/
 
 # Test / coverage
 coverage/

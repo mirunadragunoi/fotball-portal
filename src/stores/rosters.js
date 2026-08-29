@@ -5,6 +5,7 @@ import { fetchPlayerDetails } from '@/services/apiFootballService'
 import { fetchFantasy } from '@/services/livescoreApi'
 import { WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { getCompetitionsByTier } from '@/config/europeanCompetitions'
+import { useBrandStore } from '@/stores/brand'
 import { currentSeason } from '@/utils/season'
 
 const DIACRITICS = /[̀-ͯ]/g
@@ -23,15 +24,70 @@ const FANTASY_METRICS = [
   'fouls', 'ball_touches',
 ]
 
-// ── Club roster helpers (top-5 leagues) ─────────────────────────────────────
+// ── Club roster helpers (every curated league) ───────────────────────────────
 // live-score-api and api-football use different team ids, so club teams are
 // resolved by NAME (like the WC flow). Kept separate from the WC name matcher
 // so the two never cross-match.
-const LEAGUE_SLUGS = { 2: 'premier-league', 3: 'la-liga', 4: 'serie-a', 1: 'bundesliga', 5: 'ligue-1' }
+
+// live-score-api competition id -> the slug scripts/sync_club_squads.py writes.
+// Both numbering systems appear in this file; this map is the only bridge, and
+// it must stay in step with LEAGUES in that script -- a missing entry does not
+// throw, it just leaves that league with no squads at all.
+const LEAGUE_SLUGS = {
+  // top-5
+  2: 'premier-league', 3: 'la-liga', 4: 'serie-a', 1: 'bundesliga', 5: 'ligue-1',
+  // secondary
+  196: 'eredivisie', 8: 'primeira-liga', 6: 'super-lig',
+  // local (brand-scoped in europeanCompetitions.js)
+  60: 'ekstraklasa', 63: 'slovak-super-league', 61: 'liga-i', 72: 'czech-first-league',
+}
+
+// Which tiers get club squads. UEFA cups are deliberately absent: their squads
+// ARE the domestic clubs already loaded here, so syncing them would duplicate
+// every team under a second id.
+const CLUB_ROSTER_TIERS = ['top5', 'secondary', 'local']
+
+// The two providers name the same club differently, and no normalisation
+// bridges an exonym ('Cologne' vs 'Koln') or a founding year ('CFR Cluj' vs
+// 'CFR 1907 Cluj'). Keys are the NORMALISED live-score-api name, values the
+// NORMALISED api-football one -- both sides have already been through
+// normClubName, so they are lowercase, unaccented and stripped of FC/SC/AS.
+//
+// Every entry below was a team page showing no squad at all, silently. Re-check
+// after a season rollover with scripts/check_club_name_matching.py in the
+// backend repo: promoted clubs arrive with spellings nobody has seen yet.
+const CLUB_ALIASES = {
+  // Bundesliga
+  'bayern munich': 'bayern munchen',
+  'borussia moenchengladbach': 'borussia monchengladbach',
+  'sv 07 elversberg': 'sv elversberg',
+  'cologne': '1 koln',
+  'rasenballsport leipzig': 'rb leipzig',
+  // Super Lig
+  'corum belediyespor': 'corum fk',
+  'erzurum bb': 'erzurumspor fk',
+  // Ekstraklasa
+  'rks radomiak 1910 sa radom': 'radomiak radom',
+  // Liga I
+  'cfr cluj': 'cfr 1907 cluj',
+  // Czech 1st League
+  'slavia prague': 'slavia praha',
+  'sparta prague': 'sparta praha',
+}
+// NFD splits a letter into base + accent, which the DIACRITICS strip then
+// removes -- but only for letters that HAVE a base. These do not: they are
+// distinct letters, so NFD leaves them whole and the [^a-z0-9] pass turns them
+// into spaces. That is how 'Kasimpasa' (with a dotless i) became 'kas mpasa'
+// and 'Widzew Lodz' (with a stroked L) became 'widzew odz' -- neither matching
+// anything. Map them by hand, before NFD.
+const CLUB_LETTERS = { 'ı': 'i', 'ł': 'l', 'đ': 'd', 'ø': 'o', 'æ': 'ae', 'œ': 'oe', 'ß': 'ss', 'þ': 'th', 'ð': 'd' }
+const CLUB_LETTERS_RE = new RegExp('[' + Object.keys(CLUB_LETTERS).join('') + ']', 'g')
+
 const CLUB_NOISE = /\b(fc|cf|afc|sc|ac|ss|us|rc|cd|ud|sd|club|calcio|as|rcd|be)\b/g
 function normClubName(s) {
   return String(s || '')
     .toLowerCase()
+    .replace(CLUB_LETTERS_RE, (c) => CLUB_LETTERS[c])
     .normalize('NFD')
     .replace(DIACRITICS, '')
     .replace(/&/g, 'and')
@@ -43,7 +99,7 @@ function normClubName(s) {
 
 /**
  * Unified rosters store: World Cup national-team squads (wc2026-teams.json) and
- * top-5 league club squads (public/data/leagues/*.json). WC and club rosters are
+ * club squads for every curated league (public/data/leagues/*.json). WC and club rosters are
  * kept in separate collections with separate name matchers; player details,
  * fantasy and selection state are shared. Exported as useRostersStore, with
  * useWorldCupTeamsStore kept as a back-compat alias (see CLAUDE.md branding note).
@@ -72,6 +128,7 @@ export const useRostersStore = defineStore('rosters', () => {
   const playerFantasyLoading = ref(false)
 
   const authStore = useAuthStore()
+  const brandStore = useBrandStore()
   const creds = computed(() => authStore.getAuthQuery() || {})
 
   // ── Loaders ───────────────────────────────────────────────────────────
@@ -237,10 +294,16 @@ export const useRostersStore = defineStore('rosters', () => {
     teams.value.reduce((sum, t) => sum + (t.players?.length || 0), 0)
   )
 
-  // ── Club league rosters (top-5) ─────────────────────────────────────────
+  // ── Club league rosters ─────────────────────────────────────────────────
 
+  // Scoped to the active brand: Nationfoot has no reason to download Liga I,
+  // and Goalplaza none to download Ekstraklasa. Shared tiers carry no `brand`
+  // key, so they come back for every brand.
   const leagueSlugsToLoad = () =>
-    getCompetitionsByTier('top5').map((c) => LEAGUE_SLUGS[c.id]).filter(Boolean)
+    CLUB_ROSTER_TIERS
+      .flatMap((tier) => getCompetitionsByTier(tier, brandStore.activeBrand))
+      .map((c) => LEAGUE_SLUGS[c.id])
+      .filter(Boolean)
 
   async function loadLeagueRosters(season = currentSeason()) {
     if (clubLoaded.value || clubLoading.value) return
@@ -279,8 +342,9 @@ export const useRostersStore = defineStore('rosters', () => {
     clubTeams.value.find((t) => String(t.id) === String(id)) || null
 
   function getClubTeamByName(name) {
-    const q = normClubName(name)
-    if (!q) return null
+    const raw = normClubName(name)
+    if (!raw) return null
+    const q = CLUB_ALIASES[raw] || raw
     const idx = clubByName.value
     if (idx.has(q)) return idx.get(q)
     for (const [key, team] of idx) {
