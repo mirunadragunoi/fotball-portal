@@ -291,7 +291,7 @@ export const useLiveScoreStore = defineStore('livescore', () => {
   }
 
   async function selectMatch(match) {
-    selectedMatch.value = match
+    setSelectedMatch(match)
     await fetchMatchDetail(resolveMatchId(match))
   }
 
