@@ -1,4 +1,16 @@
 {
+  "team": {
+    "statistics":    "Štatistiky tímu",
+    "form":          "Forma",
+    "played":        "Odohrané",
+    "record":        "V-R-P",
+    "goals":         "Góly",
+    "cleanSheets":   "Čisté kontá",
+    "biggestWin":    "Najvyššia výhra",
+    "failedToScore": "Bez streleného gólu",
+    "upcoming":      "Nadchádzajúce",
+    "injuries":      "Zranenia"
+  },
   "matchCenter": {
     "summary":      "Prehľad",
     "stats":        "Štatistiky",

@@ -1,4 +1,16 @@
 {
+  "team": {
+    "statistics":    "Team Statistics",
+    "form":          "Form",
+    "played":        "Played",
+    "record":        "W-D-L",
+    "goals":         "Goals",
+    "cleanSheets":   "Clean Sheets",
+    "biggestWin":    "Biggest Win",
+    "failedToScore": "Failed to Score",
+    "upcoming":      "Upcoming",
+    "injuries":      "Injuries"
+  },
   "matchCenter": {
     "summary":      "Summary",
     "stats":        "Stats",

@@ -1,4 +1,16 @@
 {
+  "team": {
+    "statistics":    "Statistiques",
+    "form":          "Forme",
+    "played":        "Joués",
+    "record":        "V-N-D",
+    "goals":         "Buts",
+    "cleanSheets":   "Clean sheets",
+    "biggestWin":    "Plus large victoire",
+    "failedToScore": "Sans marquer",
+    "upcoming":      "À venir",
+    "injuries":      "Blessures"
+  },
   "matchCenter": {
     "summary":      "Résumé",
     "stats":        "Statistiques",

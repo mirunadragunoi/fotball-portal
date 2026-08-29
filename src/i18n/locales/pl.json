@@ -1,4 +1,16 @@
 {
+  "team": {
+    "statistics":    "Statystyki drużyny",
+    "form":          "Forma",
+    "played":        "Rozegrane",
+    "record":        "Z-R-P",
+    "goals":         "Bramki",
+    "cleanSheets":   "Czyste konta",
+    "biggestWin":    "Najwyższa wygrana",
+    "failedToScore": "Bez gola",
+    "upcoming":      "Nadchodzące",
+    "injuries":      "Kontuzje"
+  },
   "matchCenter": {
     "summary":      "Podsumowanie",
     "stats":        "Statystyki",

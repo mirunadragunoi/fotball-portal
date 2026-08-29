@@ -4,9 +4,16 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useRostersStore } from '@/stores/rosters'
 import { useTeamsStore } from '@/stores/teams'
+import { useAuthStore } from '@/stores/auth'
 import { formatKickoff } from '@/utils/liveScoreFormat'
 import { currentSeason } from '@/utils/season'
 import { rememberSelectedMatch } from '@/utils/selectedMatch'
+import { getApiFootballSeason } from '@/config/europeanCompetitions'
+import {
+  fetchTeamStatistics,
+  fetchApiFootballFixtures,
+  fetchInjuries,
+} from '@/services/apiFootballService'
 import TeamBanner from '@/components/livescore/TeamBanner.vue'
 import PlayerPositionGroup from '@/components/livescore/PlayerPositionGroup.vue'
 import PlayerDetailModal from '@/components/livescore/PlayerDetailModal.vue'
@@ -83,6 +90,71 @@ const teamName = computed(() => {
 const clubTeam = computed(() => (isWc.value ? null : rosters.getClubTeamByName(teamName.value)))
 const rosterTeam = computed(() => wcTeam.value || clubTeam.value)
 const teamLogo   = computed(() => wcTeam.value?.logo || refTeam.value?.logo || clubTeam.value?.logo || null)
+
+// ── API-Football team enrichment (club mode) ────────────────────────────────
+// Bridged via the synced club JSON, whose team.id / league.id ARE the
+// API-Football ids. Team statistics need the league; upcoming fixtures + injuries
+// need only the team id. All sections are null-safe / empty-state on failure.
+const authStore = useAuthStore()
+const afCreds = () => authStore.getAuthQuery() || {}
+const afTeamId   = computed(() => clubTeam.value?.id ?? null)
+const afLeagueId = computed(() => clubTeam.value?.league?.id ?? null)
+const afSeason = getApiFootballSeason()
+
+const teamStats   = ref(null)
+const upcoming    = ref([])
+const teamInjuries = ref([])
+const enrichLoaded = ref(false)
+
+const formLetters = computed(() => String(teamStats.value?.form || '').slice(-8).split(''))
+function formClass(l) {
+  return l === 'W' ? 'form--w' : l === 'D' ? 'form--d' : l === 'L' ? 'form--l' : ''
+}
+
+async function loadTeamEnrichment() {
+  const teamId = afTeamId.value
+  if (!teamId) return
+  enrichLoaded.value = false
+  teamStats.value = null; upcoming.value = []; teamInjuries.value = []
+  const [stats, next, inj] = await Promise.allSettled([
+    afLeagueId.value
+      ? fetchTeamStatistics(teamId, afLeagueId.value, afSeason, afCreds())
+      : Promise.resolve(null),
+    fetchApiFootballFixtures({ team: teamId, next: 8, timezone: browserTz() }, afCreds()),
+    fetchInjuries({ team: teamId, season: afSeason }, afCreds()),
+  ])
+  // teams/statistics returns a single object under response (not an array).
+  teamStats.value = stats.status === 'fulfilled' && stats.value && !Array.isArray(stats.value)
+    ? stats.value : null
+  upcoming.value = next.status === 'fulfilled' && Array.isArray(next.value) ? next.value : []
+  const injRows = inj.status === 'fulfilled' && Array.isArray(inj.value) ? inj.value : []
+  const seen = new Set()
+  teamInjuries.value = injRows.reduce((out, item) => {
+    const id = item.player?.id
+    if (id && seen.has(id)) return out
+    if (id) seen.add(id)
+    out.push({ id, name: item.player?.name, reason: item.player?.reason, type: item.player?.type })
+    return out
+  }, [])
+  enrichLoaded.value = true
+}
+
+function browserTz() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined }
+  catch { return undefined }
+}
+
+function afKickoff(f) {
+  const iso = f?.fixture?.date
+  if (!iso) return ''
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    })
+  } catch { return iso.slice(0, 10) }
+}
+
+watch(afTeamId, (id) => { if (id) loadTeamEnrichment() })
 
 // ── Squad grouping (shared) ─────────────────────────────────────────────────
 const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker']
@@ -186,6 +258,49 @@ function goBack() {
             </div>
           </div>
         </div>
+
+        <!-- ═══ API-Football enrichment (club mode) ═══ -->
+        <!-- Team statistics -->
+        <section v-if="teamStats" class="team-view__section">
+          <h2 class="team-view__section-title">{{ t('team.statistics') }}</h2>
+          <div v-if="formLetters.length" class="team-view__form">
+            <span class="team-view__form-label">{{ t('team.form') }}</span>
+            <span v-for="(l, i) in formLetters" :key="i" class="team-view__form-dot" :class="formClass(l)">{{ l }}</span>
+          </div>
+          <div class="team-view__stats-grid">
+            <div class="team-view__stat"><span class="team-view__stat-val">{{ teamStats.fixtures?.played?.total ?? '—' }}</span><span class="team-view__stat-lbl">{{ t('team.played') }}</span></div>
+            <div class="team-view__stat"><span class="team-view__stat-val">{{ teamStats.fixtures?.wins?.total ?? 0 }}-{{ teamStats.fixtures?.draws?.total ?? 0 }}-{{ teamStats.fixtures?.loses?.total ?? 0 }}</span><span class="team-view__stat-lbl">{{ t('team.record') }}</span></div>
+            <div class="team-view__stat"><span class="team-view__stat-val">{{ teamStats.goals?.for?.total?.total ?? 0 }}:{{ teamStats.goals?.against?.total?.total ?? 0 }}</span><span class="team-view__stat-lbl">{{ t('team.goals') }}</span></div>
+            <div class="team-view__stat"><span class="team-view__stat-val">{{ teamStats.clean_sheet?.total ?? 0 }}</span><span class="team-view__stat-lbl">{{ t('team.cleanSheets') }}</span></div>
+            <div class="team-view__stat" v-if="teamStats.biggest?.wins?.home || teamStats.biggest?.wins?.away"><span class="team-view__stat-val">{{ teamStats.biggest?.wins?.home || teamStats.biggest?.wins?.away }}</span><span class="team-view__stat-lbl">{{ t('team.biggestWin') }}</span></div>
+            <div class="team-view__stat"><span class="team-view__stat-val">{{ teamStats.failed_to_score?.total ?? 0 }}</span><span class="team-view__stat-lbl">{{ t('team.failedToScore') }}</span></div>
+          </div>
+        </section>
+
+        <!-- Upcoming fixtures -->
+        <section v-if="upcoming.length" class="team-view__section">
+          <h2 class="team-view__section-title">{{ t('team.upcoming') }}</h2>
+          <ul class="team-view__fixtures">
+            <li v-for="(f, i) in upcoming" :key="f.fixture?.id || i" class="team-view__fixture">
+              <span class="team-view__fx-date">{{ afKickoff(f) }}</span>
+              <span class="team-view__fx-home">{{ f.teams?.home?.name }}</span>
+              <span class="team-view__fx-vs">–</span>
+              <span class="team-view__fx-away">{{ f.teams?.away?.name }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Injuries -->
+        <section v-if="teamInjuries.length" class="team-view__section">
+          <h2 class="team-view__section-title">{{ t('team.injuries') }}</h2>
+          <ul class="team-view__injuries">
+            <li v-for="(p, i) in teamInjuries" :key="p.id || i" class="team-view__injury">
+              <span aria-hidden="true">🩹</span>
+              <span class="team-view__injury-name">{{ p.name }}</span>
+              <span v-if="p.reason" class="team-view__injury-reason">{{ p.reason }}</span>
+            </li>
+          </ul>
+        </section>
 
         <!-- Recent matches -->
         <section v-if="lastMatches.length" class="team-view__section">
@@ -363,6 +478,40 @@ function goBack() {
   color: var(--color-text-secondary);
   letter-spacing: 0.06em;
 }
+
+/* ── API-Football enrichment ── */
+.team-view__form { display: flex; align-items: center; gap: 5px; margin: 8px 0 12px; }
+.team-view__form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary); margin-right: 4px; }
+.team-view__form-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff;
+  background: var(--color-text-secondary);
+}
+.team-view__form-dot.form--w { background: #16a34a; }
+.team-view__form-dot.form--d { background: #9ca3af; }
+.team-view__form-dot.form--l { background: #dc2626; }
+
+.team-view__stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+.team-view__stat { background: color-mix(in srgb, var(--color-text) 5%, transparent); border-radius: 8px; padding: 10px 8px; text-align: center; }
+.team-view__stat-val { display: block; font-family: var(--font-heading); font-size: 18px; font-weight: 800; color: var(--color-primary); line-height: 1; }
+.team-view__stat-lbl { display: block; font-size: 10px; color: var(--color-text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.team-view__fixtures { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.team-view__fixture {
+  display: grid; grid-template-columns: auto 1fr auto 1fr; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 7px; font-size: 13px;
+  background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.team-view__fx-date { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; }
+.team-view__fx-home { text-align: right; font-weight: 600; }
+.team-view__fx-vs { color: var(--color-text-secondary); }
+.team-view__fx-away { font-weight: 600; }
+
+.team-view__injuries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.team-view__injury { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 7px 10px; border-radius: 7px; background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+.team-view__injury-name { font-weight: 600; color: var(--color-text); }
+.team-view__injury-reason { margin-left: auto; font-size: 12px; color: var(--color-text-secondary); }
 
 .team-view__matches { display: flex; flex-direction: column; gap: 4px; }
 

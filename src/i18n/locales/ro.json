@@ -1,4 +1,16 @@
 {
+  "team": {
+    "statistics":    "Statistici echipă",
+    "form":          "Formă",
+    "played":        "Jucate",
+    "record":        "V-E-Î",
+    "goals":         "Goluri",
+    "cleanSheets":   "Meciuri fără gol primit",
+    "biggestWin":    "Cea mai mare victorie",
+    "failedToScore": "Fără gol marcat",
+    "upcoming":      "Următoarele",
+    "injuries":      "Accidentări"
+  },
   "matchCenter": {
     "summary":      "Rezumat",
     "stats":        "Statistici",
