@@ -29,7 +29,7 @@ The design is **config-driven**: a single `competitionId` flows through the serv
 - UEFA club cups: Champions League, Europa League, Conference League.
 - Top-5 leagues: Premier League, La Liga, Serie A, Bundesliga, Ligue 1.
 - Secondary leagues: Eredivisie, Primeira Liga, Süper Lig.
-- Per-brand local leagues: Ekstraklasa + Slovak Super League (Nation Foot); Liga I + Czech 1st League (Goal Plaza).
+- Per-brand local leagues: Ekstraklasa + Slovak Super League (Nation Foot); Liga I (Goal Plaza); Czech 1st League (both portals).
 - Bonus cups: UEFA Super Cup, FIFA Club World Cup.
 - The World Cup section (`/tournament`, competition_id 362) preserved and still fully functional.
 
@@ -65,7 +65,7 @@ All 17 curated competitions, from `src/config/europeanCompetitions.js` (live-sco
 | Ekstraklasa | 60 | League | — | local | football1 | CompetitionDetail |
 | Super League (SK) | 63 | League | — | local | football1 | CompetitionDetail |
 | Liga I | 61 | League | — | local | football2 | CompetitionDetail |
-| 1st League (CZ) | 72 | League | — | local | football2 | CompetitionDetail |
+| 1st League (CZ) | 72 | League | — | local | both | CompetitionDetail |
 | UEFA Super Cup | 349 | Cup | — | bonus | both | CompetitionDetail |
 | FIFA Club World Cup | 372 | Cup | ✓ | bonus | both | TournamentView |
 | *World Cup 2026* | *362* | *Cup* | ✓ | *(separate)* | both | `/tournament` (WorldCupView) |
@@ -73,7 +73,7 @@ All 17 curated competitions, from `src/config/europeanCompetitions.js` (live-sco
 Notes:
 - **Routing rule** (`isTournamentCompetition` = `isCup && hasGroups`): cups **with** a group phase (UCL, UEL, UECL, Club World Cup) go to the rich **TournamentView**; everything else (all leagues + the group-less UEFA Super Cup) goes to **CompetitionDetailView**.
 - **Season IDs** in config: domestic leagues `57` (2026/2027), UEFA cups `56` (2025/2026), Club World Cup `null`. These are the default season for standings; the selector now loads the full list dynamically (see §4, Dynamic seasons).
-- The two local-league entries carry a `brand` field; all others (no `brand`) show on both portals.
+- The local-league entries carry a `brand` field (a string, or an array when a league is sold on both portals — e.g. the Czech 1st League); all others (no `brand`) show on both portals.
 
 ---
 
@@ -108,7 +108,7 @@ To add/remove a competition, edit this file only (see §12).
 - **Club squad support** — club team names (live-score-api) are matched **by name** to the api-football club roster (photos), because the two providers use different team IDs.
 
 ### News — route `/news`
-`src/views/NewsView.vue` + `src/stores/news.js` + `src/services/newsApi.js`. A **language filter** (brand-scoped: football1 = en/pl/sk, football2 = en/ro/cs) drives the backend `langs` param; each card shows a source name + language tag. Backend adds local-language RSS feeds (see §7).
+`src/views/NewsView.vue` + `src/stores/news.js` + `src/services/newsApi.js`. A **language filter** (brand-scoped: football1 = en/pl/sk/cs, football2 = en/ro/cs) drives the backend `langs` param; each card shows a source name + language tag. Backend adds local-language RSS feeds (see §7).
 
 ### Live commentary
 Confirmed **generic** — loaded by `match_id` on `MatchDetailView.vue` for every competition (no World-Cup gating). All match-click paths converge on `/live/match/:matchId`.

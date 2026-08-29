@@ -71,7 +71,7 @@ Frontend on `feature/european-competitions-extension`; backend (RVDPlatform) on 
   - **Frontend** `stores/clubTeams.js` loads those league JSONs and resolves a live-score-api team to its api-football squad **by normalized name** (the two providers use different team ids — mirrors the WC name-match). `TeamDetailView` renders the club squad with `PlayerPositionGroup`/`PlayerPaniniCard` + `PlayerDetailModal`, falling back gracefully (live-score-api squad, then recent matches) when no roster JSON matches. Team names in standings + match rows now link to `/live/team/:id`.
 - **Local-language news** (RO/PL/CZ/SK):
   - **Backend** `RssFeedManager` — expanded feed catalogue (all URLs verified live): RO +Digi Sport/ProSport, PL +Sportowe Fakty/Przegląd Sportowy/Weszło, CZ +Sport.cz, SK +Sportnet. `get_news` gains a `langs` filter (CSV) that also pulls brand-scoped feeds; `/football/news?langs=…`.
-  - **Frontend** — News page language chips driven by brand config `newsLanguages` (football1 en/pl/sk, football2 en/ro/cs), UI language pre-selected; per-article language tag on cards. i18n: `news.language/allLanguages`.
+  - **Frontend** — News page language chips driven by brand config `newsLanguages` (football1 en/pl/sk/cs, football2 en/ro/cs), UI language pre-selected; per-article language tag on cards. i18n: `news.language/allLanguages`.
 
 ### Technical cleanup & consolidation (2026-08-25, round 4)
 
@@ -95,7 +95,7 @@ Decisions and conventions added in this round of work — keep these in mind whe
 
 ### Subscription via external carrier landings
 - New users on supported countries are redirected from the "Sign up" CTA to a carrier landing page (SMS / mix billing) instead of the internal phone form. Mapping in `src/config/landingUrls.js`:
-  - Nation Foot × SK / PL → `https://premium.nationfoot.com/<sknatf|plnatf>/click/`
+  - Nation Foot × SK / PL → `https://premium.nationfoot.com/<sknatf|plnatf>/click/` (sms); × CZ → `https://premium.nationfoot.com/cznatf/` (mix)
   - Goal Plaza × CZ / RO → `https://premium.goalplaza.com/<czgoal|rogoal>/...`
 - Brand × country combos without a mapping (e.g. UK on either brand) fall back to the internal `/signup` route. To add a new country, drop another line into `SUBSCRIBE_LANDING_URLS`.
 - `goToSignup()` in `src/composables/useAuth.js` consults this map and does `window.location.href = ...` when matched.
@@ -180,6 +180,16 @@ Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos,
 - **603 page_view**: single global `router.afterEach` hook in `src/router/index.js` — fires on every navigation (incl. public/legal pages). Only `GameDetail` / `GamePlay` / `VideoDetail` routes attach `product = to.params.id` (that `:id` IS the product id); other `:id`-like params (matchId, teamId) are intentionally omitted.
 - **602 launch**: `GameDetailView.vue` logs on every play/download CTA click (`logLaunch`); `VideoDetailView.vue` logs when native playback starts (`startPlayback`).
 - **604 consumption** (`VideoDetailView.vue`, native `<video>` only): sums wall-clock time between play↔pause/ended (seeks/pauses excluded), flushed **once per session** on `ended`, `beforeunload`, or route-param change (component is reused, not unmounted, between videos, so `onBeforeUnmount` won't fire on nav). Min 1s guard; a fresh play after a flush starts a new session.
+
+### CZ market on Nation Foot — added 2026-08-27
+- `football1.countries` is now `['UK', 'SK', 'PL', 'CZ']`; Nation Foot serves the Czech market from `cz.nationfoot.com` (subdomain `cz.` → `CZ` was already in `countries.js`, shared with Goal Plaza).
+- No new locale needed: the `cz` base locale and the `src/brands/football1/i18n/locales/cz.json` override already existed and are key-complete. Czech UI copy, `Europe/Prague` kickoffs and the `cz→cs-CZ` date fallback all came for free.
+- Subscribe CTA: `SUBSCRIBE_LANDING_URLS.football1.CZ = 'https://premium.nationfoot.com/cznatf/'` (**mix** billing — no `/click/` suffix, same shape as Goal Plaza × CZ, unlike the SMS SK/PL landings).
+- News: `football1.newsLanguages` gained `'cs'` → `['en', 'pl', 'sk', 'cs']`. Depends on the backend local-feed work (iSport / Sport.cz are already in `RssFeedManager.py`).
+- Competitions: the Czech 1st League (id 72) now shows on **both** portals. `brand` in `src/config/europeanCompetitions.js` accepts a **string or an array** — `getCompetitionsForBrand` handles both. Nation Foot now surfaces 16 curated competitions, Goal Plaza 15.
+- Already generic, nothing to change: footer `unsubscribe` link (gated on CZ/SK), `+420` phone validation in `LegalPageView.vue`, legal/about endpoints (country + language driven).
+
+---
 
 ### French locale + FR market (Goal Plaza) — added 2026-07-14
 - Added a 6th locale `fr` (`src/i18n/locales/fr.json` base + `src/brands/football2/i18n/locales/fr.json` Goal Plaza override). Key-identical to `en` (parity check passes).

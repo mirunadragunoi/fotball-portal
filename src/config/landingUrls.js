@@ -11,6 +11,7 @@ const SUBSCRIBE_LANDING_URLS = {
   football1: {                                              // Nation Foot
     SK: 'https://premium.nationfoot.com/sknatf/click/',     // sms
     PL: 'https://premium.nationfoot.com/plnatf/click/',     // sms
+    CZ: 'https://premium.nationfoot.com/cznatf/',           // mix
   },
   football2: {                                              // Goal Plaza
     CZ: 'https://premium.goalplaza.com/czgoal/',            // mix

@@ -3,10 +3,10 @@ export default {
   name: 'Nation Foot',
   displayName: 'Nation Foot',
   tagline: 'The home of football games, highlights and the matchday rituals.',
-  countries: ['UK', 'SK', 'PL'],
+  countries: ['UK', 'SK', 'PL', 'CZ'],
   // Feed languages offered on the News page (in order). Uses feed lang codes
-  // (Czech = 'cs'). Nation Foot covers UK/SK/PL.
-  newsLanguages: ['en', 'pl', 'sk'],
+  // (Czech = 'cs'). Nation Foot covers UK/SK/PL/CZ.
+  newsLanguages: ['en', 'pl', 'sk', 'cs'],
   storagePrefix: 'football1',
   featureFlags: {
     brandedOverrides: true,

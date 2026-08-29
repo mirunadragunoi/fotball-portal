@@ -29,13 +29,14 @@ export const EUROPEAN_COMPETITIONS = {
   primeiraLiga:      { id: 8,   name: 'Primeira Liga',      country: 'Portugal',    countryId: 32,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57 },
   superLig:          { id: 6,   name: 'Süper Lig',          country: 'Turkey',      countryId: 48,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57 },
 
-  // ─── LOCAL LEAGUES: NATIONFOOT (football1: UK, PL, SK) ───
+  // ─── LOCAL LEAGUES: NATIONFOOT (football1: UK, PL, SK, CZ) ───
   ekstraklasa:       { id: 60,  name: 'Ekstraklasa',        country: 'Poland',      countryId: 14,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1' },
   slovakSuperLeague: { id: 63,  name: 'Super League',       country: 'Slovakia',    countryId: 53,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1' },
 
   // ─── LOCAL LEAGUES: GOALPLAZA (football2: UK, RO, CZ, FR) ───
+  // (the Czech 1st League is sold on both portals, hence the brand array)
   ligaI:             { id: 61,  name: 'Liga I',             country: 'Romania',     countryId: 36,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football2' },
-  czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football2' },
+  czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: ['football1', 'football2'] },
 
   // ─── BONUS ───
   uefaSuperCup:      { id: 349, name: 'UEFA Super Cup',     country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: false, tier: 'bonus',        seasonId: 56 },
@@ -56,8 +57,13 @@ export const ALL_COMPETITION_ID_SET = new Set(
 // ─── HELPER GETTERS ───
 
 // Get competitions for a specific brand (shared + brand-specific).
+// `brand` on an entry is either omitted (shown on every brand), a single brand
+// key, or an array of brand keys (a local league whose market both portals sell in).
 export function getCompetitionsForBrand(brand) {
-  return Object.values(EUROPEAN_COMPETITIONS).filter((c) => !c.brand || c.brand === brand)
+  return Object.values(EUROPEAN_COMPETITIONS).filter((c) => {
+    if (!c.brand) return true
+    return Array.isArray(c.brand) ? c.brand.includes(brand) : c.brand === brand
+  })
 }
 
 // Get competitions filtered by tier (respecting brand scope when passed).
