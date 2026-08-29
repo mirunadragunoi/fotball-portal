@@ -11,36 +11,45 @@
 // The World Cup keeps its own id (WC_2026_COMPETITION_ID = 362) in
 // src/config/livescore.js and is intentionally NOT part of this map.
 
+import { currentSeasonStartYear } from '@/utils/season'
+
+// `apiFootballLeagueId` bridges each live-score-api competition to its
+// API-Football league id (a different id namespace) so the competition/team/
+// match surfaces can pull API-Football's richer data. The domestic + UEFA-cup
+// ids below are the stable, well-known API-Football league ids. The two bonus
+// one-offs are left null (enrichment gates off gracefully) — set them once
+// verified via `/football/apifootball/leagues?search=`.
 export const EUROPEAN_COMPETITIONS = {
   // ─── UEFA CLUB CUPS ───
-  championsLeague:   { id: 244, name: 'Champions League',   country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56 },
-  europaLeague:      { id: 245, name: 'Europa League',      country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56 },
-  conferenceLeague:  { id: 446, name: 'Conference League',  country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56 },
+  championsLeague:   { id: 244, name: 'Champions League',   country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56, apiFootballLeagueId: 2 },
+  europaLeague:      { id: 245, name: 'Europa League',      country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56, apiFootballLeagueId: 3 },
+  conferenceLeague:  { id: 446, name: 'Conference League',  country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'european-cup', seasonId: 56, apiFootballLeagueId: 848 },
 
   // ─── TOP 5 DOMESTIC LEAGUES ───
-  premierLeague:     { id: 2,   name: 'Premier League',     country: 'England',     countryId: 19,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57 },
-  laLiga:            { id: 3,   name: 'La Liga',            country: 'Spain',       countryId: 43,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57 },
-  serieA:            { id: 4,   name: 'Serie A',            country: 'Italy',       countryId: 47,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57 },
-  bundesliga:        { id: 1,   name: 'Bundesliga',         country: 'Germany',     countryId: 1,   isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57 },
-  ligue1:            { id: 5,   name: 'Ligue 1',            country: 'France',      countryId: 21,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57 },
+  premierLeague:     { id: 2,   name: 'Premier League',     country: 'England',     countryId: 19,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57, apiFootballLeagueId: 39 },
+  laLiga:            { id: 3,   name: 'La Liga',            country: 'Spain',       countryId: 43,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57, apiFootballLeagueId: 140 },
+  serieA:            { id: 4,   name: 'Serie A',            country: 'Italy',       countryId: 47,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57, apiFootballLeagueId: 135 },
+  bundesliga:        { id: 1,   name: 'Bundesliga',         country: 'Germany',     countryId: 1,   isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57, apiFootballLeagueId: 78 },
+  ligue1:            { id: 5,   name: 'Ligue 1',            country: 'France',      countryId: 21,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'top5',         seasonId: 57, apiFootballLeagueId: 61 },
 
   // ─── SECONDARY EUROPEAN LEAGUES ───
-  eredivisie:        { id: 196, name: 'Eredivisie',         country: 'Netherlands', countryId: 42,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57 },
-  primeiraLiga:      { id: 8,   name: 'Primeira Liga',      country: 'Portugal',    countryId: 32,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57 },
-  superLig:          { id: 6,   name: 'Süper Lig',          country: 'Turkey',      countryId: 48,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57 },
+  eredivisie:        { id: 196, name: 'Eredivisie',         country: 'Netherlands', countryId: 42,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57, apiFootballLeagueId: 88 },
+  primeiraLiga:      { id: 8,   name: 'Primeira Liga',      country: 'Portugal',    countryId: 32,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57, apiFootballLeagueId: 94 },
+  superLig:          { id: 6,   name: 'Süper Lig',          country: 'Turkey',      countryId: 48,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57, apiFootballLeagueId: 203 },
 
   // ─── LOCAL LEAGUES: NATIONFOOT (football1: UK, PL, SK, CZ) ───
-  ekstraklasa:       { id: 60,  name: 'Ekstraklasa',        country: 'Poland',      countryId: 14,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1' },
-  slovakSuperLeague: { id: 63,  name: 'Super League',       country: 'Slovakia',    countryId: 53,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1' },
+  ekstraklasa:       { id: 60,  name: 'Ekstraklasa',        country: 'Poland',      countryId: 14,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1', apiFootballLeagueId: 106 },
+  slovakSuperLeague: { id: 63,  name: 'Super League',       country: 'Slovakia',    countryId: 53,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1', apiFootballLeagueId: 332 },
 
   // ─── LOCAL LEAGUES: GOALPLAZA (football2: UK, RO, CZ, FR) ───
   // (the Czech 1st League is sold on both portals, hence the brand array)
-  ligaI:             { id: 61,  name: 'Liga I',             country: 'Romania',     countryId: 36,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football2' },
-  czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: ['football1', 'football2'] },
+  ligaI:             { id: 61,  name: 'Liga I',             country: 'Romania',     countryId: 36,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football2', apiFootballLeagueId: 283 },
+  czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: ['football1', 'football2'], apiFootballLeagueId: 345 },
 
   // ─── BONUS ───
-  uefaSuperCup:      { id: 349, name: 'UEFA Super Cup',     country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: false, tier: 'bonus',        seasonId: 56 },
-  clubWorldCup:      { id: 372, name: 'FIFA Club World Cup', country: null,         countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'bonus',        seasonId: null },
+  // TODO verify API-Football league ids (Super Cup ~531, Club World Cup ~15) — left null until confirmed.
+  uefaSuperCup:      { id: 349, name: 'UEFA Super Cup',     country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: false, tier: 'bonus',        seasonId: 56, apiFootballLeagueId: null },
+  clubWorldCup:      { id: 372, name: 'FIFA Club World Cup', country: null,         countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'bonus',        seasonId: null, apiFootballLeagueId: null },
 }
 
 // Order in which tiers render on the Competitions hub.
@@ -74,6 +83,20 @@ export function getCompetitionsByTier(tier, brand = null) {
 // Find competition by numeric id.
 export function getCompetitionById(id) {
   return Object.values(EUROPEAN_COMPETITIONS).find((c) => c.id === Number(id)) || null
+}
+
+// Map a live-score-api competition id → its API-Football league id (or null when
+// unmapped / a bonus one-off). Used to gate + drive the API-Football enrichment
+// on the competition and team pages.
+export function getApiFootballLeagueId(competitionId) {
+  const comp = getCompetitionById(competitionId)
+  return comp?.apiFootballLeagueId ?? null
+}
+
+// API-Football season year for a competition, derived from today's date (e.g.
+// 2026 for the 2026/2027 season). Season is the starting year in API-Football.
+export function getApiFootballSeason(date = new Date()) {
+  return currentSeasonStartYear(date)
 }
 
 // All ids as CSV for multi-competition live/fixtures calls (brand-scoped).
