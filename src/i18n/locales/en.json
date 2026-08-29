@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Summary",
+    "stats":        "Stats",
+    "lineups":      "Lineups",
+    "ratings":      "Ratings",
+    "h2h":          "H2H",
+    "prediction":   "Prediction",
+    "loading":      "Loading…",
+    "noEvents":     "No key events yet.",
+    "noLineups":    "Lineups not announced yet.",
+    "noRatings":    "Player ratings not available.",
+    "noH2H":        "No previous meetings.",
+    "noPrediction": "No prediction available.",
+    "assist":       "Assist",
+    "topPlayer":    "Top performer",
+    "coach":        "Coach",
+    "home":         "Home",
+    "away":         "Away",
+    "draw":         "Draw",
+    "advice":       "Advice",
+    "goalsLine":    "Goals"
+  },
   "player": {
     "transfers":     "Transfers",
     "trophies":      "Trophies",

@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Rezumat",
+    "stats":        "Statistici",
+    "lineups":      "Echipe",
+    "ratings":      "Note",
+    "h2h":          "Meciuri directe",
+    "prediction":   "Predicție",
+    "loading":      "Se încarcă…",
+    "noEvents":     "Încă nu sunt evenimente cheie.",
+    "noLineups":    "Echipele nu au fost anunțate încă.",
+    "noRatings":    "Notele jucătorilor nu sunt disponibile.",
+    "noH2H":        "Nicio întâlnire anterioară.",
+    "noPrediction": "Nicio predicție disponibilă.",
+    "assist":       "Pasă de gol",
+    "topPlayer":    "Cel mai bun jucător",
+    "coach":        "Antrenor",
+    "home":         "Gazde",
+    "away":         "Oaspeți",
+    "draw":         "Egal",
+    "advice":       "Recomandare",
+    "goalsLine":    "Goluri"
+  },
   "player": {
     "transfers":     "Transferuri",
     "trophies":      "Trofee",

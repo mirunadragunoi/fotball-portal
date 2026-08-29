@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Prehľad",
+    "stats":        "Štatistiky",
+    "lineups":      "Zostavy",
+    "ratings":      "Hodnotenie",
+    "h2h":          "Vzájomné zápasy",
+    "prediction":   "Predpoveď",
+    "loading":      "Načítava sa…",
+    "noEvents":     "Zatiaľ žiadne kľúčové udalosti.",
+    "noLineups":    "Zostavy zatiaľ neboli oznámené.",
+    "noRatings":    "Hodnotenie hráčov nie je k dispozícii.",
+    "noH2H":        "Žiadne predchádzajúce zápasy.",
+    "noPrediction": "Predpoveď nie je k dispozícii.",
+    "assist":       "Asistencia",
+    "topPlayer":    "Najlepší hráč",
+    "coach":        "Tréner",
+    "home":         "Domáci",
+    "away":         "Hostia",
+    "draw":         "Remíza",
+    "advice":       "Odporúčanie",
+    "goalsLine":    "Góly"
+  },
   "player": {
     "transfers":     "Prestupy",
     "trophies":      "Trofeje",

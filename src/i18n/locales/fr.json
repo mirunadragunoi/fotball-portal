@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Résumé",
+    "stats":        "Statistiques",
+    "lineups":      "Compositions",
+    "ratings":      "Notes",
+    "h2h":          "Confrontations",
+    "prediction":   "Pronostic",
+    "loading":      "Chargement…",
+    "noEvents":     "Aucun événement clé pour l'instant.",
+    "noLineups":    "Compositions pas encore annoncées.",
+    "noRatings":    "Notes des joueurs indisponibles.",
+    "noH2H":        "Aucune rencontre précédente.",
+    "noPrediction": "Aucun pronostic disponible.",
+    "assist":       "Passe décisive",
+    "topPlayer":    "Meilleur joueur",
+    "coach":        "Entraîneur",
+    "home":         "Domicile",
+    "away":         "Extérieur",
+    "draw":         "Nul",
+    "advice":       "Conseil",
+    "goalsLine":    "Buts"
+  },
   "player": {
     "transfers":     "Transferts",
     "trophies":      "Trophées",

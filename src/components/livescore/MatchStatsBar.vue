@@ -7,8 +7,10 @@ const props = defineProps({
   away: { type: [Number, String], default: 0 },
 })
 
-const h = computed(() => Number(props.home) || 0)
-const a = computed(() => Number(props.away) || 0)
+// parseFloat (not Number) so values like "52%" from API-Football size the bar
+// correctly; plain numbers / numeric strings behave identically.
+const h = computed(() => parseFloat(props.home) || 0)
+const a = computed(() => parseFloat(props.away) || 0)
 const total = computed(() => h.value + a.value)
 const homePct = computed(() => total.value ? Math.round((h.value / total.value) * 100) : 50)
 const awayPct = computed(() => 100 - homePct.value)

@@ -3,14 +3,24 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useLiveScoreStore } from '@/stores/livescore'
+import { useAuthStore } from '@/stores/auth'
 import { LIVESCORE_POLL, WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { getCompetitionRouteById } from '@/config/europeanCompetitions'
 import { parseScoreString, matchMinuteLabel, isLiveStatus, isFinishedStatus } from '@/utils/liveScoreFormat'
+import { resolveFixtureId } from '@/services/fixtureResolver'
+import MatchCenterTabs from '@/components/livescore/MatchCenterTabs.vue'
 
 const route  = useRoute()
 const router = useRouter()
 const { t }  = useI18n()
 const store  = useLiveScoreStore()
+const authStore = useAuthStore()
+
+// API-Football fixture id bridged from the live-score-api match (name+date
+// match). When resolved, the rich match-center tabs replace the legacy
+// live-score-api detail sections; when not, those sections remain the fallback.
+// The scoreboard header above never depends on this.
+const mcFixtureId = ref(null)
 
 const matchId = computed(() => route.params.matchId)
 // Core match record (teams, score, status, competition) resolved from the live
@@ -247,7 +257,21 @@ onMounted(async () => {
   await store.fetchMatchDetail(matchId.value)
   store.setupVisibilityPolling(LIVESCORE_POLL.live)
   store.startDetailPolling()
+  resolveMatchCenter()
 })
+
+// Resolve the API-Football fixture id off the core match (never blocks the
+// scoreboard). Failure just leaves mcFixtureId null → legacy sections show.
+async function resolveMatchCenter() {
+  mcFixtureId.value = null
+  const m = match.value
+  if (!m) return
+  try {
+    mcFixtureId.value = await resolveFixtureId(m, authStore.getAuthQuery() || {})
+  } catch {
+    mcFixtureId.value = null
+  }
+}
 
 onUnmounted(() => {
   store.teardownVisibilityPolling()
@@ -259,6 +283,7 @@ watch(matchId, async (id) => {
   store.ensureSelectedMatch(id)
   await store.fetchMatchDetail(id)
   store.startDetailPolling()
+  resolveMatchCenter()
 })
 </script>
 
@@ -561,6 +586,13 @@ watch(matchId, async (id) => {
             <span v-else>{{ t('live.errorLoad') }}</span>
           </div>
 
+          <!-- ══ Match center (API-Football) ══ shown when the fixture resolves;
+               otherwise the legacy live-score-api sections below are the fallback. -->
+          <div v-if="mcFixtureId" class="details-col__mc">
+            <MatchCenterTabs :fixture-id="mcFixtureId" :match="match" />
+          </div>
+
+          <template v-else>
           <!-- ── Key Events ────────────────────────────────────────────── -->
           <section class="ds">
             <div class="ds__hd">
@@ -653,6 +685,7 @@ watch(matchId, async (id) => {
               </div>
             </div>
           </section>
+          </template>
 
         </div><!-- /details-col -->
       </div><!-- /page-layout -->
@@ -1277,6 +1310,10 @@ watch(matchId, async (id) => {
     min-height: unset;
     overflow-y: visible;
   }
+}
+
+.details-col__mc {
+  padding: 4px 16px 16px;
 }
 
 .details-col__error {

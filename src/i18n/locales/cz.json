@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Přehled",
+    "stats":        "Statistiky",
+    "lineups":      "Sestavy",
+    "ratings":      "Hodnocení",
+    "h2h":          "Vzájemné zápasy",
+    "prediction":   "Předpověď",
+    "loading":      "Načítání…",
+    "noEvents":     "Zatím žádné klíčové události.",
+    "noLineups":    "Sestavy zatím nebyly oznámeny.",
+    "noRatings":    "Hodnocení hráčů není k dispozici.",
+    "noH2H":        "Žádná předchozí utkání.",
+    "noPrediction": "Předpověď není k dispozici.",
+    "assist":       "Asistence",
+    "topPlayer":    "Nejlepší hráč",
+    "coach":        "Trenér",
+    "home":         "Domácí",
+    "away":         "Hosté",
+    "draw":         "Remíza",
+    "advice":       "Doporučení",
+    "goalsLine":    "Góly"
+  },
   "player": {
     "transfers":     "Přestupy",
     "trophies":      "Trofeje",

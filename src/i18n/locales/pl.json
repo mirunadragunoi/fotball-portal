@@ -1,4 +1,26 @@
 {
+  "matchCenter": {
+    "summary":      "Podsumowanie",
+    "stats":        "Statystyki",
+    "lineups":      "Składy",
+    "ratings":      "Oceny",
+    "h2h":          "Mecze bezpośrednie",
+    "prediction":   "Prognoza",
+    "loading":      "Ładowanie…",
+    "noEvents":     "Brak kluczowych wydarzeń.",
+    "noLineups":    "Składy nie zostały jeszcze ogłoszone.",
+    "noRatings":    "Oceny zawodników niedostępne.",
+    "noH2H":        "Brak wcześniejszych spotkań.",
+    "noPrediction": "Brak dostępnej prognozy.",
+    "assist":       "Asysta",
+    "topPlayer":    "Najlepszy zawodnik",
+    "coach":        "Trener",
+    "home":         "Gospodarze",
+    "away":         "Goście",
+    "draw":         "Remis",
+    "advice":       "Wskazówka",
+    "goalsLine":    "Gole"
+  },
   "player": {
     "transfers":     "Transfery",
     "trophies":      "Trofea",
