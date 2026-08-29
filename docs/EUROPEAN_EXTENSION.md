@@ -417,16 +417,74 @@ Implemented via a thin `FootballWorker._apifootball_proxy()` over
 - Rate-limit headers logged per call; daily quota warning under 500 remaining.
 - Logos/photos continue to be served from our storage (synced), never hotlinked.
 
-### Remaining work (not done this round)
+### Remaining work → **resolved in §14** (2026-08-29, later same day)
 
-- **Fixture-id resolution** (above) — prerequisite for the match-center tabs
-  (events/stats/lineups/player-ratings/prediction from API-Football) on the
-  existing `/live/match/:id` page.
-- **Competition page** enrichment (top assists/cards, injuries) — needs the
-  API-Football league id per `EUROPEAN_COMPETITIONS` entry (config-only mapping).
-- **Team page** enrichment (team statistics, next/last fixtures, injuries) —
-  needs the live-score-api → API-Football team-id mapping (by name).
-- Odds surfaces (endpoints exist; no UI yet).
+The fixture-id resolution, competition and team enrichment listed here were
+completed in the follow-up round documented in §14. Odds surfaces remain
+endpoint-only (no UI).
+
+---
+
+## 14. Phase 2 completion — id bridges + match center + enrichment (2026-08-29)
+
+Completed the deferred Phase 2 frontend work. All frontend on
+`feature/european-competitions-extension`; no backend changes this round.
+
+### Id bridges (the two-namespace problem, solved)
+- **Competitions/teams:** each `EUROPEAN_COMPETITIONS` entry gained
+  `apiFootballLeagueId` (stable API-Football league ids; the two bonus one-offs
+  left `null`). Helpers `getApiFootballLeagueId(competitionId)` +
+  `getApiFootballSeason()` (date-derived). Config-only — no runtime remap.
+- **Matches:** `src/services/fixtureResolver.js` → `resolveFixtureId(match)` maps
+  a live-score-api match to an API-Football fixture id by league + date (±1 day) +
+  normalized team-name match (`src/utils/teamName.js`, `normClubName`/
+  `teamNamesMatch`, mirrors the rosters matcher). Confidence guard requires both
+  team names to match; cached in memory + sessionStorage. Returns null on no
+  confident match → callers keep the core scoreboard. **Never shows wrong-match
+  data.**
+- **Teams (club page):** no new bridge needed — the synced club JSON's
+  `team.id` / `league.id` ARE the API-Football ids, resolved via the existing
+  `rosters.getClubTeamByName`.
+
+### Match center (`/live/match/:id`)
+- `src/stores/matchCenter.js` + `src/components/livescore/MatchCenterTabs.vue`.
+  Tabs: **Summary** (key events), **Stats** (reuses MatchStatsPanel/Bar —
+  `MatchStatsBar` switched to `parseFloat` so `"52%"` sizes the bar),
+  **Lineups** (reuses LineupList + coach), **Player Ratings** (sortable, top
+  performer highlighted), **H2H** (reuses H2HComparison via an adapter),
+  **Prediction** (winner % bars + advice, upcoming matches only).
+- Fixture id resolved on mount; when it resolves the tabs replace the legacy
+  live-score-api sections, else those remain the fallback. **The Phase-0
+  scoreboard header is never touched and always renders.**
+- Tabs shown by availability (prediction only pre-kickoff; h2h once team ids
+  known). Live tabs (summary/stats/ratings) poll every 30s, visibility-gated,
+  torn down on unmount.
+
+### Competition page enrichment (`CompetitionDetailView`)
+- New coverage-gated, lazy-loaded tabs bridged by `apiFootballLeagueId`:
+  **Top Assists**, **Top Cards** (merged yellow+red), **Injuries** (league-wide).
+  Hidden when unmapped or the `/leagues` coverage flag is false
+  (`fetchLeagueCoverage`). Existing tabs untouched.
+
+### Team page enrichment (`TeamSquadView`, club mode)
+- **Team statistics** (form dots, played, W-D-L, goals, clean sheets, biggest
+  win, failed-to-score), **Upcoming fixtures** (browser-timezone kickoffs,
+  distinct PST/CANC badge), **Team injuries**. Null-safe; appear only when the
+  club resolves to a synced roster (top-5 leagues). WC/national mode untouched.
+
+### Coverage & quota
+- Per-competition features check cached `/leagues` coverage first (clean hidden
+  state, no hanging spinner). Fixture-id + team-id + coverage results cached;
+  enrichment tabs lazy-load on first open; match-center live polling only for the
+  actively-viewed fixture, 30s, visibility-gated. Media still served from storage.
+
+### i18n
+- New `player.*` (prior round), `matchCenter.*` (20), `competition.*` (+9),
+  `team.*` (10) — added to all 6 locales, kept key-identical.
+
+### Still endpoint-only (no UI)
+- Odds (pre-match / live / bet catalogues). Bonus competitions (UEFA Super Cup,
+  FIFA Club World Cup) have `apiFootballLeagueId: null` — set once verified.
 
 ---
 
