@@ -25,19 +25,31 @@ function posLabel(pos) {
 
 const detail     = ref(null)
 const fantasy    = ref(null)
+const profile    = ref(null)
 const detailFull = computed(() => detail.value?.player || null)
 const stats      = computed(() => detail.value?.statistics?.[0] || null)
+
+const transfers = computed(() => profile.value?.transfers || [])
+const trophies  = computed(() => (profile.value?.trophies || []).filter(tr => tr.place === 'Winner').slice(0, 12))
+const sidelined = computed(() => (profile.value?.sidelined || []).slice(0, 8))
 
 watch(
   () => props.player?.id,
   async (id) => {
     detail.value = null
     fantasy.value = null
+    profile.value = null
     if (!id) return
 
     // Personal + club-season stats from api-football
     const cached = store.playerDetails[id]
     detail.value = cached || await store.loadPlayerDetails(id)
+
+    // Extended profile: transfers / trophies / injury history (independent load)
+    store.loadPlayerProfile(id).then((p) => {
+      // Guard against a stale response after the modal switched players.
+      if (props.player?.id === id) profile.value = p
+    })
 
     // Fantasy stats from /football/livescore/fantasy (aggregated across WC matches)
     if (props.team) {
@@ -46,6 +58,12 @@ watch(
   },
   { immediate: true },
 )
+
+function fmtTransferDate(iso) {
+  if (!iso) return ''
+  try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) }
+  catch { return iso }
+}
 
 function initials(name) {
   return (name || '?').split(' ').map((p) => p[0] || '').slice(0, 2).join('').toUpperCase()
@@ -182,10 +200,121 @@ function fmtRating(val) {
             <div class="pdm__stat"><div class="pdm__stat-val">{{ fantasy.ball_touches }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerWcTouches', 'Touches') }}</div></div>
           </div>
         </template>
+
+        <!-- Career transfers -->
+        <template v-if="transfers.length">
+          <div class="pdm__section-title">{{ t('player.transfers') }}</div>
+          <ul class="pdm__timeline">
+            <li v-for="(tr, i) in transfers" :key="i" class="pdm__transfer">
+              <span class="pdm__transfer-date">{{ fmtTransferDate(tr.date) }}</span>
+              <span class="pdm__transfer-move">
+                <span>{{ tr.teams?.out?.name || '—' }}</span>
+                <span class="pdm__transfer-arrow" aria-hidden="true">→</span>
+                <span>{{ tr.teams?.in?.name || '—' }}</span>
+              </span>
+              <span v-if="tr.type" class="pdm__transfer-type">{{ tr.type }}</span>
+            </li>
+          </ul>
+        </template>
+
+        <!-- Trophies -->
+        <template v-if="trophies.length">
+          <div class="pdm__section-title">{{ t('player.trophies') }}</div>
+          <ul class="pdm__trophies">
+            <li v-for="(tr, i) in trophies" :key="i" class="pdm__trophy">
+              <span aria-hidden="true">🏆</span>
+              <span class="pdm__trophy-league">{{ tr.league }}</span>
+              <span v-if="tr.season" class="pdm__trophy-season">{{ tr.season }}</span>
+            </li>
+          </ul>
+        </template>
+
+        <!-- Injury history -->
+        <template v-if="sidelined.length">
+          <div class="pdm__section-title">{{ t('player.injuryHistory') }}</div>
+          <ul class="pdm__timeline">
+            <li v-for="(s, i) in sidelined" :key="i" class="pdm__transfer">
+              <span class="pdm__transfer-date">{{ fmtTransferDate(s.start) }}</span>
+              <span class="pdm__transfer-move">{{ s.type || '—' }}</span>
+            </li>
+          </ul>
+        </template>
       </div>
     </div>
   </Teleport>
 </template>
+
+<style scoped>
+.pdm__timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pdm__transfer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.pdm__transfer-date {
+  flex-shrink: 0;
+  min-width: 68px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pdm__transfer-move {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+  font-weight: 600;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.pdm__transfer-arrow { color: var(--color-primary); }
+
+.pdm__transfer-type {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.pdm__trophies {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pdm__trophy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text);
+}
+
+.pdm__trophy-league { font-weight: 600; }
+
+.pdm__trophy-season {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+</style>
 
 <style scoped>
 .pdm-backdrop {

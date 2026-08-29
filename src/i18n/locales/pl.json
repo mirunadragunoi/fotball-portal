@@ -1,4 +1,9 @@
 {
+  "player": {
+    "transfers":     "Transfery",
+    "trophies":      "Trofea",
+    "injuryHistory": "Historia kontuzji"
+  },
   "brand": {
     "name":    "Portal Sportowy",
     "tagline": "Gry piłkarskie, skróty i to, co kochasz w sporcie."

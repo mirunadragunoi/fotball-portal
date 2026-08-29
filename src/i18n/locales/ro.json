@@ -1,4 +1,9 @@
 {
+  "player": {
+    "transfers":     "Transferuri",
+    "trophies":      "Trofee",
+    "injuryHistory": "Istoric accidentări"
+  },
   "brand": {
     "name":    "Portal Sportiv",
     "tagline": "Jocuri de fotbal, rezumate și tot ce iubești despre sport."

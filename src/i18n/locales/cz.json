@@ -1,4 +1,9 @@
 {
+  "player": {
+    "transfers":     "Přestupy",
+    "trophies":      "Trofeje",
+    "injuryHistory": "Historie zranění"
+  },
   "brand": {
     "name":    "Sportovní portál",
     "tagline": "Fotbalové hry, sestřihy a to nejlepší ze sportu."

@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { fetchPlayerDetails } from '@/services/apiFootballService'
+import {
+  fetchPlayerDetails,
+  fetchPlayerTransfers,
+  fetchPlayerTrophies,
+  fetchPlayerSidelined,
+} from '@/services/apiFootballService'
 import { fetchFantasy } from '@/services/livescoreApi'
 import { WC_2026_COMPETITION_ID } from '@/config/livescore'
 import { getCompetitionsByTier } from '@/config/europeanCompetitions'
@@ -122,6 +127,9 @@ export const useRostersStore = defineStore('rosters', () => {
   // cache: playerId → extended detail object from API-Football
   const playerDetails = ref({})
   const playerDetailLoading = ref(false)
+  // Extended profile: transfers / trophies / injury history, cached per player id.
+  const playerProfiles = ref({})
+  const playerProfileLoading = ref(false)
 
   // cache: playerId → aggregated fantasy stats from /football/livescore/fantasy
   const playerFantasy = ref({})
@@ -211,6 +219,32 @@ export const useRostersStore = defineStore('rosters', () => {
       playerDetailLoading.value = false
     }
     return null
+  }
+
+  // lazy-load transfers / trophies / injury history (on modal open, after the
+  // core details). Each source degrades independently — a failure just yields [].
+  async function loadPlayerProfile(playerId) {
+    if (playerProfiles.value[playerId]) return playerProfiles.value[playerId]
+    playerProfileLoading.value = true
+    try {
+      const [transfers, trophies, sidelined] = await Promise.allSettled([
+        fetchPlayerTransfers(playerId, creds.value),
+        fetchPlayerTrophies(playerId, creds.value),
+        fetchPlayerSidelined(playerId, creds.value),
+      ])
+      const val = (r) => (r.status === 'fulfilled' && Array.isArray(r.value) ? r.value : [])
+      // /transfers nests under response[0].transfers; the others are flat lists.
+      const transferRows = val(transfers)[0]?.transfers || []
+      const profile = {
+        transfers: transferRows,
+        trophies: val(trophies),
+        sidelined: val(sidelined),
+      }
+      playerProfiles.value[playerId] = profile
+      return profile
+    } finally {
+      playerProfileLoading.value = false
+    }
   }
 
   // ── Selections ────────────────────────────────────────────────────────
@@ -365,6 +399,8 @@ export const useRostersStore = defineStore('rosters', () => {
     selectedPlayer,
     playerDetails,
     playerDetailLoading,
+    playerProfiles,
+    playerProfileLoading,
     playerFantasy,
     playerFantasyLoading,
     teamsSorted,
@@ -379,6 +415,7 @@ export const useRostersStore = defineStore('rosters', () => {
     getClubTeamByName,
     loadTeams,
     loadPlayerDetails,
+    loadPlayerProfile,
     loadPlayerFantasy,
     selectTeam,
     selectPlayer,

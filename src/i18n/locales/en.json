@@ -1,4 +1,9 @@
 {
+  "player": {
+    "transfers":     "Transfers",
+    "trophies":      "Trophies",
+    "injuryHistory": "Injury history"
+  },
   "brand": {
     "name":    "Sports Portal",
     "tagline": "Football games, highlights and more."
