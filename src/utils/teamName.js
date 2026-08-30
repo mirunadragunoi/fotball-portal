@@ -18,6 +18,11 @@ const CLUB_NOISE = /\b(fc|cf|afc|sc|ac|ss|us|rc|cd|ud|sd|club|calcio|as|rcd|be)\
 // provider returns. Kept deliberately small and unambiguous — a wrong entry can
 // only ever fail to match (the resolver also requires the OTHER team, the league
 // and the date to line up), never cross a match to a different club.
+//
+// NOTE: this set is mirrored in src/stores/rosters.js (its CLUB_SHORT_ALIASES,
+// used by the club-squad matcher). Keep BOTH in sync when adding aliases.
+// TODO: consolidate the two normClubName implementations into one shared util
+// (deferred — production-sensitive).
 const CLUB_ALIASES = {
   'man city': 'manchester city',
   'man utd': 'manchester united',
