@@ -47,9 +47,14 @@ export const EUROPEAN_COMPETITIONS = {
   czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: ['football1', 'football2'], apiFootballLeagueId: 345 },
 
   // ─── BONUS ───
-  // TODO verify API-Football league ids (Super Cup ~531, Club World Cup ~15) — left null until confirmed.
-  uefaSuperCup:      { id: 349, name: 'UEFA Super Cup',     country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: false, tier: 'bonus',        seasonId: 56, apiFootballLeagueId: null },
-  clubWorldCup:      { id: 372, name: 'FIFA Club World Cup', country: null,         countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'bonus',        seasonId: null, apiFootballLeagueId: null },
+  // Standard API-Football league ids (Super Cup = 531, FIFA Club World Cup = 15).
+  // Set from the well-known ids, not yet live-confirmed via
+  // `/football/apifootball/leagues?search=` (that endpoint needs an access_code).
+  // NB the Club World Cup is not a current-season competition, so getApiFootballSeason()
+  // (today's year) will not line up with its edition — its enrichment stays empty
+  // until a season override is wired for it.
+  uefaSuperCup:      { id: 349, name: 'UEFA Super Cup',     country: null,          countryId: null, isCup: true,  isLeague: false, hasGroups: false, tier: 'bonus',        seasonId: 56, apiFootballLeagueId: 531 },
+  clubWorldCup:      { id: 372, name: 'FIFA Club World Cup', country: null,         countryId: null, isCup: true,  isLeague: false, hasGroups: true,  tier: 'bonus',        seasonId: null, apiFootballLeagueId: 15 },
 }
 
 // Order in which tiers render on the Competitions hub.

@@ -9,8 +9,30 @@ const CLUB_LETTERS = { 'ı': 'i', 'ł': 'l', 'đ': 'd', 'ø': 'o', 'æ': 'ae', '
 const CLUB_LETTERS_RE = new RegExp('[' + Object.keys(CLUB_LETTERS).join('') + ']', 'g')
 const CLUB_NOISE = /\b(fc|cf|afc|sc|ac|ss|us|rc|cd|ud|sd|club|calcio|as|rcd|be)\b/g
 
+// Short forms the two providers use that neither normalization nor the
+// containment rule below can bridge ("Man City" is not a substring of
+// "Manchester City", "Spurs" shares nothing with "Tottenham"). Keys and values
+// are already NORMALIZED (lowercase, unaccented, affix-stripped). Both the short
+// form and, where the long form isn't the natural normalized spelling, the long
+// form map to one canonical string, so a match works whichever spelling each
+// provider returns. Kept deliberately small and unambiguous — a wrong entry can
+// only ever fail to match (the resolver also requires the OTHER team, the league
+// and the date to line up), never cross a match to a different club.
+const CLUB_ALIASES = {
+  'man city': 'manchester city',
+  'man utd': 'manchester united',
+  'man united': 'manchester united',
+  'spurs': 'tottenham hotspur',
+  'wolves': 'wolverhampton wanderers',
+  'nott m forest': 'nottingham forest',
+  'nottm forest': 'nottingham forest',
+  'sheffield utd': 'sheffield united',
+  'sheff utd': 'sheffield united',
+  'inter': 'internazionale',
+}
+
 export function normClubName(s) {
-  return String(s || '')
+  const base = String(s || '')
     .toLowerCase()
     .replace(CLUB_LETTERS_RE, (c) => CLUB_LETTERS[c])
     .normalize('NFD')
@@ -20,6 +42,7 @@ export function normClubName(s) {
     .replace(/[^a-z0-9]+/g, ' ')
     .trim()
     .replace(/\s+/g, ' ')
+  return CLUB_ALIASES[base] || base
 }
 
 // True when two team names refer to the same club: exact normalized match, or
