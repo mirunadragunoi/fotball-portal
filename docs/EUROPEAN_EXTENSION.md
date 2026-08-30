@@ -484,7 +484,50 @@ Completed the deferred Phase 2 frontend work. All frontend on
 
 ### Still endpoint-only (no UI)
 - Odds (pre-match / live / bet catalogues). Bonus competitions (UEFA Super Cup,
-  FIFA Club World Cup) have `apiFootballLeagueId: null` — set once verified.
+  FIFA Club World Cup) had `apiFootballLeagueId: null` — now filled in §15.
+
+---
+
+## 15. Production audit + follow-up fixes (2026-08-30)
+
+Prod is deployed from `main` on both repos. The backend owner added apifootball
+hardening (`1bfbed3` bounded cache + no error-caching + finished-match TTLs,
+`efcb2fc` dropped the unusable `page` param) — complementary to our work, no
+conflicts. Frontend fixes below on branch `fix/player-club-and-prod-verification`.
+
+### Player-club bug (`06d6011`)
+- The player modal took api-football `/players` `statistics[0]` as the "current
+  club". That array is grouped by competition and can list several teams (former
+  clubs, national team), so `statistics[0]` often differed from the club the user
+  navigated in from — two clubs on one profile (reported on AC Milan).
+- Fix: pin the stats block to the navigated-from club by name when entering from
+  a club page (national team detected via `team.group`); drop the redundant
+  "current club" row in that case; otherwise pick the most-appearances block. A
+  caption labels the stats' actual club+league on the rare mismatch.
+
+### Config + name aliases (`8f588af`, `f8639bd`, `6ae4bef`)
+- `europeanCompetitions.js`: filled the two bonus `apiFootballLeagueId`s — UEFA
+  Super Cup **531**, FIFA Club World Cup **15** (standard api-football ids; not
+  yet live-confirmed — `/apifootball/leagues` needs an access_code).
+- `utils/teamName.js` (fixture-id resolver) **and** `stores/rosters.js`
+  (club-squad matcher) now share the same big-club short-form alias set
+  (`Man City`/`Manchester City`, `Man Utd`, `Spurs`/`Tottenham`, `Wolves`,
+  `Nott'm Forest`, `Sheffield Utd`, `Inter`/`Internazionale`), applied inside
+  each file's `normClubName`. This unblocks the synced Panini squad on those
+  team pages (previously they fell back to the live-score-api squad). The two
+  `normClubName` copies are intentionally mirrored and cross-referenced in code;
+  consolidation into one shared util is a deferred (production-sensitive) TODO.
+
+### Still needs live testing (real matches / API responses)
+- Player-club fix on real AC Milan data (+ a recent-transfer player, + a
+  national-team player, from team page / lineup / top scorers).
+- Fixture-resolver match rate on real live-score-api → api-football data, and
+  that the new aliases raise coverage for those clubs.
+- Confirm bonus league ids **531** / **15** via `/apifootball/leagues?search=`.
+- **Club World Cup** enrichment stays empty until a per-competition season
+  override is wired (its edition isn't the current date-derived season).
+- Coverage-flag hiding on a low-coverage competition; match-center live polling
+  (30s, visibility-gated) on an in-play match.
 
 ---
 
