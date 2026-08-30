@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useWorldCupTeamsStore } from '@/stores/rosters'
+import { useWorldCupTeamsStore, normClubName } from '@/stores/rosters'
 
 const props = defineProps({
   player: { type: Object, default: null },
@@ -27,7 +27,48 @@ const detail     = ref(null)
 const fantasy    = ref(null)
 const profile    = ref(null)
 const detailFull = computed(() => detail.value?.player || null)
-const stats      = computed(() => detail.value?.statistics?.[0] || null)
+
+// A national-team squad (WC/tournament) carries a `group`; a club squad does not.
+// This is the same signal the header uses to show the group badge.
+const isClubContext = computed(() => !!props.team?.name && !props.team.group)
+
+function sameClub(a, b) {
+  return !!a && !!b && normClubName(a) === normClubName(b)
+}
+
+// api-football's /players `statistics` is grouped by competition, so a player
+// can have several blocks with DIFFERENT teams (other clubs from earlier in the
+// season, plus the national team). statistics[0] is therefore not reliably the
+// club the user navigated from — taking it blindly showed a second, wrong club
+// on the profile (the reported bug). When we arrived from a club page, pin the
+// stats to that club's block; otherwise pick the block with the most
+// appearances (the player's main club, not an arbitrary first entry).
+const stats = computed(() => {
+  const blocks = detail.value?.statistics || []
+  if (!blocks.length) return null
+  if (isClubContext.value) {
+    const hit = blocks.find((b) => sameClub(b.team?.name, props.team.name))
+    if (hit) return hit
+  }
+  return [...blocks].sort(
+    (a, b) => (b.games?.appearences || 0) - (a.games?.appearences || 0),
+  )[0]
+})
+
+// Show the standalone "current club" row only when it isn't the club we already
+// name in the header (i.e. national-team / no-team entry points). Navigating
+// from a club, the header already identifies it — a second row is redundant and
+// was the source of the two-clubs confusion.
+const showCurrentClub = computed(() => !isClubContext.value && !!stats.value?.team?.name)
+
+// Edge case: navigated from a club but no stat block matched it (e.g. a fresh
+// transfer with a stale roster). Label the stats with the club they actually
+// belong to rather than implying they are the navigated-from team's.
+const statsClubDiffers = computed(() =>
+  isClubContext.value &&
+  !!stats.value?.team?.name &&
+  !sameClub(stats.value.team.name, props.team.name),
+)
 
 const transfers = computed(() => profile.value?.transfers || [])
 const trophies  = computed(() => (profile.value?.trophies || []).filter(tr => tr.place === 'Winner').slice(0, 12))
@@ -132,8 +173,8 @@ function fmtRating(val) {
               </div>
             </template>
 
-            <!-- current club (shown in header when available) -->
-            <template v-if="stats?.team?.name">
+            <!-- current club (only when it isn't already the header team) -->
+            <template v-if="showCurrentClub">
               <div class="pdm__club-row">
                 <img v-if="stats.team.logo" :src="stats.team.logo" :alt="stats.team.name" class="pdm__club-logo" />
                 <div class="pdm__club-info">
@@ -165,6 +206,9 @@ function fmtRating(val) {
           <div class="pdm__section-title">
             {{ t('worldcup.playerClubStats') }}
             <span v-if="stats.league?.season" class="pdm__season-badge">{{ stats.league.season }}/{{ String(stats.league.season + 1).slice(2) }}</span>
+          </div>
+          <div v-if="statsClubDiffers || stats.league?.name" class="pdm__stats-caption">
+            <template v-if="statsClubDiffers">{{ stats.team?.name }} · </template>{{ stats.league?.name }}
           </div>
           <div class="pdm__grid-3">
             <div class="pdm__stat"><div class="pdm__stat-val">{{ stats.games?.appearences ?? '—' }}</div><div class="pdm__stat-lbl">{{ t('worldcup.playerApps') }}</div></div>
@@ -553,6 +597,12 @@ function fmtRating(val) {
   color: var(--color-primary);
   padding: 1px 6px;
   border-radius: 4px;
+}
+
+.pdm__stats-caption {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin: -4px 0 10px;
 }
 
 .pdm__grid-2 {

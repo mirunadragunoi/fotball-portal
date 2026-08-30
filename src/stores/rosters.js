@@ -89,7 +89,7 @@ const CLUB_LETTERS = { 'ı': 'i', 'ł': 'l', 'đ': 'd', 'ø': 'o', 'æ': 'ae', '
 const CLUB_LETTERS_RE = new RegExp('[' + Object.keys(CLUB_LETTERS).join('') + ']', 'g')
 
 const CLUB_NOISE = /\b(fc|cf|afc|sc|ac|ss|us|rc|cd|ud|sd|club|calcio|as|rcd|be)\b/g
-function normClubName(s) {
+export function normClubName(s) {
   return String(s || '')
     .toLowerCase()
     .replace(CLUB_LETTERS_RE, (c) => CLUB_LETTERS[c])
