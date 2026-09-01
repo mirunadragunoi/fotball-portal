@@ -266,7 +266,12 @@ export async function unsubscribePhoneNumber({ country, language, phoneNumber, r
   const data = await request('/football/UnsubscribePhoneNumber', {
     method: 'POST',
     body: {
-      portal_name:    getPortalName(),
+      // This one endpoint names the portal `service`, not `portal_name`. It is
+      // shared with /store/ and /wellness/, whose contract came first, and it is
+      // the only football call that does not take portal_name. Sending the wrong
+      // key fails the mandatory-parameter check before any handler runs, so the
+      // form answers 500 and the subscriber cannot unsubscribe from the page.
+      service:        getPortalName(),
       country:        country || getCountryKey(),
       language,
       phone_number:   phoneNumber,
