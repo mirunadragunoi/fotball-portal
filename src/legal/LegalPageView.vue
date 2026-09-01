@@ -126,7 +126,9 @@ const submitError      = ref('')
 const PHONE_COUNTRIES = [
   { code: 'UK', dialCode: '+44', hint: '7xxxxxxxxx', length: 10, pattern: /^7\d{9}$/ },
   { code: 'RO', dialCode: '+40', hint: '7xxxxxxxx',  length: 9,  pattern: /^7\d{8}$/ },
-  { code: 'CZ', dialCode: '+420', hint: '7xxxxxxxx', length: 9,  pattern: /^7\d{8}$/ },
+  // Czech mobiles start with 6 (601-608) or 7 (70x, 72x-73x, 77x, 79x), so
+  // matching only 7 left every O2/Vodafone 60x subscriber unable to submit.
+  { code: 'CZ', dialCode: '+420', hint: '6xxxxxxxx', length: 9,  pattern: /^[67]\d{8}$/ },
   { code: 'SK', dialCode: '+421', hint: '9xxxxxxxx', length: 9,  pattern: /^9\d{8}$/ },
   { code: 'PL', dialCode: '+48', hint: '5xxxxxxxx',  length: 9,  pattern: /^[5-9]\d{8}$/ },
 ]
