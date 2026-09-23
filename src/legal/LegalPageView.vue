@@ -45,7 +45,7 @@
           v-html="toHtml(String(content))"
         />
         <div v-if="submitSuccess" class="legal-success" role="status">
-          {{ t('legal.unsubscribe_form.success') }}
+          {{ submitSuccessMessage || t('legal.unsubscribe_form.success') }}
         </div>
         <form v-else class="unsubscribe-form" @submit.prevent="submitUnsubscribe" novalidate>
           <label class="form-label" for="unsub-phone">
@@ -70,12 +70,7 @@
 
           <div ref="recaptchaContainer" class="recaptcha-box" aria-label="reCAPTCHA" />
 
-          <p
-            v-if="submitError"
-            class="form-error"
-            :class="{ 'form-error--notice': submitIsNotice }"
-            :role="submitIsNotice ? 'status' : 'alert'"
-          >{{ submitError }}</p>
+          <p v-if="submitError" class="form-error" role="alert">{{ submitError }}</p>
 
           <button
             type="submit"
@@ -126,9 +121,9 @@ const recaptchaContainer = ref(null)
 const isSubmitting     = ref(false)
 const submitSuccess    = ref(false)
 const submitError      = ref('')
-// True when submitError carries a "nothing to do" outcome rather than a failure,
-// so the message renders neutral instead of red.
-const submitIsNotice   = ref(false)
+// What the green success box says. Normally the plain "you are unsubscribed"
+// line, but 2057 (already canceled) lands here too with its own wording.
+const submitSuccessMessage = ref('')
 
 // ─── Unsubscribe error codes ───────────────────────────────────────────────────
 // The endpoint answers HTTP 500 for every one of these and puts the real reason
@@ -137,11 +132,11 @@ const submitIsNotice   = ref(false)
 // one. The backend's own `error` text is never shown: it is English-only and
 // names internals (ERR_INSERTING_PORTAL_UNSUB_BLACKLIST and friends).
 const UNSUB_ERROR_KEYS = {
-  2031: 'error_invalid_number',   // number doesn't match the country format — the only one the user can fix
-  2048: 'error_not_found',        // no subscription on this number + portal
-  2057: 'error_already_canceled', // subscription exists but is already stopped
-  2053: 'error_too_many',         // portal-wide throttle, NOT this user's doing — phrase it as ours
-  2027: 'error_blocked',          // caller's IP is on the unsubscribe blacklist
+  2031: 'error_invalid_number', // number doesn't match the country format — the only one the user can fix
+  2048: 'error_not_found',      // no subscription on this number + portal
+  2057: 'already_canceled',     // subscription exists but is already stopped — a success, see below
+  2053: 'error_too_many',       // portal-wide throttle, NOT this user's doing — phrase it as ours
+  2027: 'error_blocked',        // caller's IP is on the unsubscribe blacklist
 }
 
 // Deliberately generic: 2054/2055 (internal blacklist/request insert failures)
@@ -150,9 +145,11 @@ const UNSUB_ERROR_KEYS = {
 // are logged below so they surface instead of hiding behind a polite message.
 const UNSUB_FRONTEND_BUG_CODES = new Set([2001, 2056])
 
-// 2057 means the caller is already unsubscribed: their goal is met, so a red
-// error box would misreport the outcome.
-const UNSUB_NOTICE_CODES = new Set([2057])
+// 2057 means the caller is already unsubscribed. The outcome is the one they
+// came for, so it takes the green success box and replaces the form, exactly
+// like a subscription we just cancelled — only the wording differs. Every other
+// code, "no subscription found" included, stays a red error beside the form.
+const UNSUB_SUCCESS_CODES = new Set([2057])
 
 // ─── Phone country definitions ─────────────────────────────────────────────────
 const PHONE_COUNTRIES = [
@@ -351,7 +348,6 @@ async function submitUnsubscribe() {
   if (!isPhoneValid.value || !recaptchaToken.value || isSubmitting.value) return
   isSubmitting.value = true
   submitError.value  = ''
-  submitIsNotice.value = false
 
   try {
     await api.unsubscribePhoneNumber({
@@ -360,6 +356,7 @@ async function submitUnsubscribe() {
       phoneNumber:    phoneNumber.value,
       recaptchaToken: recaptchaToken.value,
     })
+    submitSuccessMessage.value = ''
     submitSuccess.value = true
   } catch (e) {
     const code = Number(e?.errorCode)
@@ -369,11 +366,19 @@ async function submitUnsubscribe() {
       console.error(`Unsubscribe rejected our own request (error_code ${code}):`, e?.message || e)
     }
 
-    submitError.value = key
+    const message = key
       ? t(`legal.unsubscribe_form.${key}`, { dialCode: selectedPhoneCountryMeta.value.dialCode })
       : t('legal.unsubscribe_form.error')
-    submitIsNotice.value = UNSUB_NOTICE_CODES.has(code)
-    resetRecaptcha()
+
+    if (UNSUB_SUCCESS_CODES.has(code)) {
+      // Not a failure: report it in the success box and drop the form. No
+      // recaptcha reset — the widget goes away with the form it lives in.
+      submitSuccessMessage.value = message
+      submitSuccess.value = true
+    } else {
+      submitError.value = message
+      resetRecaptcha()
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -597,13 +602,6 @@ onBeforeUnmount(() => { recaptchaWidgetId.value = null })
   color: var(--color-red, #e53935);
   font-size: .85rem;
   margin: 0;
-}
-
-/* "Already unsubscribed" is an outcome, not a failure — don't shout it in red. */
-.form-error--notice {
-  background: var(--color-surface2, rgba(127, 127, 127, .08));
-  border-color: var(--color-text-secondary, #8b949e);
-  color: var(--color-text, inherit);
 }
 
 .legal-submit {

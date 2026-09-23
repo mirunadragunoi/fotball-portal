@@ -554,17 +554,17 @@
       }
     },
     "unsubscribe_form": {
-      "phone_label":            "Your phone number",
-      "submit":                 "Unsubscribe",
-      "submitting":             "Processing…",
-      "success":                "You have been successfully unsubscribed.",
-      "error":                  "Something went wrong. Please try again.",
-      "error_invalid_number":   "That number doesn't look valid for {dialCode}. Please check it and try again.",
-      "error_not_found":        "We could not find a subscription for this number.",
-      "error_already_canceled": "This number no longer has an active subscription — there is nothing left to cancel.",
-      "error_too_many":         "We are receiving too many requests right now. Please try again in a few minutes.",
-      "error_blocked":          "We cannot process unsubscribe requests from this connection. Please try from another network, or contact us.",
-      "recaptcha_error":        "reCAPTCHA verification failed. Please try again."
+      "phone_label":          "Your phone number",
+      "submit":               "Unsubscribe",
+      "submitting":           "Processing…",
+      "success":              "You have been successfully unsubscribed.",
+      "already_canceled":     "This number no longer has an active subscription — there is nothing left to cancel.",
+      "error":                "Something went wrong. Please try again.",
+      "error_invalid_number": "That number doesn't look valid for {dialCode}. Please check it and try again.",
+      "error_not_found":      "We could not find a subscription for this number.",
+      "error_too_many":       "We are receiving too many requests right now. Please try again in a few minutes.",
+      "error_blocked":        "We cannot process unsubscribe requests from this connection. Please try from another network, or contact us.",
+      "recaptcha_error":      "reCAPTCHA verification failed. Please try again."
     }
   }
 }
