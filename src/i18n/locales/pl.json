@@ -548,12 +548,17 @@
       }
     },
     "unsubscribe_form": {
-      "phone_label":     "Twój numer telefonu",
-      "submit":          "Wypisz się",
-      "submitting":      "Przetwarzanie…",
-      "success":         "Zostałeś pomyślnie wypisany.",
-      "error":           "Coś poszło nie tak. Spróbuj ponownie.",
-      "recaptcha_error": "Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie."
+      "phone_label":            "Twój numer telefonu",
+      "submit":                 "Wypisz się",
+      "submitting":             "Przetwarzanie…",
+      "success":                "Zostałeś pomyślnie wypisany.",
+      "error":                  "Coś poszło nie tak. Spróbuj ponownie.",
+      "error_invalid_number":   "Ten numer nie wygląda na poprawny dla {dialCode}. Sprawdź go i spróbuj ponownie.",
+      "error_not_found":        "Nie znaleźliśmy subskrypcji dla tego numeru.",
+      "error_already_canceled": "Ten numer nie ma już aktywnej subskrypcji — nie ma czego anulować.",
+      "error_too_many":         "Otrzymujemy teraz zbyt wiele żądań. Spróbuj ponownie za kilka minut.",
+      "error_blocked":          "Nie możemy przetworzyć żądania rezygnacji z tego połączenia. Spróbuj z innej sieci lub skontaktuj się z nami.",
+      "recaptcha_error":        "Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie."
     }
   },
   "dologin": {

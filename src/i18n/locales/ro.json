@@ -554,12 +554,17 @@
       }
     },
     "unsubscribe_form": {
-      "phone_label":     "Numărul dvs. de telefon",
-      "submit":          "Dezabonare",
-      "submitting":      "Se procesează…",
-      "success":         "Ați fost dezabonat cu succes.",
-      "error":           "A apărut o eroare. Vă rugăm încercați din nou.",
-      "recaptcha_error": "Verificarea reCAPTCHA a eșuat. Vă rugăm încercați din nou."
+      "phone_label":            "Numărul dvs. de telefon",
+      "submit":                 "Dezabonare",
+      "submitting":             "Se procesează…",
+      "success":                "Ați fost dezabonat cu succes.",
+      "error":                  "A apărut o eroare. Vă rugăm încercați din nou.",
+      "error_invalid_number":   "Numărul nu pare valid pentru {dialCode}. Vă rugăm verificați-l și încercați din nou.",
+      "error_not_found":        "Nu am găsit niciun abonament pentru acest număr.",
+      "error_already_canceled": "Acest număr nu mai are un abonament activ — nu mai este nimic de anulat.",
+      "error_too_many":         "Primim prea multe cereri în acest moment. Vă rugăm încercați din nou peste câteva minute.",
+      "error_blocked":          "Nu putem procesa cereri de dezabonare de la această conexiune. Încercați din altă rețea sau contactați-ne.",
+      "recaptcha_error":        "Verificarea reCAPTCHA a eșuat. Vă rugăm încercați din nou."
     }
   }
 }

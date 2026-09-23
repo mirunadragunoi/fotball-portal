@@ -70,7 +70,12 @@
 
           <div ref="recaptchaContainer" class="recaptcha-box" aria-label="reCAPTCHA" />
 
-          <p v-if="submitError" class="form-error" role="alert">{{ submitError }}</p>
+          <p
+            v-if="submitError"
+            class="form-error"
+            :class="{ 'form-error--notice': submitIsNotice }"
+            :role="submitIsNotice ? 'status' : 'alert'"
+          >{{ submitError }}</p>
 
           <button
             type="submit"
@@ -121,6 +126,33 @@ const recaptchaContainer = ref(null)
 const isSubmitting     = ref(false)
 const submitSuccess    = ref(false)
 const submitError      = ref('')
+// True when submitError carries a "nothing to do" outcome rather than a failure,
+// so the message renders neutral instead of red.
+const submitIsNotice   = ref(false)
+
+// ─── Unsubscribe error codes ───────────────────────────────────────────────────
+// The endpoint answers HTTP 500 for every one of these and puts the real reason
+// in `error_code`, so the status tells us nothing — the code is the only signal.
+// Mapped codes get their own message; everything else falls back to the generic
+// one. The backend's own `error` text is never shown: it is English-only and
+// names internals (ERR_INSERTING_PORTAL_UNSUB_BLACKLIST and friends).
+const UNSUB_ERROR_KEYS = {
+  2031: 'error_invalid_number',   // number doesn't match the country format — the only one the user can fix
+  2048: 'error_not_found',        // no subscription on this number + portal
+  2057: 'error_already_canceled', // subscription exists but is already stopped
+  2053: 'error_too_many',         // portal-wide throttle, NOT this user's doing — phrase it as ours
+  2027: 'error_blocked',          // caller's IP is on the unsubscribe blacklist
+}
+
+// Deliberately generic: 2054/2055 (internal blacklist/request insert failures)
+// and 999 (unhandled exception) are nothing the user can act on, and 2001
+// (missing params) / 2056 (unknown country) mean WE sent a bad request — those
+// are logged below so they surface instead of hiding behind a polite message.
+const UNSUB_FRONTEND_BUG_CODES = new Set([2001, 2056])
+
+// 2057 means the caller is already unsubscribed: their goal is met, so a red
+// error box would misreport the outcome.
+const UNSUB_NOTICE_CODES = new Set([2057])
 
 // ─── Phone country definitions ─────────────────────────────────────────────────
 const PHONE_COUNTRIES = [
@@ -319,6 +351,7 @@ async function submitUnsubscribe() {
   if (!isPhoneValid.value || !recaptchaToken.value || isSubmitting.value) return
   isSubmitting.value = true
   submitError.value  = ''
+  submitIsNotice.value = false
 
   try {
     await api.unsubscribePhoneNumber({
@@ -329,7 +362,17 @@ async function submitUnsubscribe() {
     })
     submitSuccess.value = true
   } catch (e) {
-    submitError.value = e?.message || t('legal.unsubscribe_form.error')
+    const code = Number(e?.errorCode)
+    const key  = UNSUB_ERROR_KEYS[code]
+
+    if (UNSUB_FRONTEND_BUG_CODES.has(code)) {
+      console.error(`Unsubscribe rejected our own request (error_code ${code}):`, e?.message || e)
+    }
+
+    submitError.value = key
+      ? t(`legal.unsubscribe_form.${key}`, { dialCode: selectedPhoneCountryMeta.value.dialCode })
+      : t('legal.unsubscribe_form.error')
+    submitIsNotice.value = UNSUB_NOTICE_CODES.has(code)
     resetRecaptcha()
   } finally {
     isSubmitting.value = false
@@ -554,6 +597,13 @@ onBeforeUnmount(() => { recaptchaWidgetId.value = null })
   color: var(--color-red, #e53935);
   font-size: .85rem;
   margin: 0;
+}
+
+/* "Already unsubscribed" is an outcome, not a failure — don't shout it in red. */
+.form-error--notice {
+  background: var(--color-surface2, rgba(127, 127, 127, .08));
+  border-color: var(--color-text-secondary, #8b949e);
+  color: var(--color-text, inherit);
 }
 
 .legal-submit {

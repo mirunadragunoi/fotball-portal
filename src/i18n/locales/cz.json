@@ -548,12 +548,17 @@
       }
     },
     "unsubscribe_form": {
-      "phone_label":     "Vaše telefonní číslo",
-      "submit":          "Odhlásit se",
-      "submitting":      "Zpracování…",
-      "success":         "Byli jste úspěšně odhlášeni.",
-      "error":           "Něco se pokazilo. Zkuste to prosím znovu.",
-      "recaptcha_error": "Ověření reCAPTCHA selhalo. Zkuste to prosím znovu."
+      "phone_label":            "Vaše telefonní číslo",
+      "submit":                 "Odhlásit se",
+      "submitting":             "Zpracování…",
+      "success":                "Byli jste úspěšně odhlášeni.",
+      "error":                  "Něco se pokazilo. Zkuste to prosím znovu.",
+      "error_invalid_number":   "Toto číslo nevypadá platně pro {dialCode}. Zkontrolujte je prosím a zkuste to znovu.",
+      "error_not_found":        "Pro toto číslo jsme nenašli žádné předplatné.",
+      "error_already_canceled": "Toto číslo již nemá aktivní předplatné — není co rušit.",
+      "error_too_many":         "Momentálně přijímáme příliš mnoho požadavků. Zkuste to prosím za několik minut.",
+      "error_blocked":          "Z tohoto připojení nemůžeme zpracovat žádost o odhlášení. Zkuste to prosím z jiné sítě nebo nás kontaktujte.",
+      "recaptcha_error":        "Ověření reCAPTCHA selhalo. Zkuste to prosím znovu."
     }
   },
   "dologin": {

@@ -554,12 +554,17 @@
       }
     },
     "unsubscribe_form": {
-      "phone_label":     "Votre numéro de téléphone",
-      "submit":          "Se désabonner",
-      "submitting":      "Traitement…",
-      "success":         "Vous avez été désabonné avec succès.",
-      "error":           "Une erreur s'est produite. Veuillez réessayer.",
-      "recaptcha_error": "Échec de la vérification reCAPTCHA. Veuillez réessayer."
+      "phone_label":            "Votre numéro de téléphone",
+      "submit":                 "Se désabonner",
+      "submitting":             "Traitement…",
+      "success":                "Vous avez été désabonné avec succès.",
+      "error":                  "Une erreur s'est produite. Veuillez réessayer.",
+      "error_invalid_number":   "Ce numéro ne semble pas valide pour {dialCode}. Veuillez le vérifier et réessayer.",
+      "error_not_found":        "Nous n'avons trouvé aucun abonnement pour ce numéro.",
+      "error_already_canceled": "Ce numéro n'a plus d'abonnement actif — il n'y a plus rien à résilier.",
+      "error_too_many":         "Nous recevons trop de demandes en ce moment. Veuillez réessayer dans quelques minutes.",
+      "error_blocked":          "Nous ne pouvons pas traiter les demandes de désabonnement depuis cette connexion. Essayez depuis un autre réseau ou contactez-nous.",
+      "recaptcha_error":        "Échec de la vérification reCAPTCHA. Veuillez réessayer."
     }
   }
 }
