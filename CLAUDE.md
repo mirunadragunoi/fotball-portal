@@ -107,6 +107,7 @@ Decisions and conventions added in this round of work — keep these in mind whe
 
 ### Footer — unsubscribe gating
 - `unsubscribe` link in the footer is shown **only** when `getCountryKey()` is `CZ` or `SK` (carrier-driven SMS opt-out). On RO / PL / UK it disappears. The `/unsubscribe` route itself remains accessible — only the footer entry is filtered.
+- For the form behind that link — the `service` payload key, phone prefixes, and the `error_code` → message mapping — see **Unsubscribe page — made to actually work** below.
 
 ### Header behaviour
 - Single CTA on both brands: **Sign In** (the old Goal Plaza "Sign Up" CTA is gone — Sign Up flow now lives behind the carrier landing).
@@ -180,6 +181,27 @@ Home · Tournament 2026 · Live · News · History · Trivia · Games · Videos,
 - **603 page_view**: single global `router.afterEach` hook in `src/router/index.js` — fires on every navigation (incl. public/legal pages). Only `GameDetail` / `GamePlay` / `VideoDetail` routes attach `product = to.params.id` (that `:id` IS the product id); other `:id`-like params (matchId, teamId) are intentionally omitted.
 - **602 launch**: `GameDetailView.vue` logs on every play/download CTA click (`logLaunch`); `VideoDetailView.vue` logs when native playback starts (`startPlayback`).
 - **604 consumption** (`VideoDetailView.vue`, native `<video>` only): sums wall-clock time between play↔pause/ended (seeks/pauses excluded), flushed **once per session** on `ended`, `beforeunload`, or route-param change (component is reused, not unmounted, between videos, so `onBeforeUnmount` won't fire on nav). Min 1s guard; a fresh play after a flush starts a new session.
+
+### Unsubscribe page — made to actually work (2026-09-01 → 2026-09-23)
+
+The `/unsubscribe` form had **never** worked on either football portal since the legal pages landed on 2026-05-21. Four separate faults, each of which alone was enough to break it, fixed in commits `4c8bfc2`, `5ecdc4a`, `789cf00`, `accc3aa`. All in shared code (`src/legal/LegalPageView.vue` + base locales) — **both portals, all 6 locales**. `LegalPageView` is not brand-overridden and no brand locale touches `legal.*`.
+
+- **`service`, not `portal_name`** (`unsubscribePhoneNumber` in `src/services/footballApi.js`) — `/football/UnsubscribePhoneNumber` shares its handler with the `/store/` and `/wellness/` routes, whose contract came first and names that field **`service`**. It is the **only** football endpoint that does not take `portal_name`, which is exactly what made this easy to miss. The value was right all along; the key was wrong, and the mandatory-parameter check rejected the call before any handler ran → HTTP 500 on every attempt. The wellness portal, on the same handler, always sent `service`. **Don't "fix" this back to `portal_name`.**
+- **Czech `6xx` mobile prefix** (`PHONE_COUNTRIES`, `LegalPageView.vue`) — the CZ entry matched `/^7\d{8}$/`, but Czech mobiles start with **6** (601-608) as well as 7 (70x, 72x-73x, 77x, 79x). Every O2/Vodafone 60x subscriber typed a valid number and watched the submit button stay disabled with no error text (the form gives no feedback beyond the valid-state border). Now `/^[67]\d{8}$/`, placeholder `6xxxxxxxx`. **Open follow-up:** PL is `/^[5-9]\d{8}$/` and has the same shape of gap — the `45x` mobile range is rejected, while `9xx` is accepted though not allocated to mobile. Left alone deliberately; wants the operator's prefix list before touching a live market.
+- **Error codes → messages** — the endpoint answers **HTTP 500 for every failure** and puts the real reason in `error_code`, so the status tells you nothing; the code is the only signal. `ApiError` already exposes it (`errorCode` ← `data.error_code`, populated on 500 too), so no service change was needed. The catch used to render `e.message` — the backend's own English text, which names internals (`ERR_INSERTING_PORTAL_UNSUB_BLACKLIST` and friends) to a Czech or Polish subscriber. **That raw message is never shown now**; the message comes only from `UNSUB_ERROR_KEYS[code]` → i18n.
+
+  | code | i18n key | why specific / generic |
+  |---|---|---|
+  | 2031 invalid format | `error_invalid_number` | the only one the user can fix; message names the country's `{dialCode}` so they see what was expected |
+  | 2048 no subscription | `error_not_found` | may be a mistyped number → **red, form stays reachable** |
+  | 2057 already canceled | `already_canceled` | they are done; silence would leave them believing they are still billed — **green success box, see below** |
+  | 2053 too many requests | `error_too_many` | **reworded on purpose**: the throttle is portal-wide, NOT the caller's doing, so the copy blames us ("we are receiving too many requests"), never them |
+  | 2027 IP blacklisted | `error_blocked` | otherwise they retry identically forever; points at another network or contacting us |
+  | 2001, 2056 | generic | **our** bad request (missing params / unknown country) — also `console.error` via `UNSUB_FRONTEND_BUG_CODES` so they surface instead of hiding behind a polite message |
+  | 2054, 2055, 999 | generic | internal insert failures / unhandled exception — nothing the user can act on |
+
+- **2057 is a success, not an error** (`UNSUB_SUCCESS_CODES`) — "this number no longer has an active subscription" is the outcome the caller came for, so it takes the same green `.legal-success` box as a subscription we just cancelled and **replaces the form**; only the wording differs. Hence the i18n key is `already_canceled`, **not** `error_*` — it renders in a success box, so don't rename it back. No `resetRecaptcha()` on this path: the widget lives inside the form being unmounted.
+- **Known trade-off:** 2048 and 2057 confirm indirectly whether a number has or had a subscription, so they technically allow enumeration. Accepted deliberately — a legitimate subscriber blocked without explanation is a certain cost, enumeration a theoretical one, and the backend already has the IP blacklist (2027) and the throttle (2053) for exactly that. If this ever needs tightening, merge the two into one message ("this number has no active subscription").
 
 ### CZ market on Nation Foot — added 2026-08-27
 - `football1.countries` is now `['UK', 'SK', 'PL', 'CZ']`; Nation Foot serves the Czech market from `cz.nationfoot.com` (subdomain `cz.` → `CZ` was already in `countries.js`, shared with Goal Plaza).
