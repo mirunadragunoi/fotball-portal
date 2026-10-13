@@ -8,6 +8,7 @@ import VideoCard from '@/components/videos/VideoCard.vue'
 import AppIcon from '@/components/shared/AppIcon.vue'
 import SectionHeader from '@/components/shared/SectionHeader.vue'
 import { logEvent } from '@/services/footballApi'
+import { createCoverageTracker, createPeriodicEmitter } from '@/services/coverageCore'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -31,53 +32,53 @@ function startPlayback() {
 }
 
 // ─── Consumption tracking (604) — native <video> only ────────────────────────
-// Sum only the wall-clock time actually spent between play and pause/ended
-// (pauses and seeks are not counted). Flush once per viewing session on ended,
-// tab close (beforeunload), or navigation away — never on a plain pause (the
-// user is expected to resume).
-let watchedSeconds = 0
-let playStartTs = null
-let loggedConsumption = false
+// Content coverage (varianta b): DISTINCT seconds of the clip actually rendered,
+// not wall-clock time in "play". Emitted as DELTA periodically (60 s, only when
+// coverage grows) and on flush (ended / tab close / navigation away) — never on a
+// plain pause (the user may resume). Same 604 payload as before (product).
+let tracker = null
+let periodic = null
 let playingProductId = null
 
-function onVideoPlay() {
-  // A fresh play after a completed/flushed session starts a new session.
-  if (loggedConsumption) {
-    watchedSeconds = 0
-    loggedConsumption = false
-  }
-  playStartTs = Date.now()
+function ensureTracker() {
+  if (tracker) return
   playingProductId = video.value?.id ?? playingProductId
+  tracker = createCoverageTracker((delta) => {
+    if (playingProductId != null) {
+      logEvent({ event_type: 604, product: playingProductId, duration_seconds: delta })
+    }
+  })
+  periodic = createPeriodicEmitter(() => { if (tracker) tracker.emitDelta() }, { intervalMs: 60000 })
 }
 
-function accumulate() {
-  if (playStartTs != null) {
-    watchedSeconds += (Date.now() - playStartTs) / 1000
-    playStartTs = null
-  }
+function onVideoPlay() {
+  ensureTracker()
+  periodic.start()
 }
 
-function onVideoPause() {
-  accumulate()
+function onVideoTime(e) {
+  if (tracker && e && e.target) tracker.markSecond(e.target.currentTime)
+}
+
+function onVideoPause(e) {
+  // bank the current second; not a 604 flush (the user may resume)
+  onVideoTime(e)
 }
 
 function flushConsumption() {
-  accumulate()
-  const seconds = Math.round(watchedSeconds)
-  if (!loggedConsumption && seconds >= 1 && playingProductId != null) {
-    logEvent({ event_type: 604, product: playingProductId, duration_seconds: seconds })
-    loggedConsumption = true
-  }
+  if (periodic) periodic.stop()
+  if (tracker) tracker.emitDelta()   // residual delta only — never cumulative
 }
 
-function onVideoEnded() {
+function onVideoEnded(e) {
+  onVideoTime(e)
   flushConsumption()
 }
 
 function resetConsumption() {
-  watchedSeconds = 0
-  playStartTs = null
-  loggedConsumption = false
+  if (periodic) periodic.stop()
+  tracker = null
+  periodic = null
   playingProductId = null
 }
 
@@ -145,6 +146,7 @@ function formatDate(iso) {
                 @play="onVideoPlay"
                 @pause="onVideoPause"
                 @ended="onVideoEnded"
+                @timeupdate="onVideoTime"
               ></video>
               <template v-else>
                 <img
