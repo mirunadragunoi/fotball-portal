@@ -97,7 +97,7 @@ Decisions and conventions added in this round of work — keep these in mind whe
 - New users on supported countries are redirected from the "Sign up" CTA to a carrier landing page (SMS / mix billing) instead of the internal phone form. Mapping in `src/config/landingUrls.js`:
   - Nation Foot × SK / PL → `https://premium.nationfoot.com/<sknatf|plnatf>/click/` (sms); × CZ → `https://premium.nationfoot.com/cznatf/` (mix)
   - Goal Plaza × CZ / RO → `https://premium.goalplaza.com/<czgoal|rogoal>/...`
-- Brand × country combos without a mapping (e.g. UK on either brand) fall back to the internal `/signup` route. To add a new country, drop another line into `SUBSCRIBE_LANDING_URLS`.
+- Brand × country combos without a mapping (e.g. GB on either brand) fall back to the internal `/signup` route. To add a new country, drop another line into `SUBSCRIBE_LANDING_URLS`.
 - `goToSignup()` in `src/composables/useAuth.js` consults this map and does `window.location.href = ...` when matched.
 
 ### Legal endpoints — public contract
@@ -106,7 +106,7 @@ Decisions and conventions added in this round of work — keep these in mind whe
 - Backend response shape sniff: `/about` on some portals wraps in `{data: {content}}`; `/legals/*` returns top-level `{treatment, error_code, error_description, <key>: ...}`. `unwrapData()` handles both.
 
 ### Footer — unsubscribe gating
-- `unsubscribe` link in the footer is shown **only** when `getCountryKey()` is `CZ` or `SK` (carrier-driven SMS opt-out). On RO / PL / UK it disappears. The `/unsubscribe` route itself remains accessible — only the footer entry is filtered.
+- `unsubscribe` link in the footer is shown **only** when `getCountryKey()` is `CZ` or `SK` (carrier-driven SMS opt-out). On RO / PL / GB it disappears. (The United Kingdom is `GB` since 2026-11-09: `billing.country` id 1 was renamed from `UK`, and the backend matches on the code, so `UK` no longer resolves.) The `/unsubscribe` route itself remains accessible — only the footer entry is filtered.
 - For the form behind that link — the `service` payload key, phone prefixes, and the `error_code` → message mapping — see **Unsubscribe page — made to actually work** below.
 
 ### Header behaviour

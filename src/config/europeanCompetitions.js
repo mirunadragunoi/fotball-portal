@@ -37,11 +37,11 @@ export const EUROPEAN_COMPETITIONS = {
   primeiraLiga:      { id: 8,   name: 'Primeira Liga',      country: 'Portugal',    countryId: 32,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57, apiFootballLeagueId: 94 },
   superLig:          { id: 6,   name: 'Süper Lig',          country: 'Turkey',      countryId: 48,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'secondary',    seasonId: 57, apiFootballLeagueId: 203 },
 
-  // ─── LOCAL LEAGUES: NATIONFOOT (football1: UK, PL, SK, CZ) ───
+  // ─── LOCAL LEAGUES: NATIONFOOT (football1: GB, PL, SK, CZ) ───
   ekstraklasa:       { id: 60,  name: 'Ekstraklasa',        country: 'Poland',      countryId: 14,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1', apiFootballLeagueId: 106 },
   slovakSuperLeague: { id: 63,  name: 'Super League',       country: 'Slovakia',    countryId: 53,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football1', apiFootballLeagueId: 332 },
 
-  // ─── LOCAL LEAGUES: GOALPLAZA (football2: UK, RO, CZ, FR) ───
+  // ─── LOCAL LEAGUES: GOALPLAZA (football2: GB, RO, CZ, FR) ───
   // (the Czech 1st League is sold on both portals, hence the brand array)
   ligaI:             { id: 61,  name: 'Liga I',             country: 'Romania',     countryId: 36,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: 'football2', apiFootballLeagueId: 283 },
   czechFirstLeague:  { id: 72,  name: '1st League',         country: 'Czech Rep',   countryId: 11,  isCup: false, isLeague: true,  hasGroups: true,  tier: 'local',        seasonId: 57, brand: ['football1', 'football2'], apiFootballLeagueId: 345 },

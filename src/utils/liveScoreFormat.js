@@ -26,7 +26,7 @@ export function getCompetitionFilterForCountry() {
 // subdomain country (ro.goalplaza.com → Europe/Bucharest, etc.).
 
 const COUNTRY_TZ = {
-  UK: 'Europe/London',
+  GB: 'Europe/London',
   RO: 'Europe/Bucharest',
   CZ: 'Europe/Prague',
   SK: 'Europe/Bratislava',

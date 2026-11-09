@@ -55,7 +55,7 @@ function readQueryCountryOverride() {
  */
 export function getCountryKey() {
   const brand = getBrandConfig()
-  const allowed = brand.countries || ['UK']
+  const allowed = brand.countries || ['GB']
 
   const queryOverride = readQueryCountryOverride()
   if (queryOverride && allowed.includes(queryOverride) && COUNTRIES[queryOverride]) {

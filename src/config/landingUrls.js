@@ -4,7 +4,7 @@
  * page below instead of the internal /signup phone form. After subscribing
  * via SMS / mix flow they receive their access code and come back to log in.
  *
- * If no mapping exists for the active brand × country (e.g. UK on either
+ * If no mapping exists for the active brand × country (e.g. GB on either
  * brand), the caller falls back to the internal /signup route.
  */
 const SUBSCRIBE_LANDING_URLS = {

@@ -3,9 +3,9 @@ export default {
   name: 'Goal Plaza',
   displayName: 'Goal Plaza',
   tagline: 'Football, but make it fun.',
-  countries: ['UK', 'RO', 'CZ', 'FR'],
+  countries: ['GB', 'RO', 'CZ', 'FR'],
   // Feed languages offered on the News page (in order). Uses feed lang codes
-  // (Czech = 'cs'). Goal Plaza covers UK/RO/CZ (no French football feed yet).
+  // (Czech = 'cs'). Goal Plaza covers GB/RO/CZ (no French football feed yet).
   newsLanguages: ['en', 'ro', 'cs'],
   storagePrefix: 'football2',
   featureFlags: {

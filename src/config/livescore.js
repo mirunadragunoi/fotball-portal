@@ -36,8 +36,8 @@ export const LIVESCORE_POLL = {
 export const LIVESCORE_TABS = ['live', 'fixtures', 'standings']
 
 export const LIVESCORE_COMPETITION_IDS = {
-  football1: { UK: '', PL: '', SK: '' },
-  football2: { UK: '', RO: '', CZ: '' },
+  football1: { GB: '', PL: '', SK: '' },
+  football2: { GB: '', RO: '', CZ: '' },
 }
 
 export const LIVESCORE_LANG_MAP = {

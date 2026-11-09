@@ -36,7 +36,7 @@ export function useAuth() {
   function goToSignup(redirectTo) {
     // Active brand × country may have an external carrier landing page —
     // prefer it over the internal phone form. Falls back to /signup when
-    // no mapping exists (e.g. UK on either brand).
+    // no mapping exists (e.g. GB on either brand).
     const externalUrl = getSubscribeLandingUrl(getBrandKey(), getCountryKey())
     if (externalUrl) {
       window.location.href = externalUrl
